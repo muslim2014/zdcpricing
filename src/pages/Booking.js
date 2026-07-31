@@ -1,6 +1,7 @@
 import {
   getServices
 } from "../api/servicesApi";
+import { ThemeToggle } from "../components/ThemeToggle";
 
 export async function Booking() {
 
@@ -19,6 +20,8 @@ export async function Booking() {
         </button>
 
         <h2>حجز موعد</h2>
+
+        ${ThemeToggle()}
 
       </div>
 

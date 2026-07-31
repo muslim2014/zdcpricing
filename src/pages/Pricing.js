@@ -1,5 +1,6 @@
 import { CategoryCard } from "../components/CategoryCard";
 import { getCategories } from "../api/categoriesApi";
+import { ThemeToggle } from "../components/ThemeToggle";
 
 export async function Pricing() {
 
@@ -14,6 +15,8 @@ export async function Pricing() {
         </button>
 
         <h2>تسعير الخدمات</h2>
+
+        ${ThemeToggle()}
       </div>
 
       <div class="categories">

@@ -1,3 +1,5 @@
+import { ThemeToggle } from "../components/ThemeToggle";
+
 export function ServiceDetails(service) {
   return `
     <div class="container">
@@ -9,6 +11,8 @@ export function ServiceDetails(service) {
         </button>
 
         <h2>${service.name}</h2>
+
+        ${ThemeToggle()}
 
       </div>
 

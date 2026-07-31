@@ -1,4 +1,5 @@
 import { getServices } from "../api/servicesApi";
+import { ThemeToggle } from "../components/ThemeToggle";
 
 export async function Services(category) {
 
@@ -18,6 +19,8 @@ export async function Services(category) {
         </button>
 
         <h2>${category.name}</h2>
+
+        ${ThemeToggle()}
 
       </div>
 

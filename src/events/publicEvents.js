@@ -20,6 +20,39 @@ export function attachPublicEvents(router) {
     );
 
   document
+    .querySelector("#themeToggle")
+    ?.addEventListener("click", () => {
+
+      const html =
+        document.documentElement;
+
+      const current =
+        html.getAttribute("data-theme") ||
+        "light";
+
+      const next =
+        current === "light" ? "dark" : "light";
+
+      html.setAttribute("data-theme", next);
+
+      localStorage.setItem("theme", next);
+
+      const icon =
+        document.querySelector(
+          "#themeToggle i"
+        );
+
+      if (icon) {
+
+        icon.className = next === "dark"
+          ? "fa-solid fa-sun"
+          : "fa-solid fa-moon";
+
+      }
+
+    });
+
+  document
     .querySelectorAll(".home-section-btn")
     .forEach(btn => {
 

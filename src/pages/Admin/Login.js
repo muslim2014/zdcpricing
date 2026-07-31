@@ -1,3 +1,5 @@
+import { ThemeToggle } from "../../components/ThemeToggle";
+
 export function AdminLogin() {
   return `
     <div class="background">
@@ -5,6 +7,8 @@ export function AdminLogin() {
       <div class="blob blob2"></div>
       <div class="blob blob3"></div>
     </div>
+
+    ${ThemeToggle()}
 
     <div class="container">
 

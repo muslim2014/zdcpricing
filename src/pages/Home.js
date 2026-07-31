@@ -6,6 +6,7 @@ import {
   getSocialIcon,
   buildSocialHref
 } from "../utils/socialLinks";
+import { ThemeToggle } from "../components/ThemeToggle";
 
 export async function Home() {
 
@@ -37,6 +38,8 @@ export async function Home() {
   >
     <i class="fa-solid fa-gear"></i>
   </button>
+
+  ${ThemeToggle()}
 
   <div
     class="logo"

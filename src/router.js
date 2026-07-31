@@ -31,6 +31,7 @@ import { getCategories } from "./api/categoriesApi";
 
 import { attachPublicEvents } from "./events/publicEvents";
 import { attachAdminEvents } from "./events/adminEvents";
+import { ThemeToggle } from "./components/ThemeToggle";
 
 const app = document.querySelector("#app");
 
@@ -125,7 +126,7 @@ export async function renderServices(categoryId) {
   if (!category) {
 
     app.innerHTML =
-      "<h2 style='color:white;text-align:center'>القسم غير موجود</h2>";
+      "<h2 style='color:var(--text);text-align:center'>القسم غير موجود</h2>";
 
     return;
 
@@ -147,7 +148,7 @@ export async function renderServiceDetails(categoryId, serviceId) {
   if (!service) {
 
     app.innerHTML =
-      "<h2 style='color:white;text-align:center'>الخدمة غير موجودة</h2>";
+      "<h2 style='color:var(--text);text-align:center'>الخدمة غير موجودة</h2>";
 
     return;
 
@@ -344,6 +345,8 @@ export async function renderBookingEditor(id) {
 
 function attachEvents() {
 
+  ensureThemeToggle();
+
   const router = {
 
     renderHome,
@@ -386,5 +389,20 @@ function attachEvents() {
 
   attachPublicEvents(router);
   attachAdminEvents(router);
+
+}
+
+function ensureThemeToggle() {
+
+  if (document.querySelector("#themeToggle")) return;
+
+  const topBar = document.querySelector(".top-bar");
+
+  if (!topBar) return;
+
+  topBar.insertAdjacentHTML(
+    "beforeend",
+    ThemeToggle()
+  );
 
 }

@@ -64,7 +64,7 @@ export async function FontsManager() {
 
               ${
                 Number(currentFont) === Number(font.id)
-                  ? "<br><small style='color:#2EA3B3'>✔ الخط الحالي</small>"
+                  ? "<br><small style='color:var(--accent)'>✔ الخط الحالي</small>"
                   : ""
               }
 

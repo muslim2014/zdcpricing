@@ -2,6 +2,7 @@ import {
   getDoctorProfile,
   getCertificates
 } from "../api/doctorApi";
+import { ThemeToggle } from "../components/ThemeToggle";
 
 export async function About() {
 
@@ -17,6 +18,8 @@ export async function About() {
 
         <button class="back-btn" id="backToHome">←</button>
         <h2>عن الطبيب</h2>
+
+        ${ThemeToggle()}
 
       </div>
 
