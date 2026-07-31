@@ -22,19 +22,7 @@ export async function getSettings() {
 
       logo: data.logo ?? "",
 
-      phone: data.phone ?? "",
-
-      whatsapp: data.whatsapp ?? "",
-
       address: data.address ?? "",
-
-      facebook: data.facebook ?? "",
-
-      instagram: data.instagram ?? "",
-
-      maps: data.maps ?? "",
-
-      gallery: data.gallery ?? "",
 
       pricingTitle:
         data.pricing_title ??
@@ -56,19 +44,7 @@ export async function getSettings() {
 
     logo: "🦷",
 
-    phone: "",
-
-    whatsapp: "",
-
     address: "",
-
-    facebook: "",
-
-    instagram: "",
-
-    maps: "",
-
-    gallery: "",
 
     pricing_title: "خدمات وأسعار العيادة",
 
@@ -96,19 +72,7 @@ export async function getSettings() {
 
     logo: inserted.logo,
 
-    phone: inserted.phone,
-
-    whatsapp: inserted.whatsapp,
-
     address: inserted.address,
-
-    facebook: inserted.facebook,
-
-    instagram: inserted.instagram,
-
-    maps: inserted.maps,
-
-    gallery: inserted.gallery,
 
     pricingTitle:
       inserted.pricing_title,
@@ -141,19 +105,7 @@ export async function saveSettings(settings) {
 
     logo: settings.logo,
 
-    phone: settings.phone,
-
-    whatsapp: settings.whatsapp,
-
     address: settings.address,
-
-    facebook: settings.facebook,
-
-    instagram: settings.instagram,
-
-    maps: settings.maps,
-
-    gallery: settings.gallery,
 
     pricing_title: settings.pricingTitle,
 

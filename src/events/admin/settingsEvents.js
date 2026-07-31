@@ -33,6 +33,13 @@ export function attachSettingsEvents(router) {
     );
 
   document
+    .querySelector("#socialBtn")
+    ?.addEventListener(
+      "click",
+      router.renderSocialLinksManager
+    );
+
+  document
     .querySelector("#galleryBtn")
     ?.addEventListener(
       "click",
@@ -60,6 +67,13 @@ export function attachSettingsEvents(router) {
       router.renderAdminDashboard
     );
 
+  document
+    .querySelector("#typographyBtn")
+    ?.addEventListener(
+      "click",
+      router.renderTypographyManager
+   );
+
   /* حفظ الإعدادات العامة */
 
   document
@@ -85,26 +99,8 @@ export function attachSettingsEvents(router) {
           pricingDescription:
             document.querySelector("#pricingDescription").value.trim(),
 
-          phone:
-            document.querySelector("#phone").value.trim(),
-
-          whatsapp:
-            document.querySelector("#whatsapp").value.trim(),
-
           address:
-            document.querySelector("#address").value.trim(),
-
-          facebook:
-            document.querySelector("#facebook").value.trim(),
-
-          instagram:
-            document.querySelector("#instagram").value.trim(),
-
-          maps:
-            document.querySelector("#maps").value.trim(),
-
-          gallery:
-            document.querySelector("#gallery").value.trim()
+            document.querySelector("#address").value.trim()
 
         });
 

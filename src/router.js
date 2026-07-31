@@ -10,14 +10,14 @@ import { DoctorCertificates } from "./pages/Admin/DoctorCertificates";
 import { CertificateEditor } from "./pages/Admin/CertificateEditor";
 import { BookingEditor } from "./pages/Admin/BookingEditor";
 import { About } from "./pages/About";
-
+import { SocialLinksManager } from "./pages/Admin/SocialLinksManager";
 import { getService } from "./api/servicesApi";
 import { AdminAccount } from "./pages/Admin/AdminAccount";
 import { Home } from "./pages/Home";
 import { Pricing } from "./pages/Pricing";
 import { Services } from "./pages/Services";
 import { ServiceDetails } from "./pages/ServiceDetails";
-
+import { TypographyManager } from "./pages/Admin/TypographyManager";
 import { AdminLogin } from "./pages/Admin/Login";
 import { AdminDashboard } from "./pages/Admin/Dashboard";
 import { GeneralSettings } from "./pages/Admin/GeneralSettings";
@@ -26,7 +26,7 @@ import { ServicesManager } from "./pages/Admin/ServicesManager";
 import { CategoryServices } from "./pages/Admin/CategoryServices";
 import { ServiceEditor } from "./pages/Admin/ServiceEditor";
 import { HomeCardsManager } from "./pages/Admin/HomeCardsManager";
-
+import { FontsManager } from "./pages/Admin/FontsManager";
 import { getCategories } from "./api/categoriesApi";
 
 import { attachPublicEvents } from "./events/publicEvents";
@@ -42,6 +42,14 @@ let currentBookingId = null;
 
 export function getCurrentCategoryId() {
   return currentCategoryId;
+}
+
+export async function renderFontsManager() {
+
+  app.innerHTML = await FontsManager();
+
+  attachEvents();
+
 }
 
 export function getCurrentServiceId() {
@@ -163,9 +171,26 @@ export async function renderAdminLogin() {
 
 }
 
+export async function renderSocialLinksManager() {
+
+  app.innerHTML =
+    await SocialLinksManager();
+
+  attachEvents();
+
+}
+
 export async function renderAdminDashboard() {
 
   app.innerHTML = await AdminDashboard();
+
+  attachEvents();
+
+}
+
+export async function renderTypographyManager() {
+
+  app.innerHTML = await TypographyManager();
 
   attachEvents();
 
@@ -334,14 +359,14 @@ function attachEvents() {
     renderGeneralSettings,
     renderHomeSections,
     renderSectionEditor,
-
+    renderFontsManager,
     renderDoctorProfile,
     renderDoctorCertificates,
     renderCertificateEditor,
-
+    renderTypographyManager,
     renderGalleryManager,
     renderGalleryEditor,
-
+    renderSocialLinksManager,
     renderBookingsManager,
     renderBookingEditor,
     renderAdminAccount,

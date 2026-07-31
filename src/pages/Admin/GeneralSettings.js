@@ -68,65 +68,11 @@ export async function GeneralSettings() {
         </div>
 
         <div class="form-group">
-          <label>رقم الهاتف</label>
-          <input
-            id="phone"
-            class="glass-input"
-            value="${settings.phone}"
-          >
-        </div>
-
-        <div class="form-group">
-          <label>واتساب</label>
-          <input
-            id="whatsapp"
-            class="glass-input"
-            value="${settings.whatsapp}"
-          >
-        </div>
-
-        <div class="form-group">
           <label>العنوان</label>
           <input
             id="address"
             class="glass-input"
             value="${settings.address}"
-          >
-        </div>
-
-        <div class="form-group">
-          <label>فيسبوك</label>
-          <input
-            id="facebook"
-            class="glass-input"
-            value="${settings.facebook}"
-          >
-        </div>
-
-        <div class="form-group">
-          <label>إنستجرام</label>
-          <input
-            id="instagram"
-            class="glass-input"
-            value="${settings.instagram}"
-          >
-        </div>
-
-        <div class="form-group">
-          <label>Google Maps</label>
-          <input
-            id="maps"
-            class="glass-input"
-            value="${settings.maps}"
-          >
-        </div>
-
-        <div class="form-group">
-          <label>رابط معرض الحالات</label>
-          <input
-            id="gallery"
-            class="glass-input"
-            value="${settings.gallery}"
           >
         </div>
 
@@ -141,4 +87,5 @@ export async function GeneralSettings() {
 
     </div>
   `;
+
 }

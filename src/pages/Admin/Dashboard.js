@@ -100,6 +100,20 @@ export function AdminDashboard() {
           🔐 حساب المدير
         </button>
 
+        <button
+          id="typographyBtn"
+          class="glass-button"
+      >
+          🔤 إدارة الخطوط
+        </button>
+
+        <button
+          id="fontsBtn"
+          class="glass-button"
+     >
+          🅰️ إدارة الخطوط المخصصة
+        </button>
+        
       </div>
 
     </div>

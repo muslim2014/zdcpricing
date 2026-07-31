@@ -1,11 +1,25 @@
 import { getSections } from "../api/sectionsApi";
 import { getSettings } from "../api/settingsApi";
+import { getTypography } from "../api/typographyApi";
+import { getSocialLinks } from "../api/socialLinksApi";
+import {
+  getSocialIcon,
+  buildSocialHref
+} from "../utils/socialLinks";
 
 export async function Home() {
 
   const settings = await getSettings();
 
+  const typography = await getTypography();
+
   const sections = await getSections("home");
+
+  const socialLinks = await getSocialLinks();
+
+  const visibleLinks = socialLinks.filter(
+    link => link.visible
+  );
 
   return `
 <div class="background">
@@ -24,51 +38,103 @@ export async function Home() {
     <i class="fa-solid fa-gear"></i>
   </button>
 
-  <div class="logo">
+  <div
+    class="logo"
+    style="
+      font-size:${typography.logo_size}px;
+      font-family:'${typography.font_family}', sans-serif;
+    "
+  >
     ${settings.logo}
   </div>
 
-  <p class="welcome">
+  <p
+    class="welcome"
+    style="
+      font-family:'${typography.font_family}', sans-serif;
+    "
+  >
     أهلاً بك في
   </p>
 
-  <h1 class="clinic-name">
+  <h1
+    class="clinic-name"
+    style="
+      font-size:${typography.clinic_name_size}px;
+      font-family:'${typography.font_family}', sans-serif;
+    "
+  >
     ${settings.clinicName}
   </h1>
 
-  <p class="doctor-name">
+  <p
+    class="doctor-name"
+    style="
+      font-size:${typography.doctor_name_size}px;
+      font-family:'${typography.font_family}', sans-serif;
+    "
+  >
     ${settings.doctorName}
   </p>
 
   <div class="buttons">
 
     ${sections
-      .filter(section => section.visible && section.section_key !== "social")
-      .sort((a, b) => a.sort_order - b.sort_order)
+      .filter(
+        section =>
+          section.visible &&
+          section.section_key !== "social"
+      )
+      .sort(
+        (a, b) => a.sort_order - b.sort_order
+      )
       .map(section => `
 
         <button
           class="card home-section-btn"
           data-key="${section.section_key}"
+          style="
+            font-family:'${typography.font_family}', sans-serif;
+          "
         >
 
-          <div class="icon">
+          <div
+            class="icon"
+            style="
+              font-size:${typography.card_icon_size}px;
+            "
+          >
             ${section.icon || settings.logo}
           </div>
 
           <div class="text">
 
-            <h3>
+            <h3
+              style="
+                font-size:${typography.card_title_size}px;
+                font-family:'${typography.font_family}', sans-serif;
+              "
+            >
               ${section.title}
             </h3>
 
-            <p>
+            <p
+              style="
+                font-size:${typography.card_description_size}px;
+                font-family:'${typography.font_family}', sans-serif;
+              "
+            >
               ${section.description ?? ""}
             </p>
 
           </div>
 
-          <div class="arrow">
+          <div
+            class="arrow"
+            style="
+              font-family:'${typography.font_family}', sans-serif;
+            "
+          >
             ›
           </div>
 
@@ -78,62 +144,42 @@ export async function Home() {
 
   </div>
 
-  ${sections.find(s => s.section_key === "social")?.visible ? `
-    <p class="social-links-title">
-      ${sections.find(s => s.section_key === "social").title}
+  ${sections.find(
+    s => s.section_key === "social"
+  )?.visible ? `
+
+    <p
+      class="social-links-title"
+      style="
+        font-family:'${typography.font_family}', sans-serif;
+      "
+    >
+      ${sections.find(
+        s => s.section_key === "social"
+      ).title}
     </p>
+
   ` : ""}
 
   <div class="social-links">
 
-    <a
-      id="instagramBtn"
-      class="social-icon"
-      href="${settings.instagram}"
-      target="_blank"
-      title="Instagram"
-    >
-      <i class="fa-brands fa-instagram"></i>
-    </a>
+    ${visibleLinks.map(link => `
 
-    <a
-      id="facebookBtn"
-      class="social-icon"
-      href="${settings.facebook}"
-      target="_blank"
-      title="Facebook"
-    >
-      <i class="fa-brands fa-facebook-f"></i>
-    </a>
+      <a
+        class="social-icon"
+        href="${buildSocialHref(link)}"
+        target="_blank"
+        title="${link.title}"
+        style="
+          font-size:${typography.social_icon_size}px;
+        "
+      >
 
-    <a
-      id="whatsappBtn"
-      class="social-icon"
-      href="${settings.whatsapp}"
-      target="_blank"
-      title="WhatsApp"
-    >
-      <i class="fa-brands fa-whatsapp"></i>
-    </a>
+        <i class="${getSocialIcon(link.platform)}"></i>
 
-    <a
-      id="mapsBtn"
-      class="social-icon"
-      href="${settings.maps}"
-      target="_blank"
-      title="Google Maps"
-    >
-      <i class="fa-solid fa-location-dot"></i>
-    </a>
+      </a>
 
-    <a
-      id="phoneBtn"
-      class="social-icon"
-      href="tel:${settings.phone}"
-      title="اتصال"
-    >
-      <i class="fa-solid fa-phone"></i>
-    </a>
+    `).join("")}
 
   </div>
 

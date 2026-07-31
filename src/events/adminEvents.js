@@ -4,12 +4,13 @@ import { attachSectionEditorEvents } from "./admin/sectionEditorEvents";
 import { attachDoctorProfileEvents } from "./admin/doctorProfileEvents";
 import { attachDoctorCertificatesEvents } from "./admin/doctorCertificatesEvents";
 import { attachCertificateEditorEvents } from "./admin/certificateEditorEvents";
-
+import { attachSocialLinksEvents }
+from "./admin/socialLinksEvents";
 import { attachGalleryEvents } from "./admin/galleryEvents";
 import { attachGalleryEditorEvents } from "./admin/galleryEditorEvents";
-
+import { attachFontsEvents } from "./admin/fontsEvents";
 import { attachBookingsEvents } from "./admin/bookingsEvents";
-
+import { attachTypographyEvents } from "./admin/typographyEvents";
 import { attachLoginEvents } from "./admin/loginEvents";
 import { attachSettingsEvents } from "./admin/settingsEvents";
 import { attachCategoriesEvents } from "./admin/categoriesEvents";
@@ -44,4 +45,9 @@ export function attachAdminEvents(router) {
 
   attachBookingsEvents(router);
 
+  attachSocialLinksEvents(router);
+  
+  attachFontsEvents(router);
+
+  attachTypographyEvents(router);
 }

@@ -9,13 +9,28 @@ import { seedServices } from "./seed/seedServices";
 
 async function init() {
 
-  await seedCategories();
+  try {
 
-  await seedServices();
+    await seedCategories();
 
-  await renderHome();
+    await seedServices();
 
-  testCategories();
+    await renderHome();
+
+    testCategories();
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    console.log(error.message);
+    console.log(error.details);
+    console.log(error.hint);
+    console.log(error.code);
+
+  }
 
 }
 
