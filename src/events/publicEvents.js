@@ -3,8 +3,16 @@ import {
 } from "../api/settingsApi";
 
 import {
+  getServices
+} from "../api/servicesApi";
+
+import {
   attachBookingEvents
 } from "./public/bookingEvents";
+
+import {
+  initLightbox
+} from "../utils/lightbox";
 
 export function attachPublicEvents(router) {
 
@@ -17,6 +25,13 @@ export function attachPublicEvents(router) {
     ?.addEventListener(
       "click",
       router.renderAdminLogin
+    );
+
+  document
+    .querySelector("#searchIconBtn")
+    ?.addEventListener(
+      "click",
+      router.renderPricing
     );
 
   document
@@ -189,141 +204,326 @@ export function attachPublicEvents(router) {
 
     });
 
-/* =========================
-     Certificates Fullscreen
+  document
+    .querySelector("#bookServiceBtn")
+    ?.addEventListener("click", () => {
+
+      router.renderBooking();
+
+    });
+
+  /* =========================
+     البحث في الخدمات
   ========================= */
 
-  const certOverlay = document.querySelector("#certOverlay");
-  const certFullImg = document.querySelector("#certFullImage");
-  const certCloseBtn = document.querySelector("#certCloseBtn");
-  const certPrevBtn = document.querySelector("#certPrevBtn");
-  const certNextBtn = document.querySelector("#certNextBtn");
+  const publicServiceSearch =
+    document.querySelector("#publicServiceSearch");
 
-  if (certOverlay && certFullImg) {
+  const clearServiceSearch =
+    document.querySelector("#clearServiceSearch");
 
-    const cards = document.querySelectorAll(".about-cert-card");
-    let currentIndex = -1;
-    let certImages = [];
+  const noResults =
+    document.querySelector("#noServicesFound");
 
-    cards.forEach((card, i) => {
-      const img = card.querySelector(".about-cert-img");
-      certImages.push(img.src);
-      card.addEventListener("click", () => {
-        currentIndex = i;
-        certFullImg.src = certImages[currentIndex];
-        certOverlay.classList.remove("hidden");
+  function applyServiceSearch(value) {
+
+    let visible = 0;
+
+    document
+      .querySelectorAll(".service-card")
+      .forEach(card => {
+
+        const match =
+          (card.textContent || "")
+            .toLowerCase()
+            .includes(value);
+
+        card.style.display =
+          match ? "" : "none";
+
+        if (match) visible++;
+
       });
+
+    if (noResults) {
+
+      noResults.style.display =
+        value && visible === 0
+          ? ""
+          : "none";
+
+    }
+
+  }
+
+  if (publicServiceSearch) {
+
+    publicServiceSearch.addEventListener("input", () => {
+
+      const value =
+        publicServiceSearch.value
+          .trim()
+          .toLowerCase();
+
+      if (clearServiceSearch) {
+
+        clearServiceSearch.style.display =
+          value ? "flex" : "none";
+
+      }
+
+      applyServiceSearch(value);
+
     });
 
-    function showCert(index) {
-      if (index < 0) index = certImages.length - 1;
-      if (index >= certImages.length) index = 0;
-      currentIndex = index;
-      certFullImg.src = certImages[currentIndex];
-    }
+  }
 
-    if (certPrevBtn) {
-      certPrevBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        showCert(currentIndex - 1);
-      });
-    }
+  if (clearServiceSearch) {
 
-    if (certNextBtn) {
-      certNextBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        showCert(currentIndex + 1);
-      });
-    }
+    clearServiceSearch.addEventListener("click", () => {
 
-    function closeCertOverlay() {
-      certOverlay.classList.add("hidden");
-    }
+      publicServiceSearch.value = "";
 
-    if (certCloseBtn) {
-      certCloseBtn.addEventListener("click", closeCertOverlay);
-    }
+      clearServiceSearch.style.display = "none";
 
-    certOverlay.addEventListener("click", (e) => {
-      if (e.target === certOverlay) closeCertOverlay();
-    });
+      applyServiceSearch("");
 
-    document.addEventListener("keydown", (e) => {
-      if (certOverlay.classList.contains("hidden")) return;
-      if (e.key === "Escape") closeCertOverlay();
-      if (e.key === "ArrowLeft") showCert(currentIndex - 1);
-      if (e.key === "ArrowRight") showCert(currentIndex + 1);
+      publicServiceSearch.focus();
+
     });
 
   }
 
   /* =========================
-     Gallery Fullscreen
+     البحث في الأقسام (صفحة الأقسام)
   ========================= */
 
-  const overlay = document.querySelector("#galleryOverlay");
-  const fullImg = document.querySelector("#galleryFullImage");
-  const closeBtn = document.querySelector("#galleryCloseBtn");
-  const prevBtn = document.querySelector("#galleryPrevBtn");
-  const nextBtn = document.querySelector("#galleryNextBtn");
+  const pricingCategorySearch =
+    document.querySelector("#pricingCategorySearch");
 
-  if (overlay && fullImg) {
+  const clearPricingCategory =
+    document.querySelector("#clearPricingCategory");
 
-    const cards = document.querySelectorAll(".gallery-card");
-    let currentIndex = -1;
-    let images = [];
+  function applyCategorySearch(value) {
 
-    cards.forEach((card, i) => {
-      const img = card.querySelector(".gallery-card-img");
-      images.push(img.src);
-      card.addEventListener("click", () => {
-        currentIndex = i;
-        fullImg.src = images[currentIndex];
-        overlay.classList.remove("hidden");
+    document
+      .querySelectorAll(".category-card")
+      .forEach(card => {
+
+        card.style.display =
+          (card.textContent || "")
+            .toLowerCase()
+            .includes(value)
+            ? ""
+            : "none";
+
       });
-    });
 
-    function showImage(index) {
-      if (index < 0) index = images.length - 1;
-      if (index >= images.length) index = 0;
-      currentIndex = index;
-      fullImg.src = images[currentIndex];
-    }
+  }
 
-    if (prevBtn) {
-      prevBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        showImage(currentIndex - 1);
-      });
-    }
+  if (pricingCategorySearch) {
 
-    if (nextBtn) {
-      nextBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        showImage(currentIndex + 1);
-      });
-    }
+    pricingCategorySearch.addEventListener("input", () => {
 
-    function closeOverlay() {
-      overlay.classList.add("hidden");
-    }
+      const value =
+        pricingCategorySearch.value
+          .trim()
+          .toLowerCase();
 
-    if (closeBtn) {
-      closeBtn.addEventListener("click", closeOverlay);
-    }
+      if (clearPricingCategory) {
 
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) closeOverlay();
-    });
+        clearPricingCategory.style.display =
+          value ? "flex" : "none";
 
-    document.addEventListener("keydown", (e) => {
-      if (overlay.classList.contains("hidden")) return;
-      if (e.key === "Escape") closeOverlay();
-      if (e.key === "ArrowLeft") showImage(currentIndex - 1);
-      if (e.key === "ArrowRight") showImage(currentIndex + 1);
+      }
+
+      applyCategorySearch(value);
+
     });
 
   }
+
+  if (clearPricingCategory) {
+
+    clearPricingCategory.addEventListener("click", () => {
+
+      pricingCategorySearch.value = "";
+
+      clearPricingCategory.style.display = "none";
+
+      applyCategorySearch("");
+
+      pricingCategorySearch.focus();
+
+    });
+
+  }
+
+  /* =========================
+     البحث في صفحة تفاصيل الخدمة (جميع الخدمات)
+  ========================= */
+
+  const detailServiceSearch =
+    document.querySelector("#detailServiceSearch");
+
+  const clearDetailService =
+    document.querySelector("#clearDetailService");
+
+  const detailResults =
+    document.querySelector("#detailServiceResults");
+
+  let allServicesCache = null;
+
+  function renderDetailResults() {
+
+    const value =
+      detailServiceSearch.value
+        .trim()
+        .toLowerCase();
+
+    if (!value) {
+
+      detailResults.style.display = "none";
+
+      detailResults.innerHTML = "";
+
+      return;
+
+    }
+
+    const filtered =
+      (allServicesCache || [])
+        .filter(service =>
+          (service.name || "")
+            .toLowerCase()
+            .includes(value)
+        )
+        .slice(0, 8);
+
+    if (!filtered.length) {
+
+      detailResults.innerHTML = `
+        <p style="text-align:center;opacity:.8;padding:10px">
+          لا توجد خدمات مطابقة.
+        </p>
+      `;
+
+      detailResults.style.display = "";
+
+      return;
+
+    }
+
+    detailResults.innerHTML =
+      filtered.map(service => `
+
+        <div
+          class="admin-list-item"
+          data-cat="${service.category_id}"
+          data-id="${service.id}"
+          style="cursor:pointer"
+        >
+          <strong>${service.name}</strong>
+        </div>
+
+      `).join("");
+
+    detailResults.style.display = "";
+
+  }
+
+  if (detailServiceSearch) {
+
+    detailServiceSearch.addEventListener("input", async () => {
+
+      const value =
+        detailServiceSearch.value.trim();
+
+      clearDetailService.style.display =
+        value ? "flex" : "none";
+
+      if (!value) {
+
+        renderDetailResults();
+
+        return;
+
+      }
+
+      if (!allServicesCache) {
+
+        allServicesCache =
+          await getServices();
+
+      }
+
+      renderDetailResults();
+
+    });
+
+  }
+
+  if (clearDetailService) {
+
+    clearDetailService.addEventListener("click", () => {
+
+      detailServiceSearch.value = "";
+
+      clearDetailService.style.display = "none";
+
+      renderDetailResults();
+
+      detailServiceSearch.focus();
+
+    });
+
+  }
+
+  if (detailResults) {
+
+    detailResults.addEventListener("click", (event) => {
+
+      const item =
+        event.target.closest(".admin-list-item");
+
+      if (!item) return;
+
+      router.renderServiceDetails(
+        Number(item.dataset.cat),
+        Number(item.dataset.id)
+      );
+
+    });
+
+  }
+
+/* =========================
+     Certificates Fullscreen
+  ========================= */
+
+  /* =========================
+     Lightbox (معرض الصور + الشهادات)
+  ========================= */
+
+  initLightbox({
+    cardsSelector: ".gallery-card",
+    imgSelector: ".gallery-card-img",
+    overlaySelector: "#galleryOverlay",
+    fullImageSelector: "#galleryFullImage",
+    closeBtnSelector: "#galleryCloseBtn",
+    prevBtnSelector: "#galleryPrevBtn",
+    nextBtnSelector: "#galleryNextBtn"
+  });
+
+  initLightbox({
+    cardsSelector: ".about-cert-card",
+    imgSelector: ".about-cert-img",
+    overlaySelector: "#certOverlay",
+    fullImageSelector: "#certFullImage",
+    closeBtnSelector: "#certCloseBtn",
+    prevBtnSelector: "#certPrevBtn",
+    nextBtnSelector: "#certNextBtn"
+  });
 
   /* =========================
      صفحة الحجز

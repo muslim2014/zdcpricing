@@ -2,6 +2,8 @@ import {
   getSection,
   saveSection
 } from "../../api/sectionsApi";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function SectionEditor(id) {
 
@@ -10,18 +12,7 @@ export async function SectionEditor(id) {
   return `
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToHomeSections"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>تعديل القسم</h2>
-
-      </div>
+      ${TopBar("تعديل القسم", "backToHomeSections")}
 
       <div class="glass-card">
 
@@ -85,13 +76,10 @@ export async function SectionEditor(id) {
 
         </div>
 
-        <button
-          id="saveSectionBtn"
-          class="glass-button"
-          data-id="${section.id}"
-        >
-          💾 حفظ التعديلات
-        </button>
+        ${GlassButton("💾 حفظ التعديلات", {
+          id: "saveSectionBtn",
+          data: { id: section.id }
+        })}
 
       </div>
 

@@ -8,13 +8,15 @@ import {
   uploadImage
 } from "../../lib/uploadImage";
 
+import { showAlert } from "../../utils/dialogs";
+
 export function attachCertificateEditorEvents(router) {
 
   document
     .querySelector("#backToCertificates")
     ?.addEventListener(
       "click",
-      router.renderDoctorCertificates
+      router.renderDoctorProfile
     );
 
   const imageInput =
@@ -47,7 +49,6 @@ export function attachCertificateEditorEvents(router) {
 
           image = await uploadImage(
             file,
-            "clinic-images",
             "certificates"
           );
 
@@ -99,9 +100,9 @@ export function attachCertificateEditorEvents(router) {
 
         }
 
-        alert("تم حفظ الشهادة");
+        showAlert("تم حفظ الشهادة");
 
-        await router.renderDoctorCertificates();
+        await router.renderDoctorProfile();
 
       }
 
@@ -109,7 +110,7 @@ export function attachCertificateEditorEvents(router) {
 
         console.error(error);
 
-        alert(error.message);
+        showAlert(error.message);
 
       }
 

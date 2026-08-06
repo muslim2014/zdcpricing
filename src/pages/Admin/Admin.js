@@ -1,40 +1,25 @@
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
+
 export function Admin() {
   return `
     <div class="container">
 
-      <div class="top-bar">
-        <button id="adminBackBtn" class="back-btn">
-          ←
-        </button>
-
-        <h2>لوحة الإدارة</h2>
-      </div>
+      ${TopBar("لوحة الإدارة", "adminBackBtn")}
 
       <div class="glass-card">
 
-        <button id="generalSettingsBtn" class="glass-button">
-          ⚙️ الإعدادات العامة
-        </button>
+        ${GlassButton("⚙️ الإعدادات العامة", { id: "generalSettingsBtn" })}
 
-        <button id="categoriesBtn" class="glass-button">
-          📂 إدارة الأقسام
-        </button>
+        ${GlassButton("📂 إدارة الأقسام", { id: "categoriesBtn" })}
 
-        <button id="servicesBtn" class="glass-button">
-          🦷 إدارة الخدمات
-        </button>
+        ${GlassButton("🦷 إدارة الخدمات", { id: "servicesBtn" })}
 
-        <button id="galleryBtn" class="glass-button">
-          🖼 إدارة الصور
-        </button>
+        ${GlassButton("🖼 إدارة الصور", { id: "galleryBtn" })}
 
-        <button id="socialBtn" class="glass-button">
-          🌐 روابط التواصل
-        </button>
+        ${GlassButton("🌐 روابط التواصل", { id: "socialBtn" })}
 
-        <button id="logoutBtn" class="glass-button">
-          🚪 تسجيل الخروج
-        </button>
+        ${GlassButton("🚪 تسجيل الخروج", { id: "logoutBtn" })}
 
       </div>
 

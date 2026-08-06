@@ -1,14 +1,21 @@
 import {
-  updateDoctorProfile
+  updateDoctorProfile,
+  deleteCertificate,
+  moveCertificateDown,
+  moveCertificateUp,
+  toggleCertificateVisibility
 } from "../../api/doctorApi";
 
 import {
   uploadImage
 } from "../../lib/uploadImage";
 
-export function attachDoctorProfileEvents(router) {
+import {
+  showAlert,
+  showConfirm
+} from "../../utils/dialogs";
 
-  console.log("Doctor Profile Events Attached");
+export function attachDoctorProfileEvents(router) {
 
   document
     .querySelector("#backToDashboard")
@@ -36,11 +43,7 @@ export function attachDoctorProfileEvents(router) {
   const saveBtn =
     document.querySelector("#saveDoctorProfile");
 
-  console.log(saveBtn);
-
   saveBtn?.addEventListener("click", async () => {
-
-    console.log("Save Button Clicked");
 
     try {
 
@@ -50,18 +53,12 @@ export function attachDoctorProfileEvents(router) {
 
       if (file) {
 
-        console.log("Uploading image...");
-
         image = await uploadImage(
           file,
           "doctor"
         );
 
-        console.log("Uploaded:", image);
-
       }
-
-      console.log("Saving profile...");
 
       await updateDoctorProfile({
 
@@ -94,9 +91,7 @@ export function attachDoctorProfileEvents(router) {
 
       });
 
-      console.log("Saved Successfully");
-
-      alert("تم حفظ البيانات");
+      showAlert("تم حفظ البيانات");
 
       await router.renderDoctorProfile();
 
@@ -104,10 +99,142 @@ export function attachDoctorProfileEvents(router) {
 
       console.error(error);
 
-      alert(error.message);
+      showAlert(error.message);
 
     }
 
   });
+
+  /* الشهادات */
+
+  document
+    .querySelector("#addCertificateBtn")
+    ?.addEventListener("click", () => {
+
+      router.renderCertificateEditor();
+
+    });
+
+  document
+    .querySelectorAll(".edit-certificate")
+    .forEach(btn => {
+
+      btn.addEventListener("click", () => {
+
+        router.renderCertificateEditor(
+          Number(btn.dataset.id)
+        );
+
+      });
+
+    });
+
+  document
+    .querySelectorAll(".toggle-certificate")
+    .forEach(btn => {
+
+      btn.addEventListener("click", async () => {
+
+        try {
+
+          await toggleCertificateVisibility(
+            Number(btn.dataset.id),
+            btn.dataset.visible !== "true"
+          );
+
+          await router.renderDoctorProfile();
+
+        } catch (error) {
+
+          console.error(error);
+
+          showAlert(error.message);
+
+        }
+
+      });
+
+    });
+
+  document
+    .querySelectorAll(".move-certificate-up")
+    .forEach(btn => {
+
+      btn.addEventListener("click", async () => {
+
+        try {
+
+          await moveCertificateUp(
+            Number(btn.dataset.id)
+          );
+
+          await router.renderDoctorProfile();
+
+        } catch (error) {
+
+          console.error(error);
+
+          showAlert(error.message);
+
+        }
+
+      });
+
+    });
+
+  document
+    .querySelectorAll(".move-certificate-down")
+    .forEach(btn => {
+
+      btn.addEventListener("click", async () => {
+
+        try {
+
+          await moveCertificateDown(
+            Number(btn.dataset.id)
+          );
+
+          await router.renderDoctorProfile();
+
+        } catch (error) {
+
+          console.error(error);
+
+          showAlert(error.message);
+
+        }
+
+      });
+
+    });
+
+  document
+    .querySelectorAll(".delete-certificate")
+    .forEach(btn => {
+
+      btn.addEventListener("click", async () => {
+
+        if (!showConfirm("حذف هذه الشهادة؟"))
+          return;
+
+        try {
+
+          await deleteCertificate(
+            Number(btn.dataset.id)
+          );
+
+          await router.renderDoctorProfile();
+
+        } catch (error) {
+
+          console.error(error);
+
+          showAlert(error.message);
+
+        }
+
+      });
+
+    });
 
 }

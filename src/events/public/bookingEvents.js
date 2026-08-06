@@ -3,8 +3,172 @@ import {
 } from "../../api/bookingsApi";
 
 import {
-  getSettings
-} from "../../api/settingsApi";
+  getBookingFields
+} from "../../api/bookingFieldsApi";
+
+import {
+  getSocialLinks
+} from "../../api/socialLinksApi";
+
+import { showAlert } from "../../utils/dialogs";
+
+const MESSAGE_LABELS = {
+  name: "الاسم",
+  phone: "رقم الهاتف",
+  age: "السن",
+  service: "الخدمة",
+  date: "التاريخ",
+  time: "الوقت",
+  medical_history: "التاريخ المرضي",
+  notes: "الملاحظات"
+};
+
+/* ========================= */
+
+function toFieldId(fieldKey) {
+
+  return (
+    "booking" +
+    fieldKey
+      .split("_")
+      .map(part =>
+        part.charAt(0).toUpperCase() + part.slice(1)
+      )
+      .join("")
+  );
+
+}
+
+/* ========================= */
+
+function getMultiselectValues(field) {
+
+  const groups =
+    document.querySelectorAll(".form-group");
+
+  for (const group of groups) {
+
+    const label = group.querySelector("label");
+
+    if (label && label.textContent.trim() === field.title) {
+
+      const otherInput =
+        group.querySelector(
+          'input[placeholder="اذكر المرض"]'
+        );
+
+      const values = Array
+        .from(
+          group.querySelectorAll(
+            ".booking-checkbox:checked"
+          )
+        )
+        .map(cb => {
+
+          if (
+            cb.value === "أخرى" &&
+            otherInput &&
+            otherInput.value.trim()
+          ) {
+
+            return otherInput.value.trim();
+
+          }
+
+          return cb.dataset.name || cb.value;
+
+        });
+
+      return values.join(" - ");
+
+    }
+
+  }
+
+  return "";
+
+}
+
+/* ========================= */
+
+function readFieldValue(field) {
+
+  if (field.type === "multiselect") {
+
+    return getMultiselectValues(field);
+
+  }
+
+  const el = document.getElementById(
+    toFieldId(field.field_key)
+  );
+
+  if (!el) return "";
+
+  if (field.type === "select") {
+
+    const option = el.options[el.selectedIndex];
+
+    if (!option || !option.value) return "";
+
+    return option.dataset.name ||
+      option.textContent.trim();
+
+  }
+
+  return el.value.trim();
+
+}
+
+/* ========================= */
+
+function buildBookingMessage(fields) {
+
+  const visibleKeys = new Set(
+    fields
+      .filter(field => field.visible === true)
+      .map(field => field.field_key)
+  );
+
+  const lines = [];
+
+  for (const [key, label] of Object.entries(MESSAGE_LABELS)) {
+
+    if (!visibleKeys.has(key)) continue;
+
+    const field = fields.find(
+      f => f.field_key === key
+    );
+
+    const value = readFieldValue(field) || "-";
+
+    lines.push(`${label}:\n${value}`);
+
+  }
+
+  return [
+    "السلام عليكم",
+    "",
+    "أرغب في تأكيد حجز موعد.",
+    "",
+    lines.join("\n\n")
+  ].join("\n");
+
+}
+
+/* ========================= */
+
+function extractWhatsappNumber(url) {
+
+  const match = url.match(/wa\.me\/(\d+)/);
+
+  if (match) return match[1];
+
+  return url.replace(/\D/g, "");
+
+}
+
+/* ========================= */
 
 export function attachBookingEvents(router) {
 
@@ -28,7 +192,7 @@ export function attachBookingEvents(router) {
 
         if (!full_name || !phone) {
 
-          alert("يرجى إدخال الاسم ورقم الهاتف");
+          showAlert("يرجى إدخال الاسم ورقم الهاتف");
 
           return;
 
@@ -75,32 +239,88 @@ export function attachBookingEvents(router) {
 
         await createBooking(booking);
 
-        const settings =
-          await getSettings();
+        console.log("[booking] createBooking نجحت", booking);
 
-        const message =
-`طلب حجز جديد
+        try {
 
-الاسم: ${booking.full_name}
-الهاتف: ${booking.phone}
-الخدمة: ${booking.service_name}
-التاريخ: ${booking.preferred_date || "-"}
-الوقت: ${booking.preferred_time || "-"}
-ملاحظات: ${booking.notes || "-"}`;
+          const fields =
+            await getBookingFields();
 
-        if (settings.whatsapp) {
+          const message =
+            buildBookingMessage(fields);
 
-          window.open(
+          console.log(
+            "[booking] الرسالة قبل encodeURIComponent:",
+            message
+          );
 
-            `${settings.whatsapp}?text=${encodeURIComponent(message)}`,
+          const socialLinks =
+            await getSocialLinks();
 
-            "_blank"
+          const whatsapp =
+            socialLinks.find(
+              link => link.platform === "whatsapp"
+            );
 
+          console.log(
+            "[booking] whatsappLink التي تم العثور عليها:",
+            whatsapp
+          );
+
+          const number =
+            whatsapp?.url
+              ? extractWhatsappNumber(whatsapp.url)
+              : "";
+
+          console.log(
+            "[booking] رقم الواتساب بعد استخراجه:",
+            number
+          );
+
+          if (number) {
+
+            const finalLink =
+              `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+
+            console.log(
+              "[booking] الرابط النهائي الذي سيتم فتحه:",
+              finalLink
+            );
+
+            showAlert(
+              "✅ تم استلام طلب الحجز بنجاح.\n" +
+              "سيتم الآن فتح واتساب لإرسال رسالة تأكيد إلى العيادة."
+            );
+
+            console.log("[booking] قبل window.open");
+
+            window.open(
+
+              finalLink,
+
+              "_blank"
+
+            );
+
+            console.log("[booking] بعد window.open");
+
+          } else {
+
+            showAlert(
+              "✅ تم استلام طلب الحجز بنجاح."
+            );
+
+          }
+
+        } catch (error) {
+
+          console.error(error);
+
+          showAlert(
+            "✅ تم استلام طلب الحجز بنجاح."
           );
 
         }
-
-        alert("تم إرسال طلب الحجز");
 
         router.renderHome();
 
@@ -110,7 +330,7 @@ export function attachBookingEvents(router) {
 
         console.error(error);
 
-        alert(error.message);
+        showAlert(error.message);
 
       }
 

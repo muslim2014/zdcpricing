@@ -1,5 +1,6 @@
 import { getCategories } from "../../api/categoriesApi";
 import { getServices } from "../../api/servicesApi";
+import { TopBar } from "../../components/TopBar";
 
 export async function ServicesManager() {
 
@@ -20,18 +21,7 @@ export async function ServicesManager() {
   return `
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToDashboard"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>إدارة الخدمات</h2>
-
-      </div>
+      ${TopBar("إدارة الخدمات")}
 
       <div class="glass-card">
 
@@ -39,23 +29,56 @@ export async function ServicesManager() {
           اختر القسم
         </p>
 
-        ${categoriesWithCount.map(category => `
+        <input
+          id="categorySearch"
+          class="glass-input"
+          placeholder="بحث عن قسم..."
+          style="margin-bottom:20px"
+        >
 
-          <button
-            class="glass-button open-category-services"
-            data-id="${category.id}"
-            style="margin-bottom:12px;width:100%"
-          >
+        <div class="category-select-grid">
 
-            ${category.name}
+          ${categoriesWithCount.map(category => `
 
-            <span style="float:left">
-              (${category.servicesCount})
-            </span>
+            <button
+              class="category-select-card open-category-services"
+              data-id="${category.id}"
+              data-name="${category.name}"
+              type="button"
+            >
 
-          </button>
+              <div class="category-select-image">
 
-        `).join("")}
+                ${
+                  category.image
+                    ? `
+                      <img
+                        src="${category.image}"
+                        alt="${category.name}"
+                      >
+                    `
+                    : `
+                      <div class="category-select-placeholder">
+                        📂
+                      </div>
+                    `
+                }
+
+              </div>
+
+              <div class="category-select-name">
+                ${category.name}
+              </div>
+
+              <div class="category-select-count">
+                ${category.servicesCount} خدمة
+              </div>
+
+            </button>
+
+          `).join("")}
+
+        </div>
 
       </div>
 

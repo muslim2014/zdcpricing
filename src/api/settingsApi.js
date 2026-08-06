@@ -22,7 +22,7 @@ export async function getSettings() {
 
       logo: data.logo ?? "",
 
-      address: data.address ?? "",
+      logoWidth: data.logo_width ?? 180,
 
       pricingTitle:
         data.pricing_title ??
@@ -30,7 +30,14 @@ export async function getSettings() {
 
       pricingDescription:
         data.pricing_description ??
-        "تعرف على جميع الخدمات والأسعار"
+        "تعرف على جميع الخدمات والأسعار",
+
+      categoriesPageTitle:
+        data.categories_page_title ??
+        "أقسام العيادة",
+
+      whatsappNumber:
+        data.whatsapp_number ?? ""
 
     };
 
@@ -42,14 +49,19 @@ export async function getSettings() {
 
     doctor_name: "اسم الطبيب",
 
-    logo: "🦷",
+    logo: "",
 
-    address: "",
+    logo_width: 180,
 
     pricing_title: "خدمات وأسعار العيادة",
 
     pricing_description:
-      "تعرف على جميع الخدمات والأسعار"
+      "تعرف على جميع الخدمات والأسعار",
+
+    categories_page_title:
+      "أقسام العيادة",
+
+    whatsapp_number: ""
 
   };
 
@@ -72,13 +84,19 @@ export async function getSettings() {
 
     logo: inserted.logo,
 
-    address: inserted.address,
+    logoWidth: inserted.logo_width ?? 180,
 
     pricingTitle:
       inserted.pricing_title,
 
     pricingDescription:
-      inserted.pricing_description
+      inserted.pricing_description,
+
+    categoriesPageTitle:
+      inserted.categories_page_title,
+
+    whatsappNumber:
+      inserted.whatsapp_number
 
   };
 
@@ -99,31 +117,69 @@ export async function saveSettings(settings) {
 
   const payload = {
 
-    clinic_name: settings.clinicName,
-
-    doctor_name: settings.doctorName,
-
-    logo: settings.logo,
-
-    address: settings.address,
-
-    pricing_title: settings.pricingTitle,
-
-    pricing_description:
-      settings.pricingDescription,
-
     updated_at:
       new Date().toISOString()
 
   };
 
-  const {
-    error: updateError
-  } = await supabase
+  if (settings.clinicName !== undefined) {
+
+    payload.clinic_name = settings.clinicName;
+
+  }
+
+  if (settings.doctorName !== undefined) {
+
+    payload.doctor_name = settings.doctorName;
+
+  }
+
+  if (settings.logo !== undefined) {
+
+    payload.logo = settings.logo;
+
+  }
+
+  if (settings.logoWidth !== undefined) {
+
+    payload.logo_width = settings.logoWidth;
+
+  }
+
+  if (settings.pricingTitle !== undefined) {
+
+    payload.pricing_title = settings.pricingTitle;
+
+  }
+
+  if (settings.pricingDescription !== undefined) {
+
+    payload.pricing_description =
+      settings.pricingDescription;
+
+  }
+
+  if (settings.categoriesPageTitle !== undefined) {
+
+    payload.categories_page_title =
+      settings.categoriesPageTitle;
+
+  }
+
+  if (settings.whatsappNumber !== undefined) {
+
+    payload.whatsapp_number =
+      settings.whatsappNumber;
+
+  }
+
+  const response = await supabase
     .from(TABLE)
     .update(payload)
     .eq("id", current.id);
 
-  if (updateError) throw updateError;
+  if (response.error) throw response.error;
+
+  return response;
 
 }

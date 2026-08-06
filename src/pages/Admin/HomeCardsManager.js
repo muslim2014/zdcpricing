@@ -4,6 +4,8 @@ import {
   updateHomeCard,
   deleteHomeCard
 } from "../../api/homeCardsApi";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function HomeCardsManager() {
 
@@ -12,18 +14,7 @@ export async function HomeCardsManager() {
   return `
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToDashboard"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>إدارة الصفحة الرئيسية</h2>
-
-      </div>
+      ${TopBar("إدارة الصفحة الرئيسية")}
 
       <div class="glass-card">
 
@@ -59,49 +50,41 @@ export async function HomeCardsManager() {
               "
             >
 
-              <button
-                class="glass-button move-home-up"
-                data-id="${card.id}"
-              >
-                ⬆️
-              </button>
+              ${GlassButton("⬆️", {
+                className: "move-home-up",
+                data: { id: card.id }
+              })}
 
-              <button
-                class="glass-button move-home-down"
-                data-id="${card.id}"
-              >
-                ⬇️
-              </button>
+              ${GlassButton("⬇️", {
+                className: "move-home-down",
+                data: { id: card.id }
+              })}
 
-              <button
-                class="glass-button toggle-home-visible"
-                data-id="${card.id}"
-                data-visible="${card.visible}"
-              >
-                ${card.visible ? "👁️" : "🚫"}
-              </button>
+              ${GlassButton(card.visible ? "👁️" : "🚫", {
+                className: "toggle-home-visible",
+                data: {
+                  id: card.id,
+                  visible: card.visible
+                }
+              })}
 
-              <button
-                class="glass-button toggle-home-featured"
-                data-id="${card.id}"
-                data-featured="${card.featured}"
-              >
-                ${card.featured ? "⭐" : "☆"}
-              </button>
+              ${GlassButton(card.featured ? "⭐" : "☆", {
+                className: "toggle-home-featured",
+                data: {
+                  id: card.id,
+                  featured: card.featured
+                }
+              })}
 
-              <button
-                class="glass-button save-home-card"
-                data-id="${card.id}"
-              >
-                💾
-              </button>
+              ${GlassButton("💾", {
+                className: "save-home-card",
+                data: { id: card.id }
+              })}
 
-              <button
-                class="glass-button delete-home-card"
-                data-id="${card.id}"
-              >
-                🗑️
-              </button>
+              ${GlassButton("🗑️", {
+                className: "delete-home-card",
+                data: { id: card.id }
+              })}
 
             </div>
 
@@ -109,13 +92,10 @@ export async function HomeCardsManager() {
 
         `).join("")}
 
-        <button
-          id="addHomeCardBtn"
-          class="glass-button"
-          style="margin-top:20px"
-        >
-          ➕ إضافة كارت
-        </button>
+        ${GlassButton("➕ إضافة كارت", {
+          id: "addHomeCardBtn",
+          style: "margin-top:20px"
+        })}
 
       </div>
 

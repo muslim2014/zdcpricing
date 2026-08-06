@@ -12,6 +12,8 @@ import {
   moveCategoryDown
 } from "../../api/categoriesApi";
 
+import { showConfirm } from "../../utils/dialogs";
+
 export function attachCategoriesEvents(router) {
 
   document
@@ -51,7 +53,7 @@ export function attachCategoriesEvents(router) {
 
       btn.addEventListener("click", async () => {
 
-        if (!confirm("حذف القسم؟")) return;
+        if (!showConfirm("حذف القسم؟")) return;
 
         await deleteCategory(btn.dataset.id);
 

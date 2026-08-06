@@ -1,6 +1,8 @@
 import {
   getSocialLinks
 } from "../../api/socialLinksApi";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function SocialLinksManager() {
 
@@ -10,20 +12,7 @@ export async function SocialLinksManager() {
   return `
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToDashboard"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>
-          إدارة روابط التواصل
-        </h2>
-
-      </div>
+      ${TopBar("إدارة روابط التواصل")}
 
       <div class="admin-list">
 
@@ -63,38 +52,33 @@ export async function SocialLinksManager() {
               "
             >
 
-              <button
-                class="glass-button move-social-up"
-                data-id="${link.id}"
-              >
-                ↑
-              </button>
+              ${GlassButton("↑", {
+                className: "move-social-up",
+                data: { id: link.id }
+              })}
 
-              <button
-                class="glass-button move-social-down"
-                data-id="${link.id}"
-              >
-                ↓
-              </button>
+              ${GlassButton("↓", {
+                className: "move-social-down",
+                data: { id: link.id }
+              })}
 
-              <button
-                class="glass-button toggle-social"
-                data-id="${link.id}"
-                data-visible="${link.visible}"
-              >
-                ${
-                  link.visible
-                    ? "إخفاء"
-                    : "إظهار"
+              ${GlassButton(
+                link.visible
+                  ? "إخفاء"
+                  : "إظهار",
+                {
+                  className: "toggle-social",
+                  data: {
+                    id: link.id,
+                    visible: link.visible
+                  }
                 }
-              </button>
+              )}
 
-              <button
-                class="glass-button save-social"
-                data-id="${link.id}"
-              >
-                حفظ
-              </button>
+              ${GlassButton("حفظ", {
+                className: "save-social",
+                data: { id: link.id }
+              })}
 
             </div>
 

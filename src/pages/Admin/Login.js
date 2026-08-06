@@ -1,4 +1,5 @@
 import { ThemeToggle } from "../../components/ThemeToggle";
+import { GlassButton } from "../../components/GlassButton";
 
 export function AdminLogin() {
   return `
@@ -34,12 +35,7 @@ export function AdminLogin() {
           >
         </div>
 
-        <button
-          id="adminLoginBtn"
-          class="glass-button"
-        >
-          دخول
-        </button>
+        ${GlassButton("دخول", { id: "adminLoginBtn" })}
 
         <p
           id="loginError"

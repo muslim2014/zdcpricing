@@ -8,6 +8,8 @@ import {
   uploadImage
 } from "../../lib/uploadImage";
 
+import { showAlert } from "../../utils/dialogs";
+
 export function attachGalleryEditorEvents(router) {
 
   document
@@ -47,7 +49,6 @@ export function attachGalleryEditorEvents(router) {
 
           image = await uploadImage(
             file,
-            "clinic-images",
             "gallery"
           );
 
@@ -102,7 +103,7 @@ export function attachGalleryEditorEvents(router) {
 
         }
 
-        alert("تم حفظ الصورة");
+        showAlert("تم حفظ الصورة");
 
         await router.renderGalleryManager();
 
@@ -110,7 +111,7 @@ export function attachGalleryEditorEvents(router) {
 
         console.error(error);
 
-        alert(error.message);
+        showAlert(error.message);
 
       }
 

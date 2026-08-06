@@ -1,4 +1,6 @@
 import { getService } from "../../api/servicesApi";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function ServiceEditor(categoryId, serviceId) {
 
@@ -18,18 +20,7 @@ export async function ServiceEditor(categoryId, serviceId) {
 
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToCategoryServices"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>تعديل الخدمة</h2>
-
-      </div>
+      ${TopBar("تعديل الخدمة", "backToCategoryServices")}
 
       <div class="glass-card">
 
@@ -59,13 +50,55 @@ export async function ServiceEditor(categoryId, serviceId) {
 
         <div class="form-group">
 
-          <label>الوصف</label>
+          <label>عدد الجلسات</label>
+
+          <input
+            id="serviceSessions"
+            class="glass-input"
+            value="${service.sessions || ""}"
+            placeholder="مثال: 3 جلسات"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label>الوصف المختصر</label>
+
+          <textarea
+            id="serviceShortDescription"
+            class="glass-input"
+            rows="3"
+          >${service.short_description || ""}</textarea>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>الوصف التفصيلي</label>
 
           <textarea
             id="serviceDescription"
             class="glass-input"
             rows="6"
           >${service.description || ""}</textarea>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>المميزات</label>
+
+          <textarea
+            id="serviceFeatures"
+            class="glass-input"
+            rows="4"
+            placeholder="كل مميزة في سطر منفصل"
+          >${
+            Array.isArray(service.features)
+              ? service.features.join("\n")
+              : ""
+          }</textarea>
 
         </div>
 
@@ -107,20 +140,14 @@ export async function ServiceEditor(categoryId, serviceId) {
 
         </div>
 
-        <button
-          id="saveServiceBtn"
-          class="glass-button"
-        >
-          💾 حفظ
-        </button>
+        ${GlassButton("💾 حفظ", {
+          id: "saveServiceBtn"
+        })}
 
-        <button
-          id="deleteServiceBtn"
-          class="glass-button"
-          style="margin-top:12px;background:#b22222"
-        >
-          🗑 حذف الخدمة
-        </button>
+        ${GlassButton("🗑 حذف الخدمة", {
+          id: "deleteServiceBtn",
+          style: "margin-top:12px;background:#b22222"
+        })}
 
       </div>
 

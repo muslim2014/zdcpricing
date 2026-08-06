@@ -1,3 +1,6 @@
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
+
 export function AdminDashboard() {
   return `
     <div class="background">
@@ -8,112 +11,30 @@ export function AdminDashboard() {
 
     <div class="container">
 
-      <div class="top-bar">
+      ${TopBar("لوحة الإدارة", "logoutBtn", "⎋")}
 
-        <button
-          id="logoutBtn"
-          class="back-btn"
-        >
-          ⎋
-        </button>
+      <div class="glass-card dashboard-grid">
 
-        <h2>لوحة الإدارة</h2>
+        ${GlassButton("🏠 إدارة الصفحة الرئيسية", { id: "homeSectionsBtn" })}
 
-      </div>
+        ${GlassButton("🦷 إدارة الخدمات", { id: "servicesBtn" })}
 
-      <div class="glass-card">
+        ${GlassButton("📂 إدارة الأقسام", { id: "categoriesBtn" })}
 
-        <button
-          id="generalSettingsBtn"
-          class="glass-button"
-        >
-          ⚙️ الإعدادات العامة
-        </button>
+        ${GlassButton("👨‍⚕️ إدارة عن الطبيب", { id: "doctorProfileBtn" })}
 
-        <button
-          id="homeSectionsBtn"
-          class="glass-button"
-        >
-          🏠 إدارة الصفحة الرئيسية
-        </button>
+        ${GlassButton("🖼 إدارة معرض الصور", { id: "galleryBtn" })}
 
-        <button
-          id="doctorProfileBtn"
-          class="glass-button"
-        >
-          👨‍⚕️ إدارة عن الطبيب
-        </button>
+        ${GlassButton("📋 إدارة حجز المواعيد", { id: "bookingFieldsBtn" })}
 
-        <button
-          id="doctorCertificatesBtn"
-          class="glass-button"
-        >
-          🎓 إدارة الشهادات
-        </button>
+        ${GlassButton("📅 إدارة الحجوزات", { id: "bookingsBtn" })}
 
-        <button
-          id="homeCardsBtn"
-          class="glass-button"
-        >
-          🏠 الصفحة الرئيسية
-        </button>
+        ${GlassButton("🌐 روابط التواصل", { id: "socialBtn" })}
 
-        <button
-          id="categoriesBtn"
-          class="glass-button"
-        >
-          📂 إدارة الأقسام
-        </button>
+        ${GlassButton("🔤 أحجام النصوص", { id: "typographyBtn" })}
 
-        <button
-          id="servicesBtn"
-          class="glass-button"
-        >
-          🦷 إدارة الخدمات
-        </button>
+        ${GlassButton("🔐 حساب المدير", { id: "adminAccountBtn" })}
 
-        <button
-          id="galleryBtn"
-          class="glass-button"
-        >
-          🖼 إدارة معرض الصور
-        </button>
-
-        <button
-          id="bookingsBtn"
-          class="glass-button"
-        >
-          📅 إدارة الحجوزات
-        </button>
-
-        <button
-          id="socialBtn"
-          class="glass-button"
-        >
-          🌐 روابط التواصل
-        </button>
-
-        <button
-          id="adminAccountBtn"
-          class="glass-button"
-        >
-          🔐 حساب المدير
-        </button>
-
-        <button
-          id="typographyBtn"
-          class="glass-button"
-      >
-          🔤 إدارة الخطوط
-        </button>
-
-        <button
-          id="fontsBtn"
-          class="glass-button"
-     >
-          🅰️ إدارة الخطوط المخصصة
-        </button>
-        
       </div>
 
     </div>

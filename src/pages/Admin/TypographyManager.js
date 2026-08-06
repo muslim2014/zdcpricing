@@ -1,4 +1,6 @@
 import { getTypography } from "../../api/typographyApi";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function TypographyManager() {
 
@@ -7,43 +9,9 @@ export async function TypographyManager() {
   return `
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToDashboard"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>إدارة الخطوط</h2>
-
-      </div>
+      ${TopBar("أحجام النصوص")}
 
       <div class="glass-card">
-
-        <div class="form-group">
-          <label>Font Family</label>
-
-          <select
-            id="fontFamily"
-            class="glass-input"
-          >
-            ${[
-              "Cairo",
-              "Tajawal",
-              "IBM Plex Sans Arabic",
-              "Noto Kufi Arabic"
-            ].map(font => `
-              <option
-                value="${font}"
-                ${t.font_family === font ? "selected" : ""}
-              >
-                ${font}
-              </option>
-            `).join("")}
-          </select>
-        </div>
 
         <div class="form-group">
           <label>حجم اللوجو</label>
@@ -115,12 +83,9 @@ export async function TypographyManager() {
           >
         </div>
 
-        <button
-          id="saveTypography"
-          class="glass-button"
-        >
-          حفظ التعديلات
-        </button>
+        ${GlassButton("حفظ التعديلات", {
+          id: "saveTypography"
+        })}
 
       </div>
 

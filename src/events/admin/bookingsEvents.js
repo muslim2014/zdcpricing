@@ -3,6 +3,11 @@ import {
   updateBookingStatus
 } from "../../api/bookingsApi";
 
+import {
+  showAlert,
+  showConfirm
+} from "../../utils/dialogs";
+
 export function attachBookingsEvents(router) {
 
   document
@@ -29,7 +34,7 @@ export function attachBookingsEvents(router) {
 
       btn.addEventListener("click", async () => {
 
-        const confirmed = confirm(
+        const confirmed = showConfirm(
           "هل تريد حذف هذا الحجز؟"
         );
 
@@ -41,7 +46,7 @@ export function attachBookingsEvents(router) {
             Number(btn.dataset.id)
           );
 
-          alert("تم حذف الحجز");
+          showAlert("تم حذف الحجز");
 
           router.renderBookingsManager();
 
@@ -51,7 +56,7 @@ export function attachBookingsEvents(router) {
 
           console.error(error);
 
-          alert(error.message);
+          showAlert(error.message);
 
         }
 
@@ -102,7 +107,7 @@ export function attachBookingsEvents(router) {
           status
         );
 
-        alert("تم حفظ الحالة");
+        showAlert("تم حفظ الحالة");
 
         router.renderBookingsManager();
 
@@ -112,7 +117,7 @@ export function attachBookingsEvents(router) {
 
         console.error(error);
 
-        alert(error.message);
+        showAlert(error.message);
 
       }
 

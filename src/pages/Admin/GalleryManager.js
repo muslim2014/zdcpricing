@@ -1,6 +1,8 @@
 import {
   getGallery
 } from "../../api/galleryApi";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function GalleryManager() {
 
@@ -9,27 +11,13 @@ export async function GalleryManager() {
   return `
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToDashboard"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>إدارة معرض الصور</h2>
-
-      </div>
+      ${TopBar("إدارة معرض الصور")}
 
       <div class="glass-card">
 
-        <button
-          id="addGalleryImageBtn"
-          class="glass-button"
-        >
-          ➕ إضافة صورة
-        </button>
+        ${GlassButton("➕ إضافة صورة", {
+          id: "addGalleryImageBtn"
+        })}
 
       </div>
 
@@ -67,45 +55,38 @@ export async function GalleryManager() {
 
               <div class="certificate-actions">
 
-                <button
-                  class="glass-button move-gallery-up"
-                  data-id="${image.id}"
-                >
-                  ↑
-                </button>
+                ${GlassButton("↑", {
+                  className: "move-gallery-up",
+                  data: { id: image.id }
+                })}
 
-                <button
-                  class="glass-button move-gallery-down"
-                  data-id="${image.id}"
-                >
-                  ↓
-                </button>
+                ${GlassButton("↓", {
+                  className: "move-gallery-down",
+                  data: { id: image.id }
+                })}
 
-                <button
-                  class="glass-button toggle-gallery"
-                  data-id="${image.id}"
-                  data-visible="${image.visible}"
-                >
-                  ${
-                    image.visible
-                      ? "إخفاء"
-                      : "إظهار"
+                ${GlassButton(
+                  image.visible
+                    ? "إخفاء"
+                    : "إظهار",
+                  {
+                    className: "toggle-gallery",
+                    data: {
+                      id: image.id,
+                      visible: image.visible
+                    }
                   }
-                </button>
+                )}
 
-                <button
-                  class="glass-button edit-gallery"
-                  data-id="${image.id}"
-                >
-                  تعديل
-                </button>
+                ${GlassButton("تعديل", {
+                  className: "edit-gallery",
+                  data: { id: image.id }
+                })}
 
-                <button
-                  class="glass-button delete-gallery"
-                  data-id="${image.id}"
-                >
-                  حذف
-                </button>
+                ${GlassButton("حذف", {
+                  className: "delete-gallery",
+                  data: { id: image.id }
+                })}
 
               </div>
 

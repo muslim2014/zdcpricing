@@ -1,6 +1,8 @@
 import {
   getGalleryImage
 } from "../../api/galleryApi";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function GalleryEditor(id = null) {
 
@@ -16,26 +18,7 @@ export async function GalleryEditor(id = null) {
   return `
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToGallery"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>
-
-          ${
-            id
-              ? "تعديل صورة"
-              : "إضافة صورة"
-          }
-
-        </h2>
-
-      </div>
+      ${TopBar(id ? "تعديل صورة" : "إضافة صورة", "backToGallery")}
 
       <div class="glass-card">
 
@@ -137,14 +120,9 @@ export async function GalleryEditor(id = null) {
 
         </div>
 
-        <button
-          id="saveGalleryImage"
-          class="glass-button"
-        >
-
-          💾 حفظ
-
-        </button>
+        ${GlassButton("💾 حفظ", {
+          id: "saveGalleryImage"
+        })}
 
       </div>
 

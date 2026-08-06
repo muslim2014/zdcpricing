@@ -13,7 +13,11 @@ export async function saveService(categoryId, serviceId, serviceData) {
 
     name: serviceData.name,
     price: serviceData.price,
+    short_description:
+      serviceData.short_description,
     description: serviceData.description,
+    sessions: serviceData.sessions,
+    features: serviceData.features,
     image: serviceData.image
 
   });
@@ -42,7 +46,11 @@ export async function createService(categoryId) {
 
     price: "",
 
+    short_description: "",
+
     description: "",
+
+    sessions: "",
 
     image: "",
 

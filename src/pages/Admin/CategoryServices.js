@@ -5,6 +5,8 @@ import {
 import {
   getServices
 } from "../../api/servicesApi";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function CategoryServices(categoryId) {
 
@@ -29,24 +31,23 @@ export async function CategoryServices(categoryId) {
   return `
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToServicesManager"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>${category.name}</h2>
-
-      </div>
+      ${TopBar(category.name, "backToServicesManager")}
 
       <div class="glass-card">
 
+        <input
+          id="categoryServiceSearch"
+          class="glass-input"
+          placeholder="بحث عن خدمة..."
+          style="margin-bottom:20px"
+        >
+
         ${services.map(service => `
 
-          <div class="admin-list-item">
+          <div
+            class="admin-list-item"
+            data-name="${service.name}"
+          >
 
             <div>
 
@@ -73,59 +74,57 @@ export async function CategoryServices(categoryId) {
               "
             >
 
-              <button
-                class="glass-button move-up"
-                data-id="${service.id}"
-              >
-                ⬆️
-              </button>
+              ${GlassButton("⬆️", {
+                className: "move-up",
+                data: { id: service.id }
+              })}
 
-              <button
-                class="glass-button move-down"
-                data-id="${service.id}"
-              >
-                ⬇️
-              </button>
+              ${GlassButton("⬇️", {
+                className: "move-down",
+                data: { id: service.id }
+              })}
 
-              <button
-                class="glass-button toggle-visible"
-                data-id="${service.id}"
-                data-visible="${service.visible}"
-              >
-                ${
-                  service.visible
-                    ? "👁️ ظاهر"
-                    : "🚫 مخفي"
+              ${GlassButton(
+                service.visible
+                  ? "👁️ ظاهر"
+                  : "🚫 مخفي",
+                {
+                  className: "toggle-visible",
+                  data: {
+                    id: service.id,
+                    visible: service.visible
+                  }
                 }
-              </button>
+              )}
 
-              <button
-                class="glass-button toggle-featured"
-                data-id="${service.id}"
-                data-featured="${service.featured}"
-              >
-                ${
-                  service.featured
-                    ? "⭐ مميز"
-                    : "☆ عادي"
+              ${GlassButton(
+                service.featured
+                  ? "⭐ مميز"
+                  : "☆ عادي",
+                {
+                  className: "toggle-featured",
+                  data: {
+                    id: service.id,
+                    featured: service.featured
+                  }
                 }
-              </button>
+              )}
 
-              <button
-                class="glass-button edit-service"
-                data-category="${category.id}"
-                data-id="${service.id}"
-              >
-                ✏️
-              </button>
+              ${GlassButton("✏️", {
+                className: "edit-service",
+                data: {
+                  category: category.id,
+                  id: service.id
+                }
+              })}
 
-              <button
-                class="glass-button delete-service"
-                data-category="${category.id}"
-                data-id="${service.id}"
-              >
-                🗑️
-              </button>
+              ${GlassButton("🗑️", {
+                className: "delete-service",
+                data: {
+                  category: category.id,
+                  id: service.id
+                }
+              })}
 
             </div>
 
@@ -133,14 +132,11 @@ export async function CategoryServices(categoryId) {
 
         `).join("")}
 
-        <button
-          id="addServiceBtn"
-          class="glass-button"
-          data-category="${category.id}"
-          style="margin-top:20px"
-        >
-          ➕ إضافة خدمة
-        </button>
+        ${GlassButton("➕ إضافة خدمة", {
+          id: "addServiceBtn",
+          data: { category: category.id },
+          style: "margin-top:20px"
+        })}
 
       </div>
 

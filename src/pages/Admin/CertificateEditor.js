@@ -1,6 +1,8 @@
 import {
   getCertificate
 } from "../../api/doctorApi";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function CertificateEditor(id = null) {
 
@@ -16,24 +18,7 @@ export async function CertificateEditor(id = null) {
   return `
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToCertificates"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>
-          ${
-            id
-              ? "تعديل شهادة"
-              : "إضافة شهادة"
-          }
-        </h2>
-
-      </div>
+      ${TopBar(id ? "تعديل شهادة" : "إضافة شهادة", "backToCertificates")}
 
       <div class="glass-card">
 
@@ -130,13 +115,10 @@ export async function CertificateEditor(id = null) {
 
         </div>
 
-        <button
-          id="saveCertificate"
-          class="glass-button"
-          data-id="${id ?? ""}"
-        >
-          💾 حفظ
-        </button>
+        ${GlassButton("💾 حفظ", {
+          id: "saveCertificate",
+          data: { id: id ?? "" }
+        })}
 
       </div>
 

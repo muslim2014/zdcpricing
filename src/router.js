@@ -25,8 +25,7 @@ import { CategoriesManager } from "./pages/Admin/CategoriesManager";
 import { ServicesManager } from "./pages/Admin/ServicesManager";
 import { CategoryServices } from "./pages/Admin/CategoryServices";
 import { ServiceEditor } from "./pages/Admin/ServiceEditor";
-import { HomeCardsManager } from "./pages/Admin/HomeCardsManager";
-import { FontsManager } from "./pages/Admin/FontsManager";
+import { BookingFieldsManager } from "./pages/Admin/BookingFieldsManager";
 import { getCategories } from "./api/categoriesApi";
 
 import { attachPublicEvents } from "./events/publicEvents";
@@ -43,14 +42,6 @@ let currentBookingId = null;
 
 export function getCurrentCategoryId() {
   return currentCategoryId;
-}
-
-export async function renderFontsManager() {
-
-  app.innerHTML = await FontsManager();
-
-  attachEvents();
-
 }
 
 export function getCurrentServiceId() {
@@ -253,9 +244,9 @@ export async function renderAdminAccount() {
 
 }
 
-export async function renderHomeCardsManager() {
+export async function renderBookingFieldsManager() {
 
-  app.innerHTML = await HomeCardsManager();
+  app.innerHTML = await BookingFieldsManager();
 
   attachEvents();
 
@@ -347,6 +338,8 @@ function attachEvents() {
 
   ensureThemeToggle();
 
+  ensureBackground();
+
   const router = {
 
     renderHome,
@@ -362,7 +355,6 @@ function attachEvents() {
     renderGeneralSettings,
     renderHomeSections,
     renderSectionEditor,
-    renderFontsManager,
     renderDoctorProfile,
     renderDoctorCertificates,
     renderCertificateEditor,
@@ -377,7 +369,7 @@ function attachEvents() {
     renderServicesManager,
     renderCategoryServices,
     renderServiceEditor,
-    renderHomeCardsManager,
+    renderBookingFieldsManager,
 
     getCurrentCategoryId,
     getCurrentServiceId,
@@ -403,6 +395,27 @@ function ensureThemeToggle() {
   topBar.insertAdjacentHTML(
     "beforeend",
     ThemeToggle()
+  );
+
+}
+
+function ensureBackground() {
+
+  if (document.querySelector(".background")) return;
+
+  const app = document.querySelector("#app");
+
+  if (!app) return;
+
+  app.insertAdjacentHTML(
+    "afterbegin",
+    `
+      <div class="background">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+        <div class="blob blob3"></div>
+      </div>
+    `
   );
 
 }

@@ -13,6 +13,11 @@ import {
 
 import { uploadImage } from "../../lib/uploadImage";
 
+import {
+  showAlert,
+  showConfirm
+} from "../../utils/dialogs";
+
 export function attachServicesEvents(router) {
 
   document
@@ -195,10 +200,27 @@ export function attachServicesEvents(router) {
 
           price: document.querySelector("#servicePrice").value.trim(),
 
+          short_description: document
+            .querySelector("#serviceShortDescription")
+            .value
+            .trim(),
+
           description: document
             .querySelector("#serviceDescription")
             .value
             .trim(),
+
+          sessions: document
+            .querySelector("#serviceSessions")
+            .value
+            .trim(),
+
+          features: document
+            .querySelector("#serviceFeatures")
+            .value
+            .split("\n")
+            .map(line => line.trim())
+            .filter(Boolean),
 
           image:
             imageInput?.dataset.current || ""
@@ -219,7 +241,7 @@ export function attachServicesEvents(router) {
     .querySelector("#deleteServiceBtn")
     ?.addEventListener("click", async () => {
 
-      if (!confirm("حذف الخدمة؟")) return;
+      if (!showConfirm("حذف الخدمة؟")) return;
 
       await removeService(
 
@@ -247,7 +269,10 @@ export function attachServicesEvents(router) {
 
       try {
 
-        const imageUrl = await uploadImage(file, "services");
+        const imageUrl = await uploadImage(
+          file,
+          "services"
+        );
 
         document.querySelector("#imagePreview").innerHTML = `
           <img
@@ -268,10 +293,76 @@ export function attachServicesEvents(router) {
 
         console.error(error);
 
-        alert("فشل رفع الصورة");
+        showAlert("فشل رفع الصورة");
 
       }
 
     });
+
+  /* ========================= */
+  /* بحث في الأقسام */
+  /* ========================= */
+
+  const categorySearch =
+    document.querySelector("#categorySearch");
+
+  if (categorySearch) {
+
+    categorySearch.addEventListener("input", () => {
+
+      const value =
+        categorySearch.value
+          .trim()
+          .toLowerCase();
+
+      document
+        .querySelectorAll(".category-select-card")
+        .forEach(card => {
+
+          card.style.display =
+            (card.dataset.name || "")
+              .toLowerCase()
+              .includes(value)
+              ? ""
+              : "none";
+
+        });
+
+    });
+
+  }
+
+  /* ========================= */
+  /* بحث في الخدمات داخل القسم */
+  /* ========================= */
+
+  const categoryServiceSearch =
+    document.querySelector("#categoryServiceSearch");
+
+  if (categoryServiceSearch) {
+
+    categoryServiceSearch.addEventListener("input", () => {
+
+      const value =
+        categoryServiceSearch.value
+          .trim()
+          .toLowerCase();
+
+      document
+        .querySelectorAll(".admin-list-item")
+        .forEach(item => {
+
+          item.style.display =
+            (item.dataset.name || "")
+              .toLowerCase()
+              .includes(value)
+              ? ""
+              : "none";
+
+        });
+
+    });
+
+  }
 
 }

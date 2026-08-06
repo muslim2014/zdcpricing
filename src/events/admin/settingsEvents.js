@@ -2,6 +2,22 @@ import {
   saveSettings
 } from "../../api/settingsApi";
 
+import {
+  uploadImage
+} from "../../lib/uploadImage";
+
+import { showAlert } from "../../utils/dialogs";
+
+const AUTO_SAVE_FIELDS = [
+  "clinicName",
+  "doctorName",
+  "logoWidth",
+  "pricingTitle",
+  "pricingDescription",
+  "categoriesPageTitle",
+  "whatsappNumber"
+];
+
 export function attachSettingsEvents(router) {
 
   document
@@ -74,51 +90,98 @@ export function attachSettingsEvents(router) {
       router.renderTypographyManager
    );
 
-  /* حفظ الإعدادات العامة */
+  /* حفظ تلقائي عند مغادرة الحقل */
 
-  document
-    .querySelector("#saveGeneralSettings")
-    ?.addEventListener("click", async () => {
+  AUTO_SAVE_FIELDS.forEach(key => {
+
+    const input =
+      document.querySelector(`#${key}`);
+
+    if (!input) return;
+
+    input.addEventListener("blur", async () => {
+
+      const newValue = input.value.trim();
+
+      if (newValue === input.dataset.original) return;
 
       try {
 
-        await saveSettings({
+        const result = await saveSettings({ [key]: newValue });
 
-          clinicName:
-            document.querySelector("#clinicName").value.trim(),
+        console.log(result);
 
-          doctorName:
-            document.querySelector("#doctorName").value.trim(),
+        input.dataset.original = newValue;
 
-          logo:
-            document.querySelector("#logo").value.trim(),
+      } catch (error) {
 
-          pricingTitle:
-            document.querySelector("#pricingTitle").value.trim(),
+        console.error("Settings Save Error:", error);
 
-          pricingDescription:
-            document.querySelector("#pricingDescription").value.trim(),
-
-          address:
-            document.querySelector("#address").value.trim()
-
+        console.error({
+          message: error?.message,
+          details: error?.details,
+          hint: error?.hint,
+          code: error?.code
         });
 
-        alert("تم حفظ التعديلات");
-
-        router.renderHome();
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-        alert("حدث خطأ أثناء الحفظ");
+        showAlert(error?.message || "فشل الحفظ");
 
       }
 
     });
+
+  });
+
+  /* رفع اللوجو */
+
+  const logoInput =
+    document.querySelector("#logo");
+
+  const logoPreview =
+    document.querySelector("#logoPreview");
+
+  document
+    .querySelector("#changeLogoBtn")
+    ?.addEventListener("click", () => {
+
+      logoInput?.click();
+
+    });
+
+  logoInput?.addEventListener(
+    "change",
+    async () => {
+
+      const file = logoInput.files?.[0];
+
+      if (!file) return;
+
+      logoPreview.src =
+        URL.createObjectURL(file);
+
+      try {
+
+        const logo = await uploadImage(
+          file,
+          "settings"
+        );
+
+        await saveSettings({ logo });
+
+        logoPreview.src = logo;
+
+        showAlert("تم رفع اللوجو وحفظه");
+
+      } catch (error) {
+
+        console.error(error);
+
+        showAlert("فشل رفع اللوجو");
+
+      }
+
+    }
+  );
 
   /* حفظ حساب المدير */
 
@@ -126,7 +189,7 @@ export function attachSettingsEvents(router) {
     .querySelector("#saveAdminAccount")
     ?.addEventListener("click", () => {
 
-      alert("سيتم نقل حساب المدير إلى Supabase لاحقًا.");
+      showAlert("سيتم نقل حساب المدير إلى Supabase لاحقًا.");
 
     });
 

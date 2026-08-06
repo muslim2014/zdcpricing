@@ -5,6 +5,11 @@ import {
   toggleCertificateVisibility
 } from "../../api/doctorApi";
 
+import {
+  showAlert,
+  showConfirm
+} from "../../utils/dialogs";
+
 export function attachDoctorCertificatesEvents(router) {
 
   document
@@ -20,7 +25,7 @@ export function attachDoctorCertificatesEvents(router) {
 
     console.log("ADD CLICKED");
 
-    alert("ADD CLICKED");
+    showAlert("ADD CLICKED");
 
     router.renderCertificateEditor();
 
@@ -58,7 +63,7 @@ export function attachDoctorCertificatesEvents(router) {
 
           console.error(error);
 
-          alert(error.message);
+          showAlert(error.message);
 
         }
 
@@ -84,7 +89,7 @@ export function attachDoctorCertificatesEvents(router) {
 
           console.error(error);
 
-          alert(error.message);
+          showAlert(error.message);
 
         }
 
@@ -110,7 +115,7 @@ export function attachDoctorCertificatesEvents(router) {
 
           console.error(error);
 
-          alert(error.message);
+          showAlert(error.message);
 
         }
 
@@ -124,7 +129,7 @@ export function attachDoctorCertificatesEvents(router) {
 
       btn.addEventListener("click", async () => {
 
-        if (!confirm("حذف هذه الشهادة؟"))
+        if (!showConfirm("حذف هذه الشهادة؟"))
           return;
 
         try {
@@ -139,7 +144,7 @@ export function attachDoctorCertificatesEvents(router) {
 
           console.error(error);
 
-          alert(error.message);
+          showAlert(error.message);
 
         }
 

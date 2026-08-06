@@ -1,6 +1,9 @@
 import {
   getSections
 } from "../../api/sectionsApi";
+import { GeneralSettingsContent } from "./GeneralSettings";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function HomeSections() {
 
@@ -9,18 +12,11 @@ export async function HomeSections() {
   return `
     <div class="container">
 
-      <div class="top-bar">
+      ${TopBar("إدارة الصفحة الرئيسية")}
 
-        <button
-          id="backToDashboard"
-          class="back-btn"
-        >
-          ←
-        </button>
+      ${await GeneralSettingsContent()}
 
-        <h2>إدارة الصفحة الرئيسية</h2>
-
-      </div>
+      <div style="height:30px"></div>
 
       <div class="glass-card">
 
@@ -61,50 +57,46 @@ export async function HomeSections() {
               "
             >
 
-              <button
-                class="glass-button move-section-up"
-                data-id="${section.id}"
-              >
-                ⬆️
-              </button>
+              ${GlassButton("⬆️", {
+                className: "move-section-up",
+                data: { id: section.id }
+              })}
 
-              <button
-                class="glass-button move-section-down"
-                data-id="${section.id}"
-              >
-                ⬇️
-              </button>
+              ${GlassButton("⬇️", {
+                className: "move-section-down",
+                data: { id: section.id }
+              })}
 
-              <button
-                class="glass-button toggle-section-visible"
-                data-id="${section.id}"
-                data-visible="${section.visible}"
-              >
-                ${
-                  section.visible
-                    ? "👁️ ظاهر"
-                    : "🚫 مخفي"
+              ${GlassButton(
+                section.visible
+                  ? "👁️ ظاهر"
+                  : "🚫 مخفي",
+                {
+                  className: "toggle-section-visible",
+                  data: {
+                    id: section.id,
+                    visible: section.visible
+                  }
                 }
-              </button>
+              )}
 
-              <button
-                class="glass-button toggle-section-featured"
-                data-id="${section.id}"
-                data-featured="${section.featured}"
-              >
-                ${
-                  section.featured
-                    ? "⭐ مميز"
-                    : "☆ عادي"
+              ${GlassButton(
+                section.featured
+                  ? "⭐ مميز"
+                  : "☆ عادي",
+                {
+                  className: "toggle-section-featured",
+                  data: {
+                    id: section.id,
+                    featured: section.featured
+                  }
                 }
-              </button>
+              )}
 
-              <button
-                class="glass-button edit-section"
-                data-id="${section.id}"
-              >
-                ✏️
-              </button>
+              ${GlassButton("✏️", {
+                className: "edit-section",
+                data: { id: section.id }
+              })}
 
             </div>
 

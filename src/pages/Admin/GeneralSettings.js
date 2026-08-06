@@ -1,26 +1,71 @@
 import { getSettings } from "../../api/settingsApi";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
-export async function GeneralSettings() {
+const LOGO_PLACEHOLDER =
+  "https://placehold.co/220x220?text=Logo";
+
+export async function GeneralSettingsContent() {
 
   const settings = await getSettings();
 
+  const logo = settings.logo || LOGO_PLACEHOLDER;
+
   return `
-    <div class="container">
+        <div class="glass-card">
 
-      <div class="top-bar">
-
-        <button
-          id="backToDashboard"
-          class="back-btn"
+        <div
+          class="form-group"
+          style="
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:12px;
+          "
         >
-          ←
-        </button>
 
-        <h2>الإعدادات العامة</h2>
+          <label>اللوجو</label>
 
-      </div>
+          <img
+            id="logoPreview"
+            src="${logo}"
+            alt="اللوجو"
+            style="
+              width:140px;
+              height:140px;
+              object-fit:cover;
+              border-radius:20px;
+              border:2px solid rgba(255,255,255,.2);
+              background:rgba(255,255,255,.1);
+            "
+          >
 
-      <div class="glass-card">
+          ${GlassButton("تغيير الصورة", {
+            id: "changeLogoBtn",
+            type: "button"
+          })}
+
+          <input
+            id="logo"
+            type="file"
+            accept="image/*"
+            style="display:none"
+          >
+
+        </div>
+
+        <div class="form-group">
+          <label>عرض اللوجو (بالبكسل)</label>
+          <input
+            id="logoWidth"
+            type="number"
+            class="glass-input"
+            value="${settings.logoWidth}"
+            data-original="${settings.logoWidth}"
+            min="80"
+            max="600"
+          >
+        </div>
 
         <div class="form-group">
           <label>اسم العيادة</label>
@@ -28,6 +73,7 @@ export async function GeneralSettings() {
             id="clinicName"
             class="glass-input"
             value="${settings.clinicName}"
+            data-original="${settings.clinicName}"
           >
         </div>
 
@@ -37,15 +83,7 @@ export async function GeneralSettings() {
             id="doctorName"
             class="glass-input"
             value="${settings.doctorName}"
-          >
-        </div>
-
-        <div class="form-group">
-          <label>اللوجو</label>
-          <input
-            id="logo"
-            class="glass-input"
-            value="${settings.logo}"
+            data-original="${settings.doctorName}"
           >
         </div>
 
@@ -55,6 +93,7 @@ export async function GeneralSettings() {
             id="pricingTitle"
             class="glass-input"
             value="${settings.pricingTitle}"
+            data-original="${settings.pricingTitle}"
           >
         </div>
 
@@ -64,26 +103,44 @@ export async function GeneralSettings() {
             id="pricingDescription"
             class="glass-input"
             rows="3"
+            data-original="${settings.pricingDescription}"
           >${settings.pricingDescription}</textarea>
         </div>
 
         <div class="form-group">
-          <label>العنوان</label>
+          <label>عنوان صفحة الأقسام</label>
           <input
-            id="address"
+            id="categoriesPageTitle"
             class="glass-input"
-            value="${settings.address}"
+            value="${settings.categoriesPageTitle}"
+            data-original="${settings.categoriesPageTitle}"
           >
         </div>
 
-        <button
-          id="saveGeneralSettings"
-          class="glass-button"
-        >
-          حفظ التعديلات
-        </button>
+        <div class="form-group">
+          <label>رقم الواتساب</label>
+          <input
+            id="whatsappNumber"
+            class="glass-input"
+            value="${settings.whatsappNumber}"
+            data-original="${settings.whatsappNumber}"
+            placeholder="مثال: 201011122233"
+          >
+        </div>
 
       </div>
+  `;
+
+}
+
+export async function GeneralSettings() {
+
+  return `
+    <div class="container">
+
+      ${TopBar("الإعدادات العامة")}
+
+      ${await GeneralSettingsContent()}
 
     </div>
   `;

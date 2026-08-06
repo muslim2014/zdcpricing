@@ -1,8 +1,9 @@
 import { supabase } from "./supabase";
 
+const BUCKET = "clinic-images";
+
 export async function uploadImage(
   file,
-  bucket = "clinic-images",
   folder = ""
 ) {
 
@@ -19,14 +20,22 @@ export async function uploadImage(
 
   const { error } = await supabase
     .storage
-    .from(bucket)
-    .upload(fileName, file);
+    .from(BUCKET)
+    .upload(fileName, file, {
+      upsert: false
+    });
 
-  if (error) throw error;
+  if (error) {
+
+    console.error(error);
+
+    throw new Error(error.message);
+
+  }
 
   const { data } = supabase
     .storage
-    .from(bucket)
+    .from(BUCKET)
     .getPublicUrl(fileName);
 
   return data.publicUrl;

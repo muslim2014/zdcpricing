@@ -24,6 +24,42 @@ export async function Services(category) {
 
       </div>
 
+      <div style="position:relative;margin-bottom:20px">
+
+        <input
+          id="publicServiceSearch"
+          class="glass-input"
+          placeholder="ابحث عن خدمة..."
+          style="padding-left:40px"
+        >
+
+        <button
+          id="clearServiceSearch"
+          type="button"
+          style="
+            position:absolute;
+            top:50%;
+            left:12px;
+            transform:translateY(-50%);
+            width:26px;
+            height:26px;
+            border-radius:50%;
+            border:none;
+            background:var(--border-hover);
+            color:var(--text);
+            cursor:pointer;
+            font-size:14px;
+            line-height:1;
+            display:none;
+            align-items:center;
+            justify-content:center;
+          "
+        >
+          ✕
+        </button>
+
+      </div>
+
       <div class="services">
 
         ${services.map(service => `
@@ -39,7 +75,11 @@ export async function Services(category) {
               ${
                 service.image
                   ? `<img src="${service.image}" alt="${service.name}">`
-                  : "🦷"
+                  : `
+                    <div class="service-placeholder">
+                      🦷
+                    </div>
+                  `
               }
 
             </div>
@@ -48,22 +88,30 @@ export async function Services(category) {
 
               <h3>${service.name}</h3>
 
-              <p>
-
-                ${
-                  service.price
-                    ? `يبدأ من ${service.price} جنيه`
-                    : "يحدد لاحقًا"
-                }
-
-              </p>
+              <span class="service-link">عرض التفاصيل ←</span>
 
             </div>
+
+            <span
+              class="service-search-text"
+              style="display:none"
+            >${service.description || ""}</span>
 
           </div>
 
         `).join("")}
 
+      </div>
+
+      <div
+        id="noServicesFound"
+        style="display:none"
+      >
+        <div class="glass-card">
+          <p style="text-align:center;opacity:.8">
+            عذرًا، لم نجد خدمة مطابقة لبحثك.
+          </p>
+        </div>
       </div>
 
     </div>

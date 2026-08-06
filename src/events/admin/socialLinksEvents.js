@@ -6,6 +6,8 @@ import {
   moveSocialDown
 } from "../../api/socialLinksApi";
 
+import { showAlert } from "../../utils/dialogs";
+
 export function attachSocialLinksEvents(router) {
 
   document
@@ -37,7 +39,7 @@ export function attachSocialLinksEvents(router) {
             url: input.value.trim()
           });
 
-          alert("تم الحفظ");
+          showAlert("تم الحفظ");
 
         }
 
@@ -45,7 +47,7 @@ export function attachSocialLinksEvents(router) {
 
           console.error(error);
 
-          alert(error.message);
+          showAlert(error.message);
 
         }
 
@@ -81,7 +83,7 @@ export function attachSocialLinksEvents(router) {
 
           console.error(error);
 
-          alert(error.message);
+          showAlert(error.message);
 
         }
 

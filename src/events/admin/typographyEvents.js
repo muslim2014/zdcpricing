@@ -2,6 +2,8 @@ import {
   saveTypography
 } from "../../api/typographyApi";
 
+import { showAlert } from "../../utils/dialogs";
+
 export function attachTypographyEvents(router) {
 
   document
@@ -11,9 +13,6 @@ export function attachTypographyEvents(router) {
       try {
 
         await saveTypography({
-
-          font_family:
-            document.querySelector("#fontFamily").value,
 
           logo_size:
             Number(document.querySelector("#logoSize").value),
@@ -38,7 +37,7 @@ export function attachTypographyEvents(router) {
 
         });
 
-        alert("تم حفظ التعديلات");
+        showAlert("تم حفظ التعديلات");
 
         router.renderTypographyManager();
 
@@ -48,7 +47,7 @@ export function attachTypographyEvents(router) {
 
         console.error(error);
 
-        alert(error.message);
+        showAlert(error.message);
 
       }
 

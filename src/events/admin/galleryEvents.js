@@ -5,6 +5,11 @@ import {
   toggleGalleryVisibility
 } from "../../api/galleryApi";
 
+import {
+  showAlert,
+  showConfirm
+} from "../../utils/dialogs";
+
 export function attachGalleryEvents(router) {
 
   document
@@ -55,7 +60,7 @@ export function attachGalleryEvents(router) {
 
           console.error(error);
 
-          alert(error.message);
+          showAlert(error.message);
 
         }
 
@@ -81,7 +86,7 @@ export function attachGalleryEvents(router) {
 
           console.error(error);
 
-          alert(error.message);
+          showAlert(error.message);
 
         }
 
@@ -107,7 +112,7 @@ export function attachGalleryEvents(router) {
 
           console.error(error);
 
-          alert(error.message);
+          showAlert(error.message);
 
         }
 
@@ -121,7 +126,7 @@ export function attachGalleryEvents(router) {
 
       btn.addEventListener("click", async () => {
 
-        if (!confirm("حذف هذه الصورة؟"))
+        if (!showConfirm("حذف هذه الصورة؟"))
           return;
 
         try {
@@ -136,7 +141,7 @@ export function attachGalleryEvents(router) {
 
           console.error(error);
 
-          alert(error.message);
+          showAlert(error.message);
 
         }
 

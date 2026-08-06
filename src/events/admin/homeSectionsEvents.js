@@ -5,6 +5,8 @@ import {
   moveSectionDown
 } from "../../api/sectionsApi";
 
+import { showAlert } from "../../utils/dialogs";
+
 export function attachHomeSectionsEvents(router) {
 
   /* ========================= */
@@ -29,7 +31,7 @@ export function attachHomeSectionsEvents(router) {
         } catch (error) {
 
           console.error(error);
-          alert(error.message);
+          showAlert(error.message);
 
         }
 
@@ -59,7 +61,7 @@ export function attachHomeSectionsEvents(router) {
         } catch (error) {
 
           console.error(error);
-          alert(error.message);
+          showAlert(error.message);
 
         }
 
@@ -88,7 +90,7 @@ export function attachHomeSectionsEvents(router) {
         } catch (error) {
 
           console.error(error);
-          alert(error.message);
+          showAlert(error.message);
 
         }
 
@@ -117,7 +119,7 @@ export function attachHomeSectionsEvents(router) {
         } catch (error) {
 
           console.error(error);
-          alert(error.message);
+          showAlert(error.message);
 
         }
 

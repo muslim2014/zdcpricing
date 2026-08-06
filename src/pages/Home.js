@@ -1,7 +1,7 @@
 import { getSections } from "../api/sectionsApi";
 import { getSettings } from "../api/settingsApi";
 import { getTypography } from "../api/typographyApi";
-import { getSocialLinks } from "../api/socialLinksApi";
+import { getVisibleSocialLinks } from "../api/socialLinksApi";
 import {
   getSocialIcon,
   buildSocialHref
@@ -10,16 +10,20 @@ import { ThemeToggle } from "../components/ThemeToggle";
 
 export async function Home() {
 
-  const settings = await getSettings();
+  const [
+    settings,
+    typography,
+    sections,
+    socialLinks
+  ] = await Promise.all([
+    getSettings(),
+    getTypography(),
+    getSections("home"),
+    getVisibleSocialLinks()
+  ]);
 
-  const typography = await getTypography();
-
-  const sections = await getSections("home");
-
-  const socialLinks = await getSocialLinks();
-
-  const visibleLinks = socialLinks.filter(
-    link => link.visible
+  const socialSection = sections.find(
+    s => s.section_key === "social"
   );
 
   return `
@@ -35,26 +39,49 @@ export async function Home() {
     id="adminBtn"
     class="admin-btn"
     title="لوحة الإدارة"
+    style="top:18px;left:18px;right:auto"
   >
     <i class="fa-solid fa-gear"></i>
   </button>
 
   ${ThemeToggle()}
 
-  <div
-    class="logo"
-    style="
-      font-size:${typography.logo_size}px;
-      font-family:'${typography.font_family}', sans-serif;
-    "
+  <button
+    id="searchIconBtn"
+    class="admin-btn"
+    title="بحث"
+    style="top:70px;right:18px;left:auto"
   >
-    ${settings.logo}
-  </div>
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+
+  ${
+    settings.logo
+      ? `
+        <img
+          class="logo"
+          src="${settings.logo}"
+          alt="شعار العيادة"
+          style="width:${settings.logoWidth}px;height:auto;"
+        >
+      `
+      : `
+        <div
+          class="logo"
+          style="
+            font-size:${typography.logo_size}px;
+            font-family:var(--app-font);
+          "
+        >
+          🦷
+        </div>
+      `
+  }
 
   <p
     class="welcome"
     style="
-      font-family:'${typography.font_family}', sans-serif;
+      font-family:var(--app-font);
     "
   >
     أهلاً بك في
@@ -64,7 +91,7 @@ export async function Home() {
     class="clinic-name"
     style="
       font-size:${typography.clinic_name_size}px;
-      font-family:'${typography.font_family}', sans-serif;
+      font-family:var(--app-font);
     "
   >
     ${settings.clinicName}
@@ -74,7 +101,7 @@ export async function Home() {
     class="doctor-name"
     style="
       font-size:${typography.doctor_name_size}px;
-      font-family:'${typography.font_family}', sans-serif;
+      font-family:var(--app-font);
     "
   >
     ${settings.doctorName}
@@ -97,7 +124,7 @@ export async function Home() {
           class="card home-section-btn"
           data-key="${section.section_key}"
           style="
-            font-family:'${typography.font_family}', sans-serif;
+            font-family:var(--app-font);
           "
         >
 
@@ -107,7 +134,7 @@ export async function Home() {
               font-size:${typography.card_icon_size}px;
             "
           >
-            ${section.icon || settings.logo}
+            ${section.icon || "🦷"}
           </div>
 
           <div class="text">
@@ -115,7 +142,7 @@ export async function Home() {
             <h3
               style="
                 font-size:${typography.card_title_size}px;
-                font-family:'${typography.font_family}', sans-serif;
+                font-family:var(--app-font);
               "
             >
               ${section.title}
@@ -124,7 +151,7 @@ export async function Home() {
             <p
               style="
                 font-size:${typography.card_description_size}px;
-                font-family:'${typography.font_family}', sans-serif;
+                font-family:var(--app-font);
               "
             >
               ${section.description ?? ""}
@@ -135,7 +162,7 @@ export async function Home() {
           <div
             class="arrow"
             style="
-              font-family:'${typography.font_family}', sans-serif;
+              font-family:var(--app-font);
             "
           >
             ›
@@ -147,26 +174,22 @@ export async function Home() {
 
   </div>
 
-  ${sections.find(
-    s => s.section_key === "social"
-  )?.visible ? `
+  ${socialSection?.visible ? `
 
     <p
       class="social-links-title"
       style="
-        font-family:'${typography.font_family}', sans-serif;
+        font-family:var(--app-font);
       "
     >
-      ${sections.find(
-        s => s.section_key === "social"
-      ).title}
+      ${socialSection.title}
     </p>
 
   ` : ""}
 
   <div class="social-links">
 
-    ${visibleLinks.map(link => `
+    ${socialLinks.map(link => `
 
       <a
         class="social-icon"

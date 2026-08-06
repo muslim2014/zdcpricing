@@ -1,5 +1,4 @@
 import { supabase } from "../lib/supabase";
-import { getFont } from "./fontsApi";
 
 const TABLE = "typography";
 
@@ -13,29 +12,7 @@ export async function getTypography() {
 
   if (error) throw error;
 
-  if (data) {
-
-    if (data.font_id) {
-
-      try {
-
-        data.customFont = await getFont(
-          data.font_id
-        );
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-      }
-
-    }
-
-    return data;
-
-  }
+  if (data) return data;
 
   const {
     data: inserted,
@@ -47,25 +24,6 @@ export async function getTypography() {
     .single();
 
   if (insertError) throw insertError;
-
-  if (inserted.font_id) {
-
-    try {
-
-      inserted.customFont =
-        await getFont(
-          inserted.font_id
-        );
-
-    }
-
-    catch (error) {
-
-      console.error(error);
-
-    }
-
-  }
 
   return inserted;
 

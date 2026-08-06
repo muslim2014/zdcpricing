@@ -2,6 +2,8 @@ import {
   saveSection
 } from "../../api/sectionsApi";
 
+import { showAlert } from "../../utils/dialogs";
+
 export function attachSectionEditorEvents(router) {
 
   document
@@ -50,7 +52,7 @@ export function attachSectionEditorEvents(router) {
 
         });
 
-        alert("تم حفظ التعديلات");
+        showAlert("تم حفظ التعديلات");
 
         await router.renderHomeSections();
 
@@ -58,7 +60,7 @@ export function attachSectionEditorEvents(router) {
 
         console.error(error);
 
-        alert("حدث خطأ أثناء الحفظ");
+        showAlert("حدث خطأ أثناء الحفظ");
 
       }
 

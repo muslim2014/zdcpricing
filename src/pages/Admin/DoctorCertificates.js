@@ -1,6 +1,8 @@
 import {
   getCertificates
 } from "../../api/doctorApi";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function DoctorCertificates() {
 
@@ -10,27 +12,13 @@ export async function DoctorCertificates() {
   return `
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToDashboard"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>إدارة الشهادات</h2>
-
-      </div>
+      ${TopBar("إدارة الشهادات")}
 
       <div class="glass-card">
 
-        <button
-          id="addCertificateBtn"
-          class="glass-button"
-        >
-          ➕ إضافة شهادة
-        </button>
+        ${GlassButton("➕ إضافة شهادة", {
+          id: "addCertificateBtn"
+        })}
 
       </div>
 
@@ -84,54 +72,38 @@ export async function DoctorCertificates() {
 
             <div class="certificate-actions">
 
-              <button
-                class="glass-button move-certificate-up"
-                data-id="${c.id}"
-                title="لأعلى"
-              >
-                ⬆
-              </button>
+              ${GlassButton("⬆", {
+                className: "move-certificate-up",
+                data: { id: c.id },
+                title: "لأعلى"
+              })}
 
-              <button
-                class="glass-button move-certificate-down"
-                data-id="${c.id}"
-                title="لأسفل"
-              >
-                ⬇
-              </button>
+              ${GlassButton("⬇", {
+                className: "move-certificate-down",
+                data: { id: c.id },
+                title: "لأسفل"
+              })}
 
-              <button
-                class="glass-button edit-certificate"
-                data-id="${c.id}"
-                title="تعديل"
-              >
-                ✏️
-              </button>
+              ${GlassButton("✏️", {
+                className: "edit-certificate",
+                data: { id: c.id },
+                title: "تعديل"
+              })}
 
-              <button
-                class="glass-button toggle-certificate"
-                data-id="${c.id}"
-                data-visible="${c.visible}"
-                title="${
-                  c.visible
-                    ? "إخفاء"
-                    : "إظهار"
-                }"
-              >
-                ${
-                  c.visible
-                    ? "🙈"
-                    : "👁"
-                }
-              </button>
+              ${GlassButton(c.visible ? "🙈" : "👁", {
+                className: "toggle-certificate",
+                data: {
+                  id: c.id,
+                  visible: c.visible
+                },
+                title: c.visible ? "إخفاء" : "إظهار"
+              })}
 
-              <button
-                class="glass-button delete-certificate"
-                data-id="${c.id}"
-                title="حذف"
-              >
-                🗑
-              </button>
+              ${GlassButton("🗑", {
+                className: "delete-certificate",
+                data: { id: c.id },
+                title: "حذف"
+              })}
 
             </div>
 

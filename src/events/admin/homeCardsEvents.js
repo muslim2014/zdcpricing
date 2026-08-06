@@ -11,6 +11,8 @@ import {
   toggleHomeCardFeatured
 } from "../../api/homeCardsApi";
 
+import { showConfirm } from "../../utils/dialogs";
+
 export function attachHomeCardsEvents(router) {
 
   document
@@ -57,7 +59,7 @@ export function attachHomeCardsEvents(router) {
 
       btn.addEventListener("click", async () => {
 
-        if (!confirm("حذف الكارت؟")) return;
+        if (!showConfirm("حذف الكارت؟")) return;
 
         await removeHomeCard(btn.dataset.id);
 

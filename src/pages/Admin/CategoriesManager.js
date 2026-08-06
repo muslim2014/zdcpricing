@@ -7,6 +7,8 @@ import {
 } from "../../api/categoriesApi";
 
 import { uploadImage } from "../../lib/uploadImage";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function CategoriesManager() {
 
@@ -15,18 +17,7 @@ export async function CategoriesManager() {
   return `
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToDashboard"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>إدارة الأقسام</h2>
-
-      </div>
+      ${TopBar("إدارة الأقسام")}
 
       <div class="glass-card">
 
@@ -36,18 +27,16 @@ export async function CategoriesManager() {
             class="admin-list-item"
             style="
               display:flex;
-              align-items:center;
-              gap:20px;
+              flex-direction:column;
+              gap:14px;
             "
           >
 
             <div
               style="
                 display:flex;
-                flex-direction:column;
                 align-items:center;
-                gap:8px;
-                min-width:90px;
+                gap:16px;
               "
             >
 
@@ -58,8 +47,28 @@ export async function CategoriesManager() {
                   height:70px;
                   border-radius:12px;
                   object-fit:cover;
+                  flex-shrink:0;
                 "
               >
+
+              <input
+                class="glass-input category-name"
+                data-id="${category.id}"
+                value="${category.name}"
+                style="flex:1;font-size:16px;font-weight:600"
+              >
+
+            </div>
+
+            <div
+              style="
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                gap:8px;
+                flex-wrap:wrap;
+              "
+            >
 
               <input
                 id="category-image-${category.id}"
@@ -70,83 +79,59 @@ export async function CategoriesManager() {
                 style="display:none"
               >
 
-              <button
-                class="glass-button"
-                type="button"
-                onclick="document.getElementById('category-image-${category.id}').click()"
+              ${GlassButton("🖼 تغيير الصورة", {
+                type: "button",
+                onclick: `document.getElementById('category-image-${category.id}').click()`,
+                style: "padding:8px 12px;font-size:13px"
+              })}
+
+              <div
                 style="
-                  padding:6px 10px;
-                  font-size:13px;
+                  display:flex;
+                  gap:8px;
+                  flex-wrap:wrap;
+                  justify-content:flex-end;
+                  align-items:center;
                 "
               >
-                🖼 تغيير
-              </button>
 
-            </div>
+                ${GlassButton("⬆️", {
+                  className: "move-category-up",
+                  data: { id: category.id }
+                })}
 
-            <div style="flex:1">
+                ${GlassButton("⬇️", {
+                  className: "move-category-down",
+                  data: { id: category.id }
+                })}
 
-              <input
-                class="glass-input category-name"
-                data-id="${category.id}"
-                value="${category.name}"
-              >
+                ${GlassButton(category.visible ? "👁️" : "🚫", {
+                  className: "toggle-category-visible",
+                  data: {
+                    id: category.id,
+                    visible: category.visible
+                  }
+                })}
 
-            </div>
+                ${GlassButton(category.featured ? "⭐" : "☆", {
+                  className: "toggle-category-featured",
+                  data: {
+                    id: category.id,
+                    featured: category.featured
+                  }
+                })}
 
-            <div
-              style="
-                display:flex;
-                gap:8px;
-                flex-wrap:wrap;
-                justify-content:flex-end;
-                align-items:center;
-              "
-            >
+                ${GlassButton("💾", {
+                  className: "save-category",
+                  data: { id: category.id }
+                })}
 
-              <button
-                class="glass-button move-category-up"
-                data-id="${category.id}"
-              >
-                ⬆️
-              </button>
+                ${GlassButton("🗑️", {
+                  className: "delete-category",
+                  data: { id: category.id }
+                })}
 
-              <button
-                class="glass-button move-category-down"
-                data-id="${category.id}"
-              >
-                ⬇️
-              </button>
-
-              <button
-                class="glass-button toggle-category-visible"
-                data-id="${category.id}"
-                data-visible="${category.visible}"
-              >
-                ${category.visible ? "👁️" : "🚫"}
-              </button>
-
-              <button
-                class="glass-button toggle-category-featured"
-                data-id="${category.id}"
-                data-featured="${category.featured}"
-              >
-                ${category.featured ? "⭐" : "☆"}
-              </button>
-
-              <button
-                class="glass-button save-category"
-                data-id="${category.id}"
-              >
-                💾
-              </button>
-
-              <button
-                class="glass-button delete-category"
-                data-id="${category.id}"
-              >
-                🗑️
-              </button>
+              </div>
 
             </div>
 
@@ -154,13 +139,10 @@ export async function CategoriesManager() {
 
         `).join("")}
 
-        <button
-          id="addCategoryBtn"
-          class="glass-button"
-          style="margin-top:20px"
-        >
-          ➕ إضافة قسم
-        </button>
+        ${GlassButton("➕ إضافة قسم", {
+          id: "addCategoryBtn",
+          style: "margin-top:20px"
+        })}
 
       </div>
 

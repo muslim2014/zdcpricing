@@ -1,4 +1,6 @@
 import { getData } from "../../data/dataProvider";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export function AdminAccount() {
 
@@ -8,18 +10,7 @@ export function AdminAccount() {
 
   <div class="container">
 
-    <div class="top-bar">
-
-      <button
-        id="backToDashboard"
-        class="back-btn"
-      >
-        ←
-      </button>
-
-      <h2>حساب المدير</h2>
-
-    </div>
+    ${TopBar("حساب المدير")}
 
     <div class="glass-card">
 
@@ -71,14 +62,7 @@ export function AdminAccount() {
 
       </div>
 
-      <button
-        id="saveAdminAccount"
-        class="glass-button"
-      >
-
-        حفظ
-
-      </button>
+      ${GlassButton("حفظ", { id: "saveAdminAccount" })}
 
     </div>
 

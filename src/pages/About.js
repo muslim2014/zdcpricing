@@ -53,7 +53,7 @@ export async function About() {
                 `).join("")}
               </div>
 
-              <div id="certOverlay" class="cert-overlay hidden">
+              <div id="certOverlay" class="gallery-overlay hidden">
                 <button id="certCloseBtn" class="gallery-overlay-close">✖</button>
                 <button id="certPrevBtn" class="gallery-nav-btn left">⬅</button>
                 <img id="certFullImage" class="gallery-full-img" src="" alt="">

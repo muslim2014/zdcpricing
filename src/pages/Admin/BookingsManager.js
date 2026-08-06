@@ -1,6 +1,8 @@
 import {
   getBookings
 } from "../../api/bookingsApi";
+import { TopBar } from "../../components/TopBar";
+import { GlassButton } from "../../components/GlassButton";
 
 export async function BookingsManager() {
 
@@ -10,20 +12,7 @@ export async function BookingsManager() {
   return `
     <div class="container">
 
-      <div class="top-bar">
-
-        <button
-          id="backToDashboard"
-          class="back-btn"
-        >
-          ←
-        </button>
-
-        <h2>
-          إدارة الحجوزات
-        </h2>
-
-      </div>
+      ${TopBar("إدارة الحجوزات")}
 
       <div class="glass-card">
 
@@ -94,19 +83,15 @@ export async function BookingsManager() {
             "
           >
 
-            <button
-              class="glass-button edit-booking"
-              data-id="${b.id}"
-            >
-              فتح
-            </button>
+            ${GlassButton("فتح", {
+              className: "edit-booking",
+              data: { id: b.id }
+            })}
 
-            <button
-              class="glass-button delete-booking"
-              data-id="${b.id}"
-            >
-              حذف
-            </button>
+            ${GlassButton("حذف", {
+              className: "delete-booking",
+              data: { id: b.id }
+            })}
 
           </div>
 
