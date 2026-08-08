@@ -525,6 +525,16 @@ export function attachPublicEvents(router) {
     nextBtnSelector: "#certNextBtn"
   });
 
+  initLightbox({
+    cardsSelector: ".detail-image",
+    imgSelector: ".detail-image img",
+    overlaySelector: "#serviceImageOverlay",
+    fullImageSelector: "#serviceFullImage",
+    closeBtnSelector: "#serviceImageCloseBtn",
+    prevBtnSelector: "#serviceImageNoPrevBtn",
+    nextBtnSelector: "#serviceImageNoNextBtn"
+  });
+
   /* =========================
      صفحة الحجز
   ========================= */

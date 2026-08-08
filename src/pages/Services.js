@@ -6,7 +6,7 @@ export async function Services(category) {
  const services = await getServices(category.id, true);
 
   return `
-    <div class="container">
+    <div class="container services-page">
 
       <div class="top-bar">
 

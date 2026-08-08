@@ -7,7 +7,7 @@ export function attachLoginEvents(router) {
 
   document
     .querySelector("#adminLoginBtn")
-    ?.addEventListener("click", () => {
+    ?.addEventListener("click", async () => {
 
       const username =
         document.querySelector("#adminUsername").value.trim();
@@ -15,7 +15,7 @@ export function attachLoginEvents(router) {
       const password =
         document.querySelector("#adminPassword").value;
 
-      if (login(username, password)) {
+      if (await login(username, password)) {
 
         router.renderAdminDashboard();
 

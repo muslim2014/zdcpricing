@@ -127,6 +127,50 @@ export async function toggleServiceFeatured(id, featured) {
 
 /* ========================= */
 
+export async function moveService(
+  id,
+  targetCategoryId
+) {
+
+  const {
+    data: targetServices,
+    error: targetError
+  } = await supabase
+    .from("services")
+    .select("sort_order")
+    .eq(
+      "category_id",
+      targetCategoryId
+    );
+
+  if (targetError) throw targetError;
+
+  const maxSortOrder = targetServices.reduce(
+    (max, s) => Math.max(
+      max,
+      Number(s.sort_order) || 0
+    ),
+    0
+  );
+
+  const { data, error } = await supabase
+    .from("services")
+    .update({
+      category_id: Number(targetCategoryId),
+      sort_order: maxSortOrder + 1
+    })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
+
+}
+
+/* ========================= */
+
 export async function moveServiceUp(id) {
 
   const { data: current, error } = await supabase

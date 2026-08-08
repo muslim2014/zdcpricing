@@ -8,6 +8,16 @@ import {
 
 import { showAlert } from "../../utils/dialogs";
 
+import {
+  getData,
+  saveSettings as saveAccountSettings
+} from "../../data/dataProvider";
+
+import {
+  hashPassword,
+  verifyPassword
+} from "../../utils/password";
+
 const AUTO_SAVE_FIELDS = [
   "clinicName",
   "doctorName",
@@ -187,9 +197,84 @@ export function attachSettingsEvents(router) {
 
   document
     .querySelector("#saveAdminAccount")
-    ?.addEventListener("click", () => {
+    ?.addEventListener("click", async () => {
 
-      showAlert("سيتم نقل حساب المدير إلى Supabase لاحقًا.");
+      const usernameInput =
+        document.querySelector("#adminUsername");
+
+      const currentInput =
+        document.querySelector("#currentPassword");
+
+      const newInput =
+        document.querySelector("#newPassword");
+
+      const confirmInput =
+        document.querySelector("#confirmPassword");
+
+      const username = usernameInput.value.trim();
+      const currentPassword = currentInput.value;
+      const newPassword = newInput.value;
+      const confirmPassword = confirmInput.value;
+
+      if (!username) {
+        showAlert("اسم المستخدم مطلوب");
+        return;
+      }
+
+      const admin =
+        getData().settings.admin;
+
+      /* تغيير كلمة المرور فقط عند إدخالها */
+
+      const changingPassword =
+        !!newPassword || !!confirmPassword;
+
+      if (changingPassword) {
+
+        if (!(await verifyPassword(
+          currentPassword,
+          admin.password
+        ))) {
+          showAlert("كلمة المرور الحالية غير صحيحة");
+          return;
+        }
+
+        if (!newPassword) {
+          showAlert("أدخل كلمة المرور الجديدة");
+          return;
+        }
+
+        if (newPassword !== confirmPassword) {
+          showAlert("كلمة المرور الجديدة غير متطابقة مع التأكيد");
+          return;
+        }
+
+      }
+
+      const password = changingPassword
+        ? await hashPassword(newPassword)
+        : admin.password;
+
+      saveAccountSettings({
+
+        admin: {
+          username,
+          password
+        }
+
+      });
+
+      currentInput.value = "";
+
+      newInput.value = "";
+
+      confirmInput.value = "";
+
+      showAlert(
+        changingPassword
+          ? "تم حفظ اسم المستخدم وكلمة المرور"
+          : "تم حفظ اسم المستخدم"
+      );
 
     });
 

@@ -8,7 +8,8 @@ import {
   toggleServiceVisibility,
   toggleServiceFeatured,
   moveServiceUp,
-  moveServiceDown
+  moveServiceDown,
+  moveService
 } from "../../api/servicesApi";
 
 import { uploadImage } from "../../lib/uploadImage";
@@ -56,6 +57,47 @@ export function attachServicesEvents(router) {
           btn.dataset.category,
           btn.dataset.id
         );
+
+      });
+
+    });
+
+  /* ========================= */
+  /* حذف الخدمة من الكارت مباشرة */
+  /* ========================= */
+
+  document
+    .querySelectorAll(".delete-service")
+    .forEach(btn => {
+
+      btn.addEventListener("click", async (event) => {
+
+        event.stopPropagation();
+        event.preventDefault();
+
+        if (!showConfirm("حذف هذه الخدمة؟")) return;
+
+        try {
+
+          await removeService(
+            Number(btn.dataset.category),
+            Number(btn.dataset.id)
+          );
+
+          await router.renderCategoryServices(
+            router.getCurrentCategoryId()
+          );
+
+        } catch (error) {
+
+          console.error(error);
+
+          showAlert(
+            error?.message ||
+            "حدث خطأ أثناء حذف الخدمة"
+          );
+
+        }
 
       });
 
@@ -254,6 +296,74 @@ export function attachServicesEvents(router) {
       await router.renderCategoryServices(
         router.getCurrentCategoryId()
       );
+
+    });
+
+  /* ========================= */
+  /* نقل الخدمة إلى قسم آخر */
+  /* ========================= */
+
+  document
+    .querySelector("#moveServiceBtn")
+    ?.addEventListener("click", async () => {
+
+      const select =
+        document.querySelector("#serviceMoveCategory");
+
+      const targetCategoryId =
+        Number(select?.value);
+
+      if (!targetCategoryId) {
+
+        showAlert("اختر القسم الجديد أولاً");
+        return;
+
+      }
+
+      if (
+        targetCategoryId ===
+        Number(router.getCurrentCategoryId())
+      ) {
+
+        showAlert(
+          "الخدمة موجودة بالفعل في هذا القسم"
+        );
+
+        return;
+
+      }
+
+      if (
+        !showConfirm(
+          "نقل الخدمة إلى القسم المحدد؟"
+        )
+      ) {
+
+        return;
+
+      }
+
+      try {
+
+        await moveService(
+          Number(router.getCurrentServiceId()),
+          targetCategoryId
+        );
+
+        await router.renderCategoryServices(
+          targetCategoryId
+        );
+
+      } catch (error) {
+
+        console.error(error);
+
+        showAlert(
+          error?.message ||
+          "حدث خطأ أثناء نقل الخدمة"
+        );
+
+      }
 
     });
 

@@ -82,21 +82,46 @@ export async function ServiceDetails(service) {
 
       <div class="glass-card detail-image-card">
 
-        <div class="detail-image">
-
-          ${
-            service.image
-              ? `<img src="${service.image}" alt="${service.name}">`
-              : `
+        <div class="detail-image">${
+          service.image
+            ? `<img src="${service.image}" alt="${service.name}">`
+            : `
                 <div class="detail-image-placeholder">
                   🦷
                 </div>
               `
-          }
-
-        </div>
+        }</div>
 
       </div>
+
+      ${
+        service.image
+          ? `
+            <!-- صورة الخدمة Fullscreen -->
+
+            <div
+              id="serviceImageOverlay"
+              class="gallery-overlay hidden"
+            >
+
+              <button
+                id="serviceImageCloseBtn"
+                class="gallery-overlay-close"
+              >
+                ✖
+              </button>
+
+              <img
+                id="serviceFullImage"
+                class="gallery-full-img"
+                src=""
+                alt=""
+              >
+
+            </div>
+          `
+          : ""
+      }
 
       ${
         service.short_description

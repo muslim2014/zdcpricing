@@ -15,7 +15,7 @@ export async function Pricing() {
     "أقسام العيادة";
 
   return `
-    <div class="container">
+    <div class="container pricing-page">
 
       <div class="top-bar">
         <button class="back-btn" type="button">

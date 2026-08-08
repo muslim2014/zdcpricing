@@ -1,10 +1,14 @@
 import { getService } from "../../api/servicesApi";
+import { getCategories } from "../../api/categoriesApi";
 import { TopBar } from "../../components/TopBar";
 import { GlassButton } from "../../components/GlassButton";
 
 export async function ServiceEditor(categoryId, serviceId) {
 
-  const service = await getService(serviceId);
+  const [service, categories] = await Promise.all([
+    getService(serviceId),
+    getCategories()
+  ]);
 
   if (!service) {
 
@@ -15,6 +19,19 @@ export async function ServiceEditor(categoryId, serviceId) {
     `;
 
   }
+
+  const currentCategory = categories.find(
+    c => Number(c.id) === Number(service.category_id)
+  );
+
+  const categoryOptions = categories
+    .filter(
+      c => Number(c.id) !== Number(service.category_id)
+    )
+    .map(c => `
+      <option value="${c.id}">${c.name}</option>
+    `)
+    .join("");
 
   return `
 
@@ -139,6 +156,46 @@ export async function ServiceEditor(categoryId, serviceId) {
           }
 
         </div>
+
+        <div class="form-group">
+
+          <label>القسم الحالي</label>
+
+          <input
+            class="glass-input"
+            value="${
+              currentCategory
+                ? currentCategory.name
+                : "غير محدد"
+            }"
+            readonly
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label>نقل إلى قسم آخر</label>
+
+          <select
+            id="serviceMoveCategory"
+            class="glass-input"
+          >
+
+            <option value="">
+              اختر القسم...
+            </option>
+
+            ${categoryOptions}
+
+          </select>
+
+        </div>
+
+        ${GlassButton("↔️ نقل الخدمة", {
+          id: "moveServiceBtn",
+          style: "margin-top:12px;background:#2e7d32"
+        })}
 
         ${GlassButton("💾 حفظ", {
           id: "saveServiceBtn"
