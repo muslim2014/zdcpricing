@@ -37,4 +37,12 @@ export function attachLoginEvents(router) {
 
     });
 
+  document
+    .querySelector("#backToSiteBtn")
+    ?.addEventListener("click", () => {
+
+      router.renderHome();
+
+    });
+
 }
