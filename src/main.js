@@ -1,6 +1,6 @@
 import "./style.css";
 
-import { renderHome } from "./router";
+import { initRouter } from "./router";
 
 import { testCategories } from "./api/categoriesApi";
 
@@ -27,7 +27,7 @@ async function init() {
 
     await seedServices();
 
-    await renderHome();
+    initRouter();
 
     testCategories();
 

@@ -2,6 +2,7 @@ import { getSections } from "../api/sectionsApi";
 import { getSettings } from "../api/settingsApi";
 import { getTypography } from "../api/typographyApi";
 import { getVisibleSocialLinks } from "../api/socialLinksApi";
+import { getDoctorProfile } from "../api/doctorApi";
 import {
   getSocialIcon,
   buildSocialHref
@@ -14,12 +15,14 @@ export async function Home() {
     settings,
     typography,
     sections,
-    socialLinks
+    socialLinks,
+    doctor
   ] = await Promise.all([
     getSettings(),
     getTypography(),
     getSections("home"),
-    getVisibleSocialLinks()
+    getVisibleSocialLinks(),
+    getDoctorProfile().catch(() => null)
   ]);
 
   const socialSection = sections.find(
@@ -104,7 +107,7 @@ export async function Home() {
       font-family:var(--app-font);
     "
   >
-    ${settings.doctorName}
+    ${doctor?.name || settings.doctorName || ""}
   </p>
 
   <div class="buttons">

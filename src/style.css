@@ -1598,3 +1598,138 @@ select.glass-input option{
     flex-direction:column;
     gap:14px;
 }
+
+/* ==========================
+   Doctor Profile / About
+   (تخصيص صفحات الطبيب فقط، دون المساس بالكروت العامة)
+========================== */
+
+.doctor-about-page{
+    max-width:860px;
+    margin:auto;
+}
+
+.doctor-about-page .top-bar{
+    margin-bottom:18px;
+}
+
+.doctor-about-page .top-bar h2{
+    font-size:19px;
+}
+
+.doctor-about-page .certificates-title{
+    font-size:20px;
+    margin:22px 0 10px;
+}
+
+.doctor-about-card{
+    padding:22px 20px;
+    margin-bottom:16px;
+}
+
+.doctor-hero-card{
+    text-align:center;
+    padding-top:30px;
+}
+
+.doctor-hero-card .doctor-name{
+    font-size:26px;
+    margin-bottom:8px;
+}
+
+.doctor-hero-card .doctor-specialty{
+    font-size:17px;
+    margin-bottom:8px;
+}
+
+.doctor-hero-card .doctor-experience{
+    font-size:15px;
+    color:var(--accent);
+    font-weight:600;
+    margin-bottom:2px;
+    display:inline-block;
+    padding:6px 18px;
+    border-radius:999px;
+    background:var(--accent-soft);
+}
+
+.doctor-about-card .doctor-section{
+    margin-bottom:16px;
+}
+
+.doctor-about-card .doctor-section:last-child{
+    margin-bottom:0;
+}
+
+.doctor-about-card .doctor-section h3{
+    color:var(--text);
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.doctor-about-card .doctor-bio{
+    max-width:100%;
+    margin:0 auto;
+    font-size:16px;
+    line-height:1.9;
+    overflow-wrap:break-word;
+}
+
+.doctor-points{
+    padding:22px 20px;
+}
+
+.doctor-points ul{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+.doctor-points li{
+    position:relative;
+    padding:8px 26px 8px 0;
+    color:var(--text);
+    font-size:16px;
+    line-height:1.8;
+}
+
+.doctor-points li::before{
+    content:"•";
+    position:absolute;
+    right:4px;
+    top:8px;
+    color:var(--accent);
+    font-size:18px;
+}
+
+.doctor-admin-card{
+    padding:22px 22px;
+    margin-bottom:16px;
+}
+
+.doctor-admin-card .form-group{
+    margin-bottom:16px;
+}
+
+.doctor-admin-card .form-group:last-child{
+    margin-bottom:0;
+}
+
+.doctor-admin-textarea{
+    min-height:140px;
+    resize:vertical;
+    line-height:1.7;
+}
+
+.doctor-group{
+    border-top:1px solid rgba(255,255,255,.14);
+    padding-top:8px;
+}
+
+.doctor-group-title{
+    font-size:14px;
+    font-weight:600;
+    opacity:.85;
+    margin:0 0 14px;
+}

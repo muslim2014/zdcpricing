@@ -15,7 +15,12 @@ import {
   showConfirm
 } from "../../utils/dialogs";
 
+
 export function attachDoctorProfileEvents(router) {
+
+  /* ========================= */
+  /* Back */
+  /* ========================= */
 
   document
     .querySelector("#backToDashboard")
@@ -24,11 +29,17 @@ export function attachDoctorProfileEvents(router) {
       router.renderAdminDashboard
     );
 
+
+  /* ========================= */
+  /* Doctor Image */
+  /* ========================= */
+
   const imageInput =
     document.querySelector("#doctorImage");
 
   const preview =
     document.querySelector("#doctorImagePreview");
+
 
   imageInput?.addEventListener("change", () => {
 
@@ -36,20 +47,93 @@ export function attachDoctorProfileEvents(router) {
 
     if (!file) return;
 
-    preview.src = URL.createObjectURL(file);
+    if (preview) {
+      preview.src = URL.createObjectURL(file);
+    }
 
   });
 
+
+  /* ========================= */
+  /* Save Doctor Profile */
+  /* ========================= */
+
   const saveBtn =
     document.querySelector("#saveDoctorProfile");
+
 
   saveBtn?.addEventListener("click", async () => {
 
     try {
 
-      let image = preview?.src || "";
+      /* ========================= */
+      /* Basic validation */
+      /* ========================= */
 
-      const file = imageInput?.files?.[0];
+      const name =
+        document
+          .querySelector("#doctorName")
+          ?.value
+          .trim() || "";
+
+      const specialty =
+        document
+          .querySelector("#doctorSpecialty")
+          ?.value
+          .trim() || "";
+
+      const experience =
+        document
+          .querySelector("#doctorExperience")
+          ?.value
+          .trim() || "";
+
+      const fullBio =
+        document
+          .querySelector("#doctorFullBio")
+          ?.value
+          .trim() || "";
+
+
+      /* ========================= */
+      /* New Doctor Profile Fields */
+      /* ========================= */
+
+      const education =
+        document
+          .querySelector("#doctorEducation")
+          ?.value
+          .trim() || "";
+
+      const professionalJourney =
+        document
+          .querySelector("#doctorProfessionalJourney")
+          ?.value
+          .trim() || "";
+
+      const restorativeApproach =
+        document
+          .querySelector("#doctorRestorativeApproach")
+          ?.value
+          .trim() || "";
+
+      const areasOfExpertise =
+        document
+          .querySelector("#doctorAreasOfExpertise")
+          ?.value
+          .trim() || "";
+
+
+      /* ========================= */
+      /* Image */
+      /* ========================= */
+
+      let image =
+        preview?.src || "";
+
+      const file =
+        imageInput?.files?.[0];
+
 
       if (file) {
 
@@ -60,52 +144,69 @@ export function attachDoctorProfileEvents(router) {
 
       }
 
+
+      /* ========================= */
+      /* Single Supabase Update */
+      /* ========================= */
+
       await updateDoctorProfile({
 
         image,
 
-        name: document
-          .querySelector("#doctorName")
-          .value
-          .trim(),
+        name,
 
-        title: document
-          .querySelector("#doctorTitle")
-          .value
-          .trim(),
+        specialty,
 
-        specialty: document
-          .querySelector("#doctorSpecialty")
-          .value
-          .trim(),
+        experience,
 
-        experience: document
-          .querySelector("#doctorExperience")
-          .value
-          .trim(),
+        full_bio: fullBio,
 
-        full_bio: document
-          .querySelector("#doctorFullBio")
-          .value
-          .trim()
+        education,
+
+        professional_journey:
+          professionalJourney,
+
+        restorative_approach:
+          restorativeApproach,
+
+        areas_of_expertise:
+          areasOfExpertise
 
       });
 
-      showAlert("تم حفظ البيانات");
+
+      /* ========================= */
+      /* Success */
+      /* ========================= */
+
+      showAlert(
+        "تم حفظ جميع بيانات الطبيب بنجاح"
+      );
+
 
       await router.renderDoctorProfile();
 
+
     } catch (error) {
 
-      console.error(error);
+      console.error(
+        "Doctor profile save error:",
+        error
+      );
 
-      showAlert(error.message);
+      showAlert(
+        error?.message ||
+        "حدث خطأ أثناء حفظ البيانات"
+      );
 
     }
 
   });
 
-  /* الشهادات */
+
+  /* ========================= */
+  /* Certificates */
+  /* ========================= */
 
   document
     .querySelector("#addCertificateBtn")
@@ -114,6 +215,11 @@ export function attachDoctorProfileEvents(router) {
       router.renderCertificateEditor();
 
     });
+
+
+  /* ========================= */
+  /* Edit Certificate */
+  /* ========================= */
 
   document
     .querySelectorAll(".edit-certificate")
@@ -128,6 +234,11 @@ export function attachDoctorProfileEvents(router) {
       });
 
     });
+
+
+  /* ========================= */
+  /* Toggle Certificate */
+  /* ========================= */
 
   document
     .querySelectorAll(".toggle-certificate")
@@ -148,13 +259,21 @@ export function attachDoctorProfileEvents(router) {
 
           console.error(error);
 
-          showAlert(error.message);
+          showAlert(
+            error?.message ||
+            "حدث خطأ أثناء تحديث الشهادة"
+          );
 
         }
 
       });
 
     });
+
+
+  /* ========================= */
+  /* Move Certificate Up */
+  /* ========================= */
 
   document
     .querySelectorAll(".move-certificate-up")
@@ -174,13 +293,21 @@ export function attachDoctorProfileEvents(router) {
 
           console.error(error);
 
-          showAlert(error.message);
+          showAlert(
+            error?.message ||
+            "حدث خطأ أثناء ترتيب الشهادات"
+          );
 
         }
 
       });
 
     });
+
+
+  /* ========================= */
+  /* Move Certificate Down */
+  /* ========================= */
 
   document
     .querySelectorAll(".move-certificate-down")
@@ -200,7 +327,10 @@ export function attachDoctorProfileEvents(router) {
 
           console.error(error);
 
-          showAlert(error.message);
+          showAlert(
+            error?.message ||
+            "حدث خطأ أثناء ترتيب الشهادات"
+          );
 
         }
 
@@ -208,14 +338,21 @@ export function attachDoctorProfileEvents(router) {
 
     });
 
+
+  /* ========================= */
+  /* Delete Certificate */
+  /* ========================= */
+
   document
     .querySelectorAll(".delete-certificate")
     .forEach(btn => {
 
       btn.addEventListener("click", async () => {
 
-        if (!showConfirm("حذف هذه الشهادة؟"))
+        if (!showConfirm("حذف هذه الشهادة؟")) {
           return;
+        }
+
 
         try {
 
@@ -229,7 +366,10 @@ export function attachDoctorProfileEvents(router) {
 
           console.error(error);
 
-          showAlert(error.message);
+          showAlert(
+            error?.message ||
+            "حدث خطأ أثناء حذف الشهادة"
+          );
 
         }
 

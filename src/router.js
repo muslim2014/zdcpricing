@@ -40,6 +40,8 @@ let currentCertificateId = null;
 let currentGalleryId = null;
 let currentBookingId = null;
 
+let restoring = false;
+
 export function getCurrentCategoryId() {
   return currentCategoryId;
 }
@@ -61,10 +63,51 @@ export function getCurrentBookingId() {
 }
 
 /* ===========================
+   History / URL helpers
+========================== */
+
+function normalizePath(path) {
+
+  path = path || "/";
+
+  return path.replace(/\/+$/, "") || "/";
+
+}
+
+function currentPath() {
+
+  return normalizePath(
+    window.location.pathname
+  );
+
+}
+
+/* يسجّل الـ Route في الـ Browser History دون إعادة تحميل */
+function pushPath(path) {
+
+  if (restoring) return;
+
+  const target = normalizePath(path);
+
+  if (currentPath() !== target) {
+
+    window.history.pushState(
+      null,
+      "",
+      target
+    );
+
+  }
+
+}
+
+/* ===========================
    Public
-=========================== */
+========================== */
 
 export async function renderHome() {
+
+  pushPath("/");
 
   app.innerHTML = await Home();
 
@@ -74,6 +117,8 @@ export async function renderHome() {
 
 export async function renderAbout() {
 
+  pushPath("/about");
+
   app.innerHTML = await About();
 
   attachEvents();
@@ -81,6 +126,8 @@ export async function renderAbout() {
 }
 
 export async function renderGallery() {
+
+  pushPath("/gallery");
 
   app.innerHTML = await Gallery();
 
@@ -90,6 +137,8 @@ export async function renderGallery() {
 
 export async function renderBooking() {
 
+  pushPath("/booking");
+
   app.innerHTML = await Booking();
 
   attachEvents();
@@ -97,6 +146,8 @@ export async function renderBooking() {
 }
 
 export async function renderPricing() {
+
+  pushPath("/pricing");
 
   app.innerHTML = await Pricing();
 
@@ -107,6 +158,8 @@ export async function renderPricing() {
 export async function renderServices(categoryId) {
 
   currentCategoryId = Number(categoryId);
+
+  pushPath(`/services/${categoryId}`);
 
   const categories = await getCategories();
 
@@ -134,6 +187,10 @@ export async function renderServiceDetails(categoryId, serviceId) {
   currentCategoryId = Number(categoryId);
   currentServiceId = Number(serviceId);
 
+  pushPath(
+    `/services/${categoryId}/service/${serviceId}`
+  );
+
   const service = await getService(serviceId);
 
   if (!service) {
@@ -153,9 +210,11 @@ export async function renderServiceDetails(categoryId, serviceId) {
 
 /* ===========================
    Admin
-=========================== */
+========================== */
 
 export async function renderAdminLogin() {
+
+  pushPath("/admin/login");
 
   app.innerHTML = await AdminLogin();
 
@@ -164,6 +223,8 @@ export async function renderAdminLogin() {
 }
 
 export async function renderSocialLinksManager() {
+
+  pushPath("/admin/social");
 
   app.innerHTML =
     await SocialLinksManager();
@@ -174,6 +235,8 @@ export async function renderSocialLinksManager() {
 
 export async function renderAdminDashboard() {
 
+  pushPath("/admin/dashboard");
+
   app.innerHTML = await AdminDashboard();
 
   attachEvents();
@@ -181,6 +244,8 @@ export async function renderAdminDashboard() {
 }
 
 export async function renderTypographyManager() {
+
+  pushPath("/admin/typography");
 
   app.innerHTML = await TypographyManager();
 
@@ -190,6 +255,8 @@ export async function renderTypographyManager() {
 
 export async function renderGeneralSettings() {
 
+  pushPath("/admin/settings");
+
   app.innerHTML = await GeneralSettings();
 
   attachEvents();
@@ -198,6 +265,8 @@ export async function renderGeneralSettings() {
 
 export async function renderCategoriesManager() {
 
+  pushPath("/admin/categories");
+
   app.innerHTML = await CategoriesManager();
 
   attachEvents();
@@ -205,6 +274,8 @@ export async function renderCategoriesManager() {
 }
 
 export async function renderServicesManager() {
+
+  pushPath("/admin/services");
 
   app.innerHTML = await ServicesManager();
 
@@ -215,6 +286,8 @@ export async function renderServicesManager() {
 export async function renderCategoryServices(categoryId) {
 
   currentCategoryId = Number(categoryId);
+
+  pushPath(`/admin/categories/${categoryId}`);
 
   app.innerHTML = await CategoryServices(categoryId);
 
@@ -227,6 +300,10 @@ export async function renderServiceEditor(categoryId, serviceId) {
   currentCategoryId = Number(categoryId);
   currentServiceId = Number(serviceId);
 
+  pushPath(
+    `/admin/services/${categoryId}/${serviceId}`
+  );
+
   app.innerHTML = await ServiceEditor(
     categoryId,
     serviceId
@@ -238,6 +315,8 @@ export async function renderServiceEditor(categoryId, serviceId) {
 
 export async function renderAdminAccount() {
 
+  pushPath("/admin/account");
+
   app.innerHTML = await AdminAccount();
 
   attachEvents();
@@ -245,6 +324,8 @@ export async function renderAdminAccount() {
 }
 
 export async function renderBookingFieldsManager() {
+
+  pushPath("/admin/booking-fields");
 
   app.innerHTML = await BookingFieldsManager();
 
@@ -254,6 +335,8 @@ export async function renderBookingFieldsManager() {
 
 export async function renderHomeSections() {
 
+  pushPath("/admin/home-sections");
+
   app.innerHTML = await HomeSections();
 
   attachEvents();
@@ -261,6 +344,8 @@ export async function renderHomeSections() {
 }
 
 export async function renderSectionEditor(id) {
+
+  pushPath(`/admin/home-sections/${id}`);
 
   app.innerHTML = await SectionEditor(id);
 
@@ -270,6 +355,8 @@ export async function renderSectionEditor(id) {
 
 export async function renderDoctorProfile() {
 
+  pushPath("/admin/doctor");
+
   app.innerHTML = await DoctorProfile();
 
   attachEvents();
@@ -277,6 +364,8 @@ export async function renderDoctorProfile() {
 }
 
 export async function renderDoctorCertificates() {
+
+  pushPath("/admin/doctor/certificates");
 
   app.innerHTML = await DoctorCertificates();
 
@@ -288,6 +377,12 @@ export async function renderCertificateEditor(id = null) {
 
   currentCertificateId = id;
 
+  pushPath(
+    id
+      ? `/admin/doctor/certificates/${id}`
+      : "/admin/doctor/certificates/new"
+  );
+
   app.innerHTML = await CertificateEditor(id);
 
   attachEvents();
@@ -295,6 +390,8 @@ export async function renderCertificateEditor(id = null) {
 }
 
 export async function renderGalleryManager() {
+
+  pushPath("/admin/gallery");
 
   app.innerHTML = await GalleryManager();
 
@@ -306,6 +403,12 @@ export async function renderGalleryEditor(id = null) {
 
   currentGalleryId = id;
 
+  pushPath(
+    id
+      ? `/admin/gallery/${id}`
+      : "/admin/gallery/new"
+  );
+
   app.innerHTML = await GalleryEditor(id);
 
   attachEvents();
@@ -313,6 +416,8 @@ export async function renderGalleryEditor(id = null) {
 }
 
 export async function renderBookingsManager() {
+
+  pushPath("/admin/bookings");
 
   app.innerHTML = await BookingsManager();
 
@@ -324,6 +429,8 @@ export async function renderBookingEditor(id) {
 
   currentBookingId = id;
 
+  pushPath(`/admin/bookings/${id}`);
+
   app.innerHTML = await BookingEditor(id);
 
   attachEvents();
@@ -331,8 +438,337 @@ export async function renderBookingEditor(id) {
 }
 
 /* ===========================
+   Browser History (Back / Forward)
+========================== */
+
+/* إعادة عرض الـ Route الحالي حسب عنوان الـ URL */
+async function resolveCurrentRoute() {
+
+  const path = normalizePath(
+    window.location.pathname
+  );
+
+  const parts =
+    path.split("/").filter(Boolean);
+
+  /* الصفحة الرئيسية */
+  if (parts.length === 0) {
+
+    await renderHome();
+
+    return;
+
+  }
+
+  /* الصفحات العامة */
+  if (path === "/about") {
+
+    await renderAbout();
+
+    return;
+
+  }
+
+  if (path === "/gallery") {
+
+    await renderGallery();
+
+    return;
+
+  }
+
+  if (path === "/booking") {
+
+    await renderBooking();
+
+    return;
+
+  }
+
+  if (path === "/pricing") {
+
+    await renderPricing();
+
+    return;
+
+  }
+
+  if (parts[0] === "services") {
+
+    if (
+      parts.length === 4 &&
+      parts[2] === "service" &&
+      Number.isFinite(Number(parts[1])) &&
+      Number.isFinite(Number(parts[3]))
+    ) {
+
+      await renderServiceDetails(
+        Number(parts[1]),
+        Number(parts[3])
+      );
+
+      return;
+
+    }
+
+    if (
+      parts.length === 2 &&
+      Number.isFinite(Number(parts[1]))
+    ) {
+
+      await renderServices(Number(parts[1]));
+
+      return;
+
+    }
+
+  }
+
+  /* صفحات الإدارة */
+  if (parts[0] === "admin") {
+
+    if (parts[1] === "login") {
+
+      await renderAdminLogin();
+
+      return;
+
+    }
+
+    if (parts[1] === "social") {
+
+      await renderSocialLinksManager();
+
+      return;
+
+    }
+
+    if (parts[1] === "dashboard") {
+
+      await renderAdminDashboard();
+
+      return;
+
+    }
+
+    if (parts[1] === "typography") {
+
+      await renderTypographyManager();
+
+      return;
+
+    }
+
+    if (parts[1] === "settings") {
+
+      await renderGeneralSettings();
+
+      return;
+
+    }
+
+    if (parts[1] === "account") {
+
+      await renderAdminAccount();
+
+      return;
+
+    }
+
+    if (parts[1] === "booking-fields") {
+
+      await renderBookingFieldsManager();
+
+      return;
+
+    }
+
+    if (parts[1] === "home-sections") {
+
+      if (
+        parts.length === 3 &&
+        Number.isFinite(Number(parts[2]))
+      ) {
+
+        await renderSectionEditor(Number(parts[2]));
+
+        return;
+
+      }
+
+      await renderHomeSections();
+
+      return;
+
+    }
+
+    if (parts[1] === "doctor") {
+
+      if (
+        parts.length >= 3 &&
+        parts[2] === "certificates"
+      ) {
+
+        if (
+          parts.length >= 4 &&
+          isSafeOrNew(parts[3])
+        ) {
+
+          await renderCertificateEditor(
+            parts[3] === "new"
+              ? null
+              : Number(parts[3])
+          );
+
+          return;
+
+        }
+
+        await renderDoctorCertificates();
+
+        return;
+
+      }
+
+      await renderDoctorProfile();
+
+      return;
+
+    }
+
+    if (parts[1] === "gallery") {
+
+      if (
+        parts.length === 3 &&
+        isSafeOrNew(parts[2])
+      ) {
+
+        await renderGalleryEditor(
+          parts[2] === "new"
+            ? null
+            : Number(parts[2])
+        );
+
+        return;
+
+      }
+
+      await renderGalleryManager();
+
+      return;
+
+    }
+
+    if (parts[1] === "bookings") {
+
+      if (
+        parts.length === 3 &&
+        Number.isFinite(Number(parts[2]))
+      ) {
+
+        await renderBookingEditor(Number(parts[2]));
+
+        return;
+
+      }
+
+      await renderBookingsManager();
+
+      return;
+
+    }
+
+    if (parts[1] === "categories") {
+
+      if (
+        parts.length === 3 &&
+        Number.isFinite(Number(parts[2]))
+      ) {
+
+        await renderCategoryServices(
+          Number(parts[2])
+        );
+
+        return;
+
+      }
+
+      await renderCategoriesManager();
+
+      return;
+
+    }
+
+    if (parts[1] === "services") {
+
+      if (
+        parts.length === 4 &&
+        Number.isFinite(Number(parts[2])) &&
+        Number.isFinite(Number(parts[3]))
+      ) {
+
+        await renderServiceEditor(
+          Number(parts[2]),
+          Number(parts[3])
+        );
+
+        return;
+
+      }
+
+      await renderServicesManager();
+
+      return;
+
+    }
+
+  }
+
+  /* أي Route غير معروف → الصفحة الرئيسية */
+  await renderHome();
+
+}
+
+function isSafeOrNew(value) {
+  return value === "new" || Number.isFinite(Number(value));
+}
+
+/* معالجة Back / Forward من المتصفح دون إضافة History جديدة */
+async function onPopState() {
+
+  restoring = true;
+
+  try {
+
+    await resolveCurrentRoute();
+
+  } finally {
+
+    restoring = false;
+
+  }
+
+}
+
+/* تهيئة الـ Router: يفتح الـ Route الحالية من الـ URL */
+export function initRouter() {
+
+  if (typeof window !== "undefined") {
+
+    window.addEventListener(
+      "popstate",
+      onPopState
+    );
+
+    resolveCurrentRoute();
+
+  }
+
+}
+
+/* ===========================
    Events
-=========================== */
+========================== */
 
 function attachEvents() {
 
