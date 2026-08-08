@@ -45,8 +45,6 @@ export async function seedBookingServices() {
 
 export async function getBookingServices(onlyVisible = false) {
 
-  await seedBookingServices();
-
   let query = supabase
     .from(TABLE)
     .select("*");

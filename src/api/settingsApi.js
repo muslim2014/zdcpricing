@@ -43,60 +43,25 @@ export async function getSettings() {
 
   }
 
-  const defaults = {
+  return {
 
-    clinic_name: "اسم العيادة",
+    clinicName: "اسم العيادة",
 
-    doctor_name: "اسم الطبيب",
+    doctorName: "اسم الطبيب",
 
     logo: "",
 
-    logo_width: 180,
+    logoWidth: 180,
 
-    pricing_title: "خدمات وأسعار العيادة",
-
-    pricing_description:
-      "تعرف على جميع الخدمات والأسعار",
-
-    categories_page_title:
-      "أقسام العيادة",
-
-    whatsapp_number: ""
-
-  };
-
-  const {
-    data: inserted,
-    error: insertError
-  } = await supabase
-    .from(TABLE)
-    .insert(defaults)
-    .select()
-    .single();
-
-  if (insertError) throw insertError;
-
-  return {
-
-    clinicName: inserted.clinic_name,
-
-    doctorName: inserted.doctor_name,
-
-    logo: inserted.logo,
-
-    logoWidth: inserted.logo_width ?? 180,
-
-    pricingTitle:
-      inserted.pricing_title,
+    pricingTitle: "خدمات وأسعار العيادة",
 
     pricingDescription:
-      inserted.pricing_description,
+      "تعرف على جميع الخدمات والأسعار",
 
     categoriesPageTitle:
-      inserted.categories_page_title,
+      "أقسام العيادة",
 
-    whatsappNumber:
-      inserted.whatsapp_number
+    whatsappNumber: ""
 
   };
 

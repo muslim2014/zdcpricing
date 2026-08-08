@@ -12,20 +12,7 @@ export async function getTypography() {
 
   if (error) throw error;
 
-  if (data) return data;
-
-  const {
-    data: inserted,
-    error: insertError
-  } = await supabase
-    .from(TABLE)
-    .insert({})
-    .select()
-    .single();
-
-  if (insertError) throw insertError;
-
-  return inserted;
+  return data || {};
 
 }
 

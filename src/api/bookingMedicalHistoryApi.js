@@ -51,8 +51,6 @@ export async function seedBookingMedicalHistory() {
 
 export async function getBookingMedicalHistory(onlyVisible = false) {
 
-  await seedBookingMedicalHistory();
-
   let query = supabase
     .from(TABLE)
     .select("*");

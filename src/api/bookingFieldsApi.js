@@ -123,8 +123,6 @@ export async function seedBookingFields() {
 
 export async function getBookingFields() {
 
-  await seedBookingFields();
-
   const { data, error } = await supabase
     .from(TABLE)
     .select("*")

@@ -4,9 +4,6 @@ import { initRouter } from "./router";
 
 import { testCategories } from "./api/categoriesApi";
 
-import { seedCategories } from "./seed/seedCategories";
-import { seedServices } from "./seed/seedServices";
-
 function applyTheme() {
 
   const theme =
@@ -22,10 +19,6 @@ applyTheme();
 async function init() {
 
   try {
-
-    await seedCategories();
-
-    await seedServices();
 
     initRouter();
 
