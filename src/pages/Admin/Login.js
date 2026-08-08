@@ -19,10 +19,11 @@ export function AdminLogin() {
 
         <div class="form-group">
           <input
-            id="adminUsername"
+            id="adminEmail"
             class="glass-input"
-            type="text"
-            placeholder="اسم المستخدم"
+            type="email"
+            placeholder="البريد الإلكتروني"
+            autocomplete="email"
           >
         </div>
 

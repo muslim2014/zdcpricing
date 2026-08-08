@@ -31,6 +31,7 @@ import { getCategories } from "./api/categoriesApi";
 import { attachPublicEvents } from "./events/publicEvents";
 import { attachAdminEvents } from "./events/adminEvents";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { isLoggedIn } from "./pages/Admin/auth";
 
 const app = document.querySelector("#app");
 
@@ -222,7 +223,26 @@ export async function renderAdminLogin() {
 
 }
 
+/* يحمي كل صفحات الإدارة: يجب أن يكون المدير مسجلاً دخولًا */
+async function ensureAdmin() {
+
+  if (await isLoggedIn()) return true;
+
+  window.history.replaceState(
+    null,
+    "",
+    normalizePath("/admin/login")
+  );
+
+  await renderAdminLogin();
+
+  return false;
+
+}
+
 export async function renderSocialLinksManager() {
+
+  if (!(await ensureAdmin())) return;
 
   pushPath("/admin/social");
 
@@ -235,6 +255,8 @@ export async function renderSocialLinksManager() {
 
 export async function renderAdminDashboard() {
 
+  if (!(await ensureAdmin())) return;
+
   pushPath("/admin/dashboard");
 
   app.innerHTML = await AdminDashboard();
@@ -244,6 +266,8 @@ export async function renderAdminDashboard() {
 }
 
 export async function renderTypographyManager() {
+
+  if (!(await ensureAdmin())) return;
 
   pushPath("/admin/typography");
 
@@ -255,6 +279,8 @@ export async function renderTypographyManager() {
 
 export async function renderGeneralSettings() {
 
+  if (!(await ensureAdmin())) return;
+
   pushPath("/admin/settings");
 
   app.innerHTML = await GeneralSettings();
@@ -264,6 +290,8 @@ export async function renderGeneralSettings() {
 }
 
 export async function renderCategoriesManager() {
+
+  if (!(await ensureAdmin())) return;
 
   pushPath("/admin/categories");
 
@@ -275,6 +303,8 @@ export async function renderCategoriesManager() {
 
 export async function renderServicesManager() {
 
+  if (!(await ensureAdmin())) return;
+
   pushPath("/admin/services");
 
   app.innerHTML = await ServicesManager();
@@ -284,6 +314,8 @@ export async function renderServicesManager() {
 }
 
 export async function renderCategoryServices(categoryId) {
+
+  if (!(await ensureAdmin())) return;
 
   currentCategoryId = Number(categoryId);
 
@@ -296,6 +328,8 @@ export async function renderCategoryServices(categoryId) {
 }
 
 export async function renderServiceEditor(categoryId, serviceId) {
+
+  if (!(await ensureAdmin())) return;
 
   currentCategoryId = Number(categoryId);
   currentServiceId = Number(serviceId);
@@ -315,6 +349,8 @@ export async function renderServiceEditor(categoryId, serviceId) {
 
 export async function renderAdminAccount() {
 
+  if (!(await ensureAdmin())) return;
+
   pushPath("/admin/account");
 
   app.innerHTML = await AdminAccount();
@@ -324,6 +360,8 @@ export async function renderAdminAccount() {
 }
 
 export async function renderBookingFieldsManager() {
+
+  if (!(await ensureAdmin())) return;
 
   pushPath("/admin/booking-fields");
 
@@ -335,6 +373,8 @@ export async function renderBookingFieldsManager() {
 
 export async function renderHomeSections() {
 
+  if (!(await ensureAdmin())) return;
+
   pushPath("/admin/home-sections");
 
   app.innerHTML = await HomeSections();
@@ -344,6 +384,8 @@ export async function renderHomeSections() {
 }
 
 export async function renderSectionEditor(id) {
+
+  if (!(await ensureAdmin())) return;
 
   pushPath(`/admin/home-sections/${id}`);
 
@@ -355,6 +397,8 @@ export async function renderSectionEditor(id) {
 
 export async function renderDoctorProfile() {
 
+  if (!(await ensureAdmin())) return;
+
   pushPath("/admin/doctor");
 
   app.innerHTML = await DoctorProfile();
@@ -365,6 +409,8 @@ export async function renderDoctorProfile() {
 
 export async function renderDoctorCertificates() {
 
+  if (!(await ensureAdmin())) return;
+
   pushPath("/admin/doctor/certificates");
 
   app.innerHTML = await DoctorCertificates();
@@ -374,6 +420,8 @@ export async function renderDoctorCertificates() {
 }
 
 export async function renderCertificateEditor(id = null) {
+
+  if (!(await ensureAdmin())) return;
 
   currentCertificateId = id;
 
@@ -391,6 +439,8 @@ export async function renderCertificateEditor(id = null) {
 
 export async function renderGalleryManager() {
 
+  if (!(await ensureAdmin())) return;
+
   pushPath("/admin/gallery");
 
   app.innerHTML = await GalleryManager();
@@ -400,6 +450,8 @@ export async function renderGalleryManager() {
 }
 
 export async function renderGalleryEditor(id = null) {
+
+  if (!(await ensureAdmin())) return;
 
   currentGalleryId = id;
 
@@ -417,6 +469,8 @@ export async function renderGalleryEditor(id = null) {
 
 export async function renderBookingsManager() {
 
+  if (!(await ensureAdmin())) return;
+
   pushPath("/admin/bookings");
 
   app.innerHTML = await BookingsManager();
@@ -426,6 +480,8 @@ export async function renderBookingsManager() {
 }
 
 export async function renderBookingEditor(id) {
+
+  if (!(await ensureAdmin())) return;
 
   currentBookingId = id;
 

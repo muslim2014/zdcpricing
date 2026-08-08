@@ -9,13 +9,13 @@ export function attachLoginEvents(router) {
     .querySelector("#adminLoginBtn")
     ?.addEventListener("click", async () => {
 
-      const username =
-        document.querySelector("#adminUsername").value.trim();
+      const email =
+        document.querySelector("#adminEmail").value.trim();
 
       const password =
         document.querySelector("#adminPassword").value;
 
-      if (await login(username, password)) {
+      if (await login(email, password)) {
 
         router.renderAdminDashboard();
 
@@ -29,11 +29,11 @@ export function attachLoginEvents(router) {
 
   document
     .querySelector("#logoutBtn")
-    ?.addEventListener("click", () => {
+    ?.addEventListener("click", async () => {
 
-      logout();
+      await logout();
 
-      router.renderHome();
+      router.renderAdminLogin();
 
     });
 

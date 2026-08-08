@@ -1,36 +1,37 @@
-import { getData } from "../../data/dataProvider";
-import { verifyPassword } from "../../utils/password";
+import { supabase } from "../../lib/supabase";
 
-const SESSION_KEY = "clinic_admin_session";
+export async function login(email, password) {
 
-export async function login(username, password) {
+  const { error } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
-  const admin = getData().settings.admin;
-
-  if (
-    admin &&
-    username === admin.username &&
-    await verifyPassword(password, admin.password)
-  ) {
-
-    localStorage.setItem(SESSION_KEY, "true");
-
-    return true;
-
-  }
-
-  return false;
+  return !error;
 
 }
 
-export function logout() {
+export async function logout() {
 
-  localStorage.removeItem(SESSION_KEY);
+  await supabase.auth.signOut();
 
 }
 
-export function isLoggedIn() {
+export async function isLoggedIn() {
 
-  return localStorage.getItem(SESSION_KEY) === "true";
+  const { data } =
+    await supabase.auth.getSession();
+
+  return Boolean(data?.session);
+
+}
+
+export async function getCurrentUser() {
+
+  const { data } =
+    await supabase.auth.getUser();
+
+  return data?.user ?? null;
 
 }

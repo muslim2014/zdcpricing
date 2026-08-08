@@ -9,14 +9,16 @@ import {
 import { showAlert } from "../../utils/dialogs";
 
 import {
-  getData,
   saveSettings as saveAccountSettings
 } from "../../data/dataProvider";
 
 import {
-  hashPassword,
-  verifyPassword
-} from "../../utils/password";
+  getCurrentUser
+} from "../../pages/Admin/auth";
+
+import {
+  supabase
+} from "../../lib/supabase";
 
 const AUTO_SAVE_FIELDS = [
   "clinicName",
@@ -221,23 +223,12 @@ export function attachSettingsEvents(router) {
         return;
       }
 
-      const admin =
-        getData().settings.admin;
-
       /* تغيير كلمة المرور فقط عند إدخالها */
 
       const changingPassword =
         !!newPassword || !!confirmPassword;
 
       if (changingPassword) {
-
-        if (!(await verifyPassword(
-          currentPassword,
-          admin.password
-        ))) {
-          showAlert("كلمة المرور الحالية غير صحيحة");
-          return;
-        }
 
         if (!newPassword) {
           showAlert("أدخل كلمة المرور الجديدة");
@@ -249,19 +240,45 @@ export function attachSettingsEvents(router) {
           return;
         }
 
-      }
-
-      const password = changingPassword
-        ? await hashPassword(newPassword)
-        : admin.password;
-
-      saveAccountSettings({
-
-        admin: {
-          username,
-          password
+        if (!currentPassword) {
+          showAlert("أدخل كلمة المرور الحالية");
+          return;
         }
 
+        const user = await getCurrentUser();
+
+        if (!user?.email) {
+          showAlert("تعذر العثور على بريد المدير");
+          return;
+        }
+
+        const { error: verifyError } =
+          await supabase.auth.signInWithPassword({
+            email: user.email,
+            password: currentPassword
+          });
+
+        if (verifyError) {
+          showAlert("كلمة المرور الحالية غير صحيحة");
+          return;
+        }
+
+        const { error: updateError } =
+          await supabase.auth.updateUser({
+            password: newPassword
+          });
+
+        if (updateError) {
+          showAlert(updateError.message || "فشل تغيير كلمة المرور");
+          return;
+        }
+
+      }
+
+      saveAccountSettings({
+        admin: {
+          username
+        }
       });
 
       currentInput.value = "";
@@ -272,7 +289,7 @@ export function attachSettingsEvents(router) {
 
       showAlert(
         changingPassword
-          ? "تم حفظ اسم المستخدم وكلمة المرور"
+          ? "تم حفظ اسم المستخدم وتغيير كلمة المرور"
           : "تم حفظ اسم المستخدم"
       );
 
