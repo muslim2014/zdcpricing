@@ -207,20 +207,26 @@ export function attachPublicEvents(router) {
 
   document
     .querySelector("#backToHome")
-    ?.addEventListener(
-      "click",
-      router.renderHome
-    );
+    ?.addEventListener("click", () => {
+
+      router.navigateBack(
+        router.renderHome
+      );
+
+    });
 
   const backBtn =
     document.querySelector(".back-btn");
 
   if (backBtn && !backBtn.id) {
 
-    backBtn.addEventListener(
-      "click",
-      router.renderHome
-    );
+    backBtn.addEventListener("click", () => {
+
+      router.navigateBack(
+        router.renderHome
+      );
+
+    });
 
   }
 
@@ -230,10 +236,13 @@ export function attachPublicEvents(router) {
 
   document
     .querySelector("#backToCategories")
-    ?.addEventListener(
-      "click",
-      router.renderPricing
-    );
+    ?.addEventListener("click", () => {
+
+      router.navigateBack(
+        router.renderPricing
+      );
+
+    });
 
   /* =========================
      رجوع للخدمات
@@ -243,9 +252,13 @@ export function attachPublicEvents(router) {
     .querySelector("#backToServices")
     ?.addEventListener("click", () => {
 
-      router.renderServices(
-        router.getCurrentCategoryId()
-      );
+      router.navigateBack(() => {
+
+        router.renderServices(
+          router.getCurrentCategoryId()
+        );
+
+      });
 
     });
 
@@ -755,10 +768,13 @@ export function attachPublicEvents(router) {
 
   document
     .querySelector("#closeSearchBtn")
-    ?.addEventListener(
-      "click",
-      router.renderHome
-    );
+    ?.addEventListener("click", () => {
+
+      router.navigateBack(
+        router.renderHome
+      );
+
+    });
 
 /* =========================
      Certificates Fullscreen

@@ -1,6 +1,6 @@
 export function HomeButton({
   title = "العودة للرئيسية",
-  content = "🏠"
+  content = '<i class="fa-solid fa-house" aria-hidden="true"></i>'
 } = {}) {
   return `
     <button

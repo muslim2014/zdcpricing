@@ -45,6 +45,10 @@ let currentBookingId = null;
 
 let restoring = false;
 
+/* عاكس للـ History الخاص بالتطبيق: يسمح لأزرار الرجوع بالتفرّع
+   هرميًا (Service → Services → Pricing → Home) دون push زائد */
+let appStack = [];
+
 export function getCurrentCategoryId() {
   return currentCategoryId;
 }
@@ -85,14 +89,50 @@ function currentPath() {
 
 }
 
-/* يسجّل الـ Route في الـ Browser History دون إعادة تحميل */
-function pushPath(path) {
+/* يسجّل الـ Route في الـ Browser History دون إعادة تحميل
+   - pushState للمسارات الجديدة
+   - replaceState للانتقال بين Service → Service (نفس صفحة التفاصيل بالداخل) */
+function isServiceDetailsPath(path) {
+
+  const parts =
+    (path || "").split("/").filter(Boolean);
+
+  return (
+    parts.length === 4 &&
+    parts[0] === "services" &&
+    parts[2] === "service"
+  );
+
+}
+
+function pushPath(path, replace = false) {
 
   if (restoring) return;
 
   const target = normalizePath(path);
 
-  if (currentPath() !== target) {
+  if (currentPath() === target) return;
+
+  const replacingSibling =
+    !replace &&
+    isServiceDetailsPath(currentPath()) &&
+    isServiceDetailsPath(target);
+
+  if (replace || replacingSibling) {
+
+    window.history.replaceState(
+      null,
+      "",
+      target
+    );
+
+    if (appStack.length) {
+
+      appStack[appStack.length - 1] = target;
+
+    }
+
+  } else {
 
     window.history.pushState(
       null,
@@ -100,7 +140,26 @@ function pushPath(path) {
       target
     );
 
+    appStack.push(target);
+
   }
+
+}
+
+/* رجوع هرمي آمن:
+   - إذا كان هناك سجل داخلي سابق → history.back() دون إنشاء entries جديدة
+   - وإلا (deep-link / أول صفحة) → fallback */
+export function navigateBack(fallback) {
+
+  if (appStack.length > 1) {
+
+    window.history.back();
+
+    return;
+
+  }
+
+  if (typeof fallback === "function") fallback();
 
 }
 
@@ -822,6 +881,22 @@ async function onPopState() {
 
     restoring = false;
 
+    /* مزامنة appStack مع الموضع الفعلي للسجل بعد أي Back/Forward */
+    const path = currentPath();
+
+    const idx = appStack.lastIndexOf(path);
+
+    if (idx === -1) {
+
+      /* مسار غير معروف (deep-link أو صفحة قبل التطبيق) */
+      appStack.push(path);
+
+    } else {
+
+      appStack.length = idx + 1;
+
+    }
+
   }
 
 }
@@ -837,6 +912,13 @@ export function initRouter() {
     );
 
     resolveCurrentRoute();
+
+    /* في أول تحميل: يعتبر المسار الحالي جذر المكدّس */
+    if (!appStack.length) {
+
+      appStack.push(currentPath());
+
+    }
 
   }
 
@@ -862,6 +944,8 @@ function attachEvents() {
     renderSearch,
     renderServices,
     renderServiceDetails,
+
+    navigateBack,
 
     renderAdminLogin,
     renderAdminDashboard,
