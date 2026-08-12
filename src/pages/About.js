@@ -31,7 +31,7 @@ export async function About() {
 
     <div class="container doctor-about-page">
 
-      ${TopBar("عن الطبيب")}
+      ${TopBar("عن الطبيب", "backToHome")}
 
 
       <!-- ========================= -->

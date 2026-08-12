@@ -1,16 +1,13 @@
 import {
+  getSettings,
   saveSettings
 } from "../../api/settingsApi";
 
 import {
-  uploadImage
-} from "../../lib/uploadImage";
+  uploadAndReplace
+} from "../../lib/storage";
 
 import { showAlert } from "../../utils/dialogs";
-
-import {
-  saveSettings as saveAccountSettings
-} from "../../data/dataProvider";
 
 import {
   getCurrentUser
@@ -86,13 +83,6 @@ export function attachSettingsEvents(router) {
     ?.addEventListener(
       "click",
       router.renderAdminAccount
-    );
-
-  document
-    .querySelector("#backToDashboard")
-    ?.addEventListener(
-      "click",
-      router.renderAdminDashboard
     );
 
   document
@@ -173,14 +163,24 @@ export function attachSettingsEvents(router) {
 
       try {
 
-        const logo = await uploadImage(
-          file,
-          "settings"
-        );
+        const currentSettings =
+          await getSettings();
 
-        await saveSettings({ logo });
+        const newLogo =
+          await uploadAndReplace(
+            file,
+            "settings",
+            currentSettings.logo,
+            async (logo) => {
 
-        logoPreview.src = logo;
+              await saveSettings({
+                logo
+              });
+
+            }
+          );
+
+        logoPreview.src = newLogo;
 
         showAlert("تم رفع اللوجو وحفظه");
 
@@ -222,8 +222,6 @@ export function attachSettingsEvents(router) {
         showAlert("اسم المستخدم مطلوب");
         return;
       }
-
-      /* تغيير كلمة المرور فقط عند إدخالها */
 
       const changingPassword =
         !!newPassword || !!confirmPassword;
@@ -275,11 +273,18 @@ export function attachSettingsEvents(router) {
 
       }
 
-      saveAccountSettings({
-        admin: {
-          username
-        }
-      });
+      const { error: usernameError } =
+        await supabase.auth.updateUser({
+          data: { username }
+        });
+
+      if (usernameError) {
+        showAlert(
+          usernameError.message ||
+            "فشل حفظ اسم المستخدم"
+        );
+        return;
+      }
 
       currentInput.value = "";
 

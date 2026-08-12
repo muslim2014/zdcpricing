@@ -13,13 +13,6 @@ import {
 export function attachDoctorCertificatesEvents(router) {
 
   document
-    .querySelector("#backToDashboard")
-    ?.addEventListener(
-      "click",
-      router.renderAdminDashboard
-    );
-
-  document
   .querySelector("#addCertificateBtn")
   ?.addEventListener("click", () => {
 

@@ -2,6 +2,7 @@ import {
   getGallery
 } from "../api/galleryApi";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { BackButton } from "../components/BackButton";
 
 export async function Gallery() {
 
@@ -12,7 +13,10 @@ export async function Gallery() {
     <div class="gallery-page">
 
       <div class="gallery-header">
-        <button id="backToHome" class="back-btn">←</button>
+        ${BackButton({
+          id: "backToHome",
+          title: "العودة للرئيسية"
+        })}
         <h2>معرض الصور</h2>
         ${ThemeToggle()}
       </div>

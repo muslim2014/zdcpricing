@@ -43,7 +43,7 @@ export async function getService(id) {
     .from("services")
     .select("*")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
 
@@ -82,12 +82,22 @@ export async function updateService(id, updates) {
 
 export async function deleteService(id) {
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("services")
     .delete()
-    .eq("id", id);
+    .eq("id", id)
+    .select("id");
 
   if (error) throw error;
+
+  /* RLS يعني أن الصف لم يُحذف فعلًا رغم نجاح الاستجابة (200 مع []) */
+  if (!data || data.length === 0) {
+
+    throw new Error(
+      "تعذر حذف الخدمة: لا تملك صلاحية الحذف أو الخدمة غير موجودة"
+    );
+
+  }
 
 }
 

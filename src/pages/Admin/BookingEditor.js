@@ -9,6 +9,16 @@ export async function BookingEditor(id) {
   const booking =
     await getBooking(id);
 
+  if (!booking) {
+
+    return `
+      <div class="container">
+        <h2>الحجز غير موجود</h2>
+      </div>
+    `;
+
+  }
+
   return `
     <div class="container">
 

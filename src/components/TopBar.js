@@ -1,3 +1,9 @@
+import { BackButton } from "./BackButton";
+
+function backTitle(content) {
+  return content === "⎋" ? "تسجيل الخروج" : "العودة للرئيسية";
+}
+
 export function TopBar(
   title,
   backId = "backToDashboard",
@@ -6,12 +12,11 @@ export function TopBar(
   return `
     <div class="top-bar">
 
-      <button
-        id="${backId}"
-        class="back-btn"
-      >
-        ${backContent}
-      </button>
+      ${BackButton({
+        id: backId,
+        title: backTitle(backContent),
+        content: backContent
+      })}
 
       <h2>${title}</h2>
 

@@ -17,9 +17,9 @@ export function AdminDashboard() {
 
         ${GlassButton("🏠 إدارة الصفحة الرئيسية", { id: "homeSectionsBtn" })}
 
-        ${GlassButton("🦷 إدارة الخدمات", { id: "servicesBtn" })}
-
         ${GlassButton("📂 إدارة الأقسام", { id: "categoriesBtn" })}
+
+        ${GlassButton("🦷 إدارة الخدمات", { id: "servicesBtn" })}
 
         ${GlassButton("👨‍⚕️ إدارة عن الطبيب", { id: "doctorProfileBtn" })}
 

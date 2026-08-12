@@ -1,15 +1,15 @@
-import { getData } from "../../data/dataProvider";
 import { TopBar } from "../../components/TopBar";
 import { GlassButton } from "../../components/GlassButton";
 import { getCurrentUser } from "./auth";
 
 export async function AdminAccount() {
 
- const settings = getData().settings;
-
  const user = await getCurrentUser();
 
  const email = user?.email || "";
+
+ const username =
+   user?.user_metadata?.username || email;
 
   return `
 
@@ -39,7 +39,7 @@ export async function AdminAccount() {
         <input
           id="adminUsername"
           class="glass-input"
-          value="${settings.admin.username}"
+          value="${username}"
         >
 
       </div>

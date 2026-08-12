@@ -12,7 +12,10 @@ import {
   moveCategoryDown
 } from "../../api/categoriesApi";
 
-import { showConfirm } from "../../utils/dialogs";
+import {
+  showAlert,
+  showConfirm
+} from "../../utils/dialogs";
 
 export function attachCategoriesEvents(router) {
 
@@ -73,12 +76,28 @@ export function attachCategoriesEvents(router) {
 
         if (!file) return;
 
-        await uploadCategoryImage(
-          input.dataset.id,
-          file
-        );
+        try {
 
-        await router.renderCategoriesManager();
+          await uploadCategoryImage(
+            input.dataset.id,
+            file
+          );
+
+          await router.renderCategoriesManager();
+
+        } catch (error) {
+
+          console.error(
+            "خطأ أثناء استبدال صورة القسم:",
+            error
+          );
+
+          showAlert(
+            error?.message ||
+            "حدث خطأ أثناء حفظ الصورة"
+          );
+
+        }
 
       });
 

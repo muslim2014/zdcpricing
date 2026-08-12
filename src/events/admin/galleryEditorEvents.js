@@ -5,8 +5,8 @@ import {
 } from "../../api/galleryApi";
 
 import {
-  uploadImage
-} from "../../lib/uploadImage";
+  uploadAndReplace
+} from "../../lib/storage";
 
 import { showAlert } from "../../utils/dialogs";
 
@@ -41,65 +41,37 @@ export function attachGalleryEditorEvents(router) {
 
       try {
 
-        let image = preview.src;
-
-        const file = imageInput?.files?.[0];
-
-        if (file) {
-
-          image = await uploadImage(
-            file,
-            "gallery"
-          );
-
-        }
-
         const id =
           router.getCurrentGalleryId();
 
-        const galleryImage = {
+        const file =
+          imageInput?.files?.[0];
 
-          title:
-            document
-              .querySelector("#galleryTitle")
-              .value
-              .trim(),
+        if (file) {
 
-          description:
-            document
-              .querySelector("#galleryDescription")
-              .value
-              .trim(),
+          await uploadAndReplace(
+            file,
+            "gallery",
+            imageInput?.getAttribute("data-current") || "",
+            async (newUrl) => {
 
-          image,
+              await saveImage(id, newUrl);
 
-          visible:
-            document
-              .querySelector("#galleryVisible")
-              ?.checked ?? true
-
-        };
-
-        if (id) {
-
-          await updateGalleryImage(
-            id,
-            galleryImage
+            }
           );
+
+        } else if (!id) {
+
+          showAlert("يجب اختيار صورة أولاً");
+
+          return;
 
         } else {
 
-          const gallery =
-            await getGallery();
-
-          await createGalleryImage({
-
-            ...galleryImage,
-
-            sort_order:
-              gallery.length + 1
-
-          });
+          await saveImage(
+            id,
+            imageInput?.getAttribute("data-current") || ""
+          );
 
         }
 
@@ -116,5 +88,63 @@ export function attachGalleryEditorEvents(router) {
       }
 
     });
+
+  async function saveImage(id, imageUrl) {
+
+    if (!imageUrl) {
+
+      showAlert("يجب اختيار صورة أولاً");
+
+      return;
+
+    }
+
+    const galleryImage = {
+
+      title:
+        document
+          .querySelector("#galleryTitle")
+          .value
+          .trim(),
+
+      description:
+        document
+          .querySelector("#galleryDescription")
+          .value
+          .trim(),
+
+      image: imageUrl,
+
+      visible:
+        document
+          .querySelector("#galleryVisible")
+          ?.checked ?? true
+
+    };
+
+    if (id) {
+
+      await updateGalleryImage(
+        id,
+        galleryImage
+      );
+
+    } else {
+
+      const gallery =
+        await getGallery();
+
+      await createGalleryImage({
+
+        ...galleryImage,
+
+        sort_order:
+          gallery.length + 1
+
+      });
+
+    }
+
+  }
 
 }

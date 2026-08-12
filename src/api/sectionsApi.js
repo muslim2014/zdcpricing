@@ -26,7 +26,7 @@ export async function getSection(id) {
     .from("sections")
     .select("*")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
 
@@ -86,6 +86,8 @@ export async function moveSectionUp(id) {
 
   const current = await getSection(id);
 
+  if (!current) return;
+
   const { data } = await supabase
     .from("sections")
     .select("*")
@@ -113,6 +115,8 @@ export async function moveSectionUp(id) {
 export async function moveSectionDown(id) {
 
   const current = await getSection(id);
+
+  if (!current) return;
 
   const { data } = await supabase
     .from("sections")

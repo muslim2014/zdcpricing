@@ -1,12 +1,13 @@
 import {
   createCertificate,
   updateCertificate,
-  getCertificates
+  getCertificates,
+  getCertificate
 } from "../../api/doctorApi";
 
 import {
-  uploadImage
-} from "../../lib/uploadImage";
+  uploadAndReplace
+} from "../../lib/storage";
 
 import { showAlert } from "../../utils/dialogs";
 
@@ -41,18 +42,7 @@ export function attachCertificateEditorEvents(router) {
 
       try {
 
-        let image = preview.src;
-
         const file = imageInput?.files?.[0];
-
-        if (file) {
-
-          image = await uploadImage(
-            file,
-            "certificates"
-          );
-
-        }
 
         const id =
           router.getCurrentCertificateId();
@@ -69,15 +59,61 @@ export function attachCertificateEditorEvents(router) {
             .value
             .trim(),
 
-          image,
-
           visible:
             document.querySelector("#certificateVisible")
               ?.checked ?? true
 
         };
 
-        if (id) {
+        if (file) {
+
+          let currentImage = "";
+
+          if (id) {
+
+            const current =
+              await getCertificate(id);
+
+            currentImage =
+              current?.image || "";
+
+          }
+
+          await uploadAndReplace(
+            file,
+            "certificates",
+            currentImage,
+            async (newUrl) => {
+
+              certificate.image = newUrl;
+
+              if (id) {
+
+                await updateCertificate(
+                  id,
+                  certificate
+                );
+
+              } else {
+
+                const certificates =
+                  await getCertificates();
+
+                await createCertificate({
+
+                  ...certificate,
+
+                  sort_order:
+                    certificates.length + 1
+
+                });
+
+              }
+
+            }
+          );
+
+        } else if (id) {
 
           await updateCertificate(
             id,

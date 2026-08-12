@@ -7,6 +7,19 @@ import {
 } from "../api/servicesApi";
 
 import {
+  getCategories
+} from "../api/categoriesApi";
+
+import {
+  removeService
+} from "../pages/Admin/serviceActions";
+
+import {
+  showAlert,
+  showConfirmModal
+} from "../utils/dialogs";
+
+import {
   attachBookingEvents
 } from "./public/bookingEvents";
 
@@ -31,7 +44,7 @@ export function attachPublicEvents(router) {
     .querySelector("#searchIconBtn")
     ?.addEventListener(
       "click",
-      router.renderPricing
+      router.renderSearch
     );
 
   document
@@ -147,6 +160,48 @@ export function attachPublicEvents(router) {
     });
 
   /* =========================
+     حذف الخدمة من الكارت مباشرة (للمدير)
+  ========================= */
+
+  document
+    .querySelectorAll(".service-card .service-delete-btn")
+    .forEach(btn => {
+
+      btn.addEventListener("click", async (event) => {
+
+        event.stopPropagation();
+        event.preventDefault();
+
+        if (!(await showConfirmModal("حذف هذه الخدمة؟")))
+          return;
+
+        const card = btn.closest(".service-card");
+
+        try {
+
+          await removeService(
+            Number(btn.dataset.category),
+            Number(btn.dataset.id)
+          );
+
+          card?.remove();
+
+        } catch (error) {
+
+          console.error(error);
+
+          showAlert(
+            error?.message ||
+            "حدث خطأ أثناء حذف الخدمة"
+          );
+
+        }
+
+      });
+
+    });
+
+  /* =========================
      رجوع للرئيسية
   ========================= */
 
@@ -160,17 +215,7 @@ export function attachPublicEvents(router) {
   const backBtn =
     document.querySelector(".back-btn");
 
-  if (
-
-    backBtn &&
-
-    !document.querySelector("#backToHome") &&
-    !document.querySelector("#backToCategories") &&
-    !document.querySelector("#backToServices") &&
-    !document.querySelector("#backToDashboard") &&
-    !document.querySelector("#logoutBtn")
-
-  ) {
+  if (backBtn && !backBtn.id) {
 
     backBtn.addEventListener(
       "click",
@@ -496,6 +541,224 @@ export function attachPublicEvents(router) {
     });
 
   }
+
+  /* =========================
+     البحث الشامل (جميع الخدمات الظاهرة)
+  ========================= */
+
+  const globalSearchInput =
+    document.querySelector("#globalSearchInput");
+
+  const clearGlobalSearchBtn =
+    document.querySelector("#clearGlobalSearchBtn");
+
+  const globalResults =
+    document.querySelector("#globalSearchResults");
+
+  const globalNoResults =
+    document.querySelector("#noGlobalResults");
+
+  let globalServicesCache = null;
+
+  let globalCategoryNames = {};
+
+  async function loadGlobalSearchData() {
+
+    if (globalServicesCache) return;
+
+    const [services, categories] = await Promise.all([
+      getServices(null, true),
+      getCategories(true)
+    ]);
+
+    globalServicesCache = services;
+
+    globalCategoryNames = {};
+
+    categories.forEach(category => {
+      globalCategoryNames[Number(category.id)] = category.name;
+    });
+
+  }
+
+  function renderGlobalResults() {
+
+    const value =
+      globalSearchInput.value
+        .trim()
+        .toLowerCase();
+
+    if (!value) {
+
+      globalResults.style.display = "none";
+
+      globalResults.innerHTML = "";
+
+      globalNoResults.style.display = "none";
+
+      return;
+
+    }
+
+    const filtered =
+      (globalServicesCache || [])
+        .filter(service =>
+          (service.name || "")
+            .toLowerCase()
+            .includes(value)
+        );
+
+    if (!filtered.length) {
+
+      globalResults.style.display = "none";
+
+      globalResults.innerHTML = "";
+
+      globalNoResults.style.display = "";
+
+      return;
+
+    }
+
+    globalResults.innerHTML =
+      filtered.map(service => `
+
+        <div
+          class="admin-list-item"
+          data-cat="${service.category_id}"
+          data-id="${service.id}"
+          style="cursor:pointer;align-items:center;gap:12px"
+        >
+
+          ${
+            service.image
+              ? `
+                <img
+                  src="${service.image}"
+                  alt="${service.name}"
+                  style="
+                    width:44px;
+                    height:44px;
+                    border-radius:10px;
+                    object-fit:cover;
+                  "
+                >
+              `
+              : `
+                <div
+                  style="
+                    width:44px;
+                    height:44px;
+                    border-radius:10px;
+                    background:var(--glass-strong);
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:20px;
+                  "
+                >
+                  🦷
+                </div>
+              `
+          }
+
+          <div style="flex:1;min-width:0">
+
+            <strong>${service.name}</strong>
+
+            <div
+              style="
+                font-size:13px;
+                opacity:.8;
+                margin-top:2px;
+              "
+            >
+              ${
+                globalCategoryNames[Number(service.category_id)] || ""
+              }
+            </div>
+
+          </div>
+
+        </div>
+
+      `).join("");
+
+    globalResults.style.display = "";
+
+    globalNoResults.style.display = "none";
+
+  }
+
+  if (globalSearchInput) {
+
+    globalSearchInput.addEventListener("input", async () => {
+
+      const value = globalSearchInput.value.trim();
+
+      if (clearGlobalSearchBtn) {
+
+        clearGlobalSearchBtn.style.display =
+          value ? "flex" : "none";
+
+      }
+
+      if (value) {
+
+        await loadGlobalSearchData();
+
+        renderGlobalResults();
+
+      } else {
+
+        renderGlobalResults();
+
+      }
+
+    });
+
+  }
+
+  if (clearGlobalSearchBtn) {
+
+    clearGlobalSearchBtn.addEventListener("click", () => {
+
+      globalSearchInput.value = "";
+
+      clearGlobalSearchBtn.style.display = "none";
+
+      renderGlobalResults();
+
+      globalSearchInput.focus();
+
+    });
+
+  }
+
+  if (globalResults) {
+
+    globalResults.addEventListener("click", (event) => {
+
+      const item =
+        event.target.closest(".admin-list-item");
+
+      if (!item) return;
+
+      router.renderServiceDetails(
+        Number(item.dataset.cat),
+        Number(item.dataset.id)
+      );
+
+    });
+
+  }
+
+  document
+    .querySelector("#closeSearchBtn")
+    ?.addEventListener(
+      "click",
+      router.renderHome
+    );
 
 /* =========================
      Certificates Fullscreen

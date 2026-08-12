@@ -17,6 +17,8 @@ import { Home } from "./pages/Home";
 import { Pricing } from "./pages/Pricing";
 import { Services } from "./pages/Services";
 import { ServiceDetails } from "./pages/ServiceDetails";
+import { Search } from "./pages/Search";
+import { HomeButton } from "./components/HomeButton";
 import { TypographyManager } from "./pages/Admin/TypographyManager";
 import { AdminLogin } from "./pages/Admin/Login";
 import { AdminDashboard } from "./pages/Admin/Dashboard";
@@ -151,6 +153,16 @@ export async function renderPricing() {
   pushPath("/pricing");
 
   app.innerHTML = await Pricing();
+
+  attachEvents();
+
+}
+
+export async function renderSearch() {
+
+  pushPath("/search");
+
+  app.innerHTML = await Search();
 
   attachEvents();
 
@@ -549,6 +561,14 @@ async function resolveCurrentRoute() {
 
   }
 
+  if (path === "/search") {
+
+    await renderSearch();
+
+    return;
+
+  }
+
   if (parts[0] === "services") {
 
     if (
@@ -839,6 +859,7 @@ function attachEvents() {
     renderGallery,
     renderBooking,
     renderPricing,
+    renderSearch,
     renderServices,
     renderServiceDetails,
 
@@ -873,6 +894,38 @@ function attachEvents() {
 
   attachPublicEvents(router);
   attachAdminEvents(router);
+
+  ensureHomeNav(router);
+
+}
+
+/* يضيف زر الرئيسية (🏠) أسفل زر الرجوع في الصفحات العامة الداخلية
+   دون إظهاره في الصفحة الرئيسية أو صفحات الإدارة */
+function ensureHomeNav(router) {
+
+  if (document.querySelector("#homeBtn")) return;
+
+  const path = currentPath();
+
+  if (path === "/") return;
+
+  if (path.startsWith("/admin")) return;
+
+  const backBtn = document.querySelector(".back-btn");
+
+  if (!backBtn) return;
+
+  backBtn.insertAdjacentHTML(
+    "afterend",
+    HomeButton()
+  );
+
+  document
+    .querySelector("#homeBtn")
+    ?.addEventListener(
+      "click",
+      router.renderHome
+    );
 
 }
 

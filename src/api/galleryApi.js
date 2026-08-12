@@ -1,5 +1,9 @@
 import { supabase } from "../lib/supabase";
 
+import {
+  deleteImageByUrl
+} from "../lib/storage";
+
 /* =========================
    Gallery
 ========================= */
@@ -25,7 +29,7 @@ export async function getGalleryImage(id) {
     .from("gallery")
     .select("*")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
 
@@ -67,6 +71,14 @@ export async function updateGalleryImage(id, updates) {
 
 export async function deleteGalleryImage(id) {
 
+  const image = await getGalleryImage(id);
+
+  if (image?.image) {
+
+    await deleteImageByUrl(image.image);
+
+  }
+
   const { error } = await supabase
     .from("gallery")
     .delete()
@@ -87,6 +99,12 @@ export async function toggleGalleryVisibility(id, visible) {
 export async function moveGalleryUp(id) {
 
   const current = await getGalleryImage(id);
+
+  if (!current) {
+
+    throw new Error("الصورة غير موجودة");
+
+  }
 
   const { data: previous, error } = await supabase
     .from("gallery")
@@ -114,6 +132,12 @@ export async function moveGalleryUp(id) {
 export async function moveGalleryDown(id) {
 
   const current = await getGalleryImage(id);
+
+  if (!current) {
+
+    throw new Error("الصورة غير موجودة");
+
+  }
 
   const { data: next, error } = await supabase
     .from("gallery")

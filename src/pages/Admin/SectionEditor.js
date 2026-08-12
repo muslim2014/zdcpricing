@@ -9,6 +9,16 @@ export async function SectionEditor(id) {
 
   const section = await getSection(id);
 
+  if (!section) {
+
+    return `
+      <div class="container">
+        <h2>القسم غير موجود</h2>
+      </div>
+    `;
+
+  }
+
   return `
     <div class="container">
 

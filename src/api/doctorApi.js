@@ -1,5 +1,9 @@
 import { supabase } from "../lib/supabase";
 
+import {
+  deleteImageByUrl
+} from "../lib/storage";
+
 /* ========================= */
 /* Doctor Profile */
 /* ========================= */
@@ -63,7 +67,7 @@ export async function getCertificate(id) {
     .from("doctor_certificates")
     .select("*")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
 
@@ -105,6 +109,28 @@ export async function updateCertificate(id, updates) {
 
 export async function deleteCertificate(id) {
 
+  const certificate =
+    await getCertificate(id);
+
+  if (certificate?.image) {
+
+    try {
+
+      await deleteImageByUrl(
+        certificate.image
+      );
+
+    } catch (error) {
+
+      console.error(
+        "فشل حذف صورة الشهادة:",
+        error
+      );
+
+    }
+
+  }
+
   const { error } = await supabase
     .from("doctor_certificates")
     .delete()
@@ -125,6 +151,8 @@ export async function toggleCertificateVisibility(id, visible) {
 export async function moveCertificateUp(id) {
 
   const current = await getCertificate(id);
+
+  if (!current) return;
 
   const { data: previous } = await supabase
     .from("doctor_certificates")
@@ -150,6 +178,8 @@ export async function moveCertificateUp(id) {
 export async function moveCertificateDown(id) {
 
   const current = await getCertificate(id);
+
+  if (!current) return;
 
   const { data: next } = await supabase
     .from("doctor_certificates")

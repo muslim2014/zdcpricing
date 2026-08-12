@@ -1,11 +1,10 @@
 import { supabase } from "../lib/supabase";
 
 /* =========================
-   Bookings
-========================= */
+ *   Bookings
+ * ========================= */
 
 export async function getBookings() {
-
   const { data, error } = await supabase
     .from("bookings")
     .select("*")
@@ -16,39 +15,29 @@ export async function getBookings() {
   if (error) throw error;
 
   return data;
-
 }
 
 export async function getBooking(id) {
-
   const { data, error } = await supabase
     .from("bookings")
     .select("*")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
 
   return data;
-
 }
 
 export async function createBooking(booking) {
-
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("bookings")
-    .insert([booking])
-    .select()
-    .single();
+    .insert([booking]);
 
   if (error) throw error;
-
-  return data;
-
 }
 
 export async function updateBooking(id, updates) {
-
   const { data, error } = await supabase
     .from("bookings")
     .update({
@@ -62,24 +51,19 @@ export async function updateBooking(id, updates) {
   if (error) throw error;
 
   return data;
-
 }
 
 export async function deleteBooking(id) {
-
   const { error } = await supabase
     .from("bookings")
     .delete()
     .eq("id", id);
 
   if (error) throw error;
-
 }
 
 export async function updateBookingStatus(id, status) {
-
   return updateBooking(id, {
     status
   });
-
 }

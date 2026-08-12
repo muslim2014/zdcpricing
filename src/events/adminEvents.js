@@ -17,6 +17,20 @@ import { attachBookingFieldsEvents } from "./admin/bookingFieldsEvents";
 
 export function attachAdminEvents(router) {
 
+  document
+    .querySelector("#backToDashboard")
+    ?.addEventListener(
+      "click",
+      router.renderAdminDashboard
+    );
+
+  document
+    .querySelector("#adminBackBtn")
+    ?.addEventListener(
+      "click",
+      router.renderAdminLogin
+    );
+
   attachLoginEvents(router);
 
   attachSettingsEvents(router);

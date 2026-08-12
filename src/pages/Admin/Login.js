@@ -1,5 +1,6 @@
 import { ThemeToggle } from "../../components/ThemeToggle";
 import { GlassButton } from "../../components/GlassButton";
+import { BackButton } from "../../components/BackButton";
 
 export function AdminLogin() {
   return `
@@ -10,6 +11,11 @@ export function AdminLogin() {
     </div>
 
     ${ThemeToggle()}
+
+    ${BackButton({
+      id: "backToHome",
+      title: "العودة للرئيسية"
+    })}
 
     <div class="container">
 

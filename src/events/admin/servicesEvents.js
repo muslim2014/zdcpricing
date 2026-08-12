@@ -12,14 +12,23 @@ import {
   moveService
 } from "../../api/servicesApi";
 
-import { uploadImage } from "../../lib/uploadImage";
+import {
+  uploadImage
+} from "../../lib/uploadImage";
+
+import {
+  deleteImageByUrl
+} from "../../lib/storage";
 
 import {
   showAlert,
-  showConfirm
+  showConfirm,
+  showConfirmModal
 } from "../../utils/dialogs";
 
 export function attachServicesEvents(router) {
+
+  let pendingReplacedImages = [];
 
   document
     .querySelector("#servicesBtn")
@@ -67,7 +76,7 @@ export function attachServicesEvents(router) {
   /* ========================= */
 
   document
-    .querySelectorAll(".delete-service")
+    .querySelectorAll(".admin-list-item .delete-service")
     .forEach(btn => {
 
       btn.addEventListener("click", async (event) => {
@@ -75,7 +84,10 @@ export function attachServicesEvents(router) {
         event.stopPropagation();
         event.preventDefault();
 
-        if (!showConfirm("حذف هذه الخدمة؟")) return;
+        if (!(await showConfirmModal("حذف هذه الخدمة؟")))
+          return;
+
+        const item = btn.closest(".admin-list-item");
 
         try {
 
@@ -84,9 +96,7 @@ export function attachServicesEvents(router) {
             Number(btn.dataset.id)
           );
 
-          await router.renderCategoryServices(
-            router.getCurrentCategoryId()
-          );
+          item?.remove();
 
         } catch (error) {
 
@@ -271,6 +281,36 @@ export function attachServicesEvents(router) {
 
       );
 
+      for (const oldUrl of pendingReplacedImages) {
+
+        try {
+
+          await deleteImageByUrl(oldUrl);
+
+        } catch (error) {
+
+          console.error(
+            "فشل حذف الصورة القديمة للخدمة:",
+            {
+              oldUrl,
+              path: typeof error?.path === "string"
+                ? error.path
+                : "",
+              error: error?.cause || error
+            }
+          );
+
+          showAlert(
+            "تم حفظ الخدمة لكن فشل حذف الصورة القديمة: " +
+            (error?.message || "خطأ غير معروف")
+          );
+
+        }
+
+      }
+
+      pendingReplacedImages = [];
+
       await router.renderCategoryServices(
         router.getCurrentCategoryId()
       );
@@ -377,6 +417,9 @@ export function attachServicesEvents(router) {
 
       if (!file) return;
 
+      const oldUrl =
+        e.target.dataset.current || "";
+
       try {
 
         const imageUrl = await uploadImage(
@@ -395,9 +438,13 @@ export function attachServicesEvents(router) {
           >
         `;
 
-        document
-          .querySelector("#serviceImage")
-          .dataset.current = imageUrl;
+        e.target.dataset.current = imageUrl;
+
+        if (oldUrl) {
+
+          pendingReplacedImages.push(oldUrl);
+
+        }
 
       } catch (error) {
 

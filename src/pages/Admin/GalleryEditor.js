@@ -15,6 +15,18 @@ export async function GalleryEditor(id = null) {
         visible: true
       };
 
+  if (id && !image) {
+
+    return `
+      <div class="container">
+
+        <h2>الصورة غير موجودة</h2>
+
+      </div>
+    `;
+
+  }
+
   return `
     <div class="container">
 
@@ -67,6 +79,7 @@ export async function GalleryEditor(id = null) {
             type="file"
             accept="image/*"
             class="glass-input"
+            data-current="${image.image || ""}"
           >
 
         </div>

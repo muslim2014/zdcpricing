@@ -15,6 +15,16 @@ export async function CertificateEditor(id = null) {
         visible: true
       };
 
+  if (id && !certificate) {
+
+    return `
+      <div class="container">
+        <h2>الشهادة غير موجودة</h2>
+      </div>
+    `;
+
+  }
+
   return `
     <div class="container">
 

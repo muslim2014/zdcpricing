@@ -15,9 +15,62 @@ export async function GalleryManager() {
 
       <div class="glass-card">
 
-        ${GlassButton("➕ إضافة صورة", {
-          id: "addGalleryImageBtn"
-        })}
+        <div
+          style="
+            display:flex;
+            flex-direction:column;
+            gap:14px;
+          "
+        >
+
+          ${GlassButton("➕ إضافة صورة", {
+            id: "addGalleryImageBtn"
+          })}
+
+          <input
+            id="bulkGalleryInput"
+            type="file"
+            accept="image/*"
+            multiple
+            class="glass-input"
+            style="display:none;"
+          >
+
+          ${GlassButton("📤 رفع صور متعددة", {
+            id: "bulkUploadTrigger"
+          })}
+
+          <div
+            id="bulkPreviewGrid"
+            class="bulk-preview-grid"
+            style="display:none;"
+          ></div>
+
+          <div
+            style="
+              display:flex;
+              align-items:center;
+              gap:12px;
+              margin-top:4px;
+            "
+          >
+
+            <span
+              id="bulkUploadProgress"
+              style="
+                color:var(--text-soft);
+                font-size:14px;
+              "
+            ></span>
+
+            ${GlassButton("⬆️ رفع الصور", {
+              id: "bulkUploadStart",
+              style: "display:none;"
+            })}
+
+          </div>
+
+        </div>
 
       </div>
 

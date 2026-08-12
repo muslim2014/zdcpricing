@@ -10,13 +10,6 @@ import { showAlert } from "../../utils/dialogs";
 
 export function attachSocialLinksEvents(router) {
 
-  document
-    .querySelector("#backToDashboard")
-    ?.addEventListener(
-      "click",
-      router.renderAdminDashboard
-    );
-
   /* =========================
      حفظ الرابط
   ========================= */

@@ -6,7 +6,10 @@ import {
   deleteCategory as deleteCategoryApi
 } from "../../api/categoriesApi";
 
-import { uploadImage } from "../../lib/uploadImage";
+import {
+  uploadAndReplace,
+  deleteImageByUrl
+} from "../../lib/storage";
 import { TopBar } from "../../components/TopBar";
 import { GlassButton } from "../../components/GlassButton";
 
@@ -192,14 +195,24 @@ export async function updateCategory(id) {
 
 export async function uploadCategoryImage(id, file) {
 
-  const image = await uploadImage(
-    file,
-    "categories"
+  const categories = await getCategories();
+
+  const category = categories.find(
+    c => Number(c.id) === Number(id)
   );
 
-  await updateCategoryImage(
-    id,
-    image
+  await uploadAndReplace(
+    file,
+    "categories",
+    category?.image || "",
+    async (newUrl) => {
+
+      await updateCategoryImage(
+        id,
+        newUrl
+      );
+
+    }
   );
 
 }
@@ -207,6 +220,31 @@ export async function uploadCategoryImage(id, file) {
 /* ========================= */
 
 export async function deleteCategory(id) {
+
+  const categories = await getCategories();
+
+  const category = categories.find(
+    c => Number(c.id) === Number(id)
+  );
+
+  if (category?.image) {
+
+    try {
+
+      await deleteImageByUrl(
+        category.image
+      );
+
+    } catch (error) {
+
+      console.error(
+        "فشل حذف صورة القسم:",
+        error
+      );
+
+    }
+
+  }
 
   await deleteCategoryApi(id);
 

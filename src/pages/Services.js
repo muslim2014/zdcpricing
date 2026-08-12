@@ -1,9 +1,12 @@
 import { getServices } from "../api/servicesApi";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { isLoggedIn } from "./Admin/auth";
 
 export async function Services(category) {
 
  const services = await getServices(category.id, true);
+
+ const canDelete = await isLoggedIn();
 
   return `
     <div class="container services-page">
@@ -69,6 +72,22 @@ export async function Services(category) {
             data-category="${category.id}"
             data-id="${service.id}"
           >
+
+            ${
+              canDelete
+                ? `
+                  <button
+                    class="glass-button service-delete-btn"
+                    data-category="${category.id}"
+                    data-id="${service.id}"
+                    type="button"
+                    title="حذف الخدمة"
+                  >
+                    🗑️
+                  </button>
+                `
+                : ""
+            }
 
             <div class="service-image">
 

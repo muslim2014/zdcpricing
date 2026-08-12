@@ -11,13 +11,6 @@ import {
 export function attachBookingsEvents(router) {
 
   document
-    .querySelector("#backToDashboard")
-    ?.addEventListener(
-      "click",
-      router.renderAdminDashboard
-    );
-
-  document
     .querySelector("#backToBookings")
     ?.addEventListener(
       "click",

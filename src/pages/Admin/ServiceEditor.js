@@ -128,6 +128,7 @@ export async function ServiceEditor(categoryId, serviceId) {
             class="glass-input"
             type="file"
             accept="image/*"
+            data-current="${service.image || ""}"
           >
 
         </div>

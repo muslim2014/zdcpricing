@@ -1,9 +1,14 @@
 import {
   getServices,
+  getService,
   createService as createServiceApi,
   updateService,
   deleteService
 } from "../../api/servicesApi";
+
+import {
+  deleteImageByUrl
+} from "../../lib/storage";
 
 /* ========================= */
 
@@ -28,7 +33,23 @@ export async function saveService(categoryId, serviceId, serviceData) {
 
 export async function removeService(categoryId, serviceId) {
 
+  const service = await getService(serviceId);
+
   await deleteService(serviceId);
+
+  if (service?.image) {
+
+    try {
+
+      await deleteImageByUrl(service.image);
+
+    } catch (error) {
+
+      console.error("فشل حذف صورة الخدمة:", error);
+
+    }
+
+  }
 
 }
 

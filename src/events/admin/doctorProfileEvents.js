@@ -1,4 +1,5 @@
 import {
+  getDoctorProfile,
   updateDoctorProfile,
   deleteCertificate,
   moveCertificateDown,
@@ -7,8 +8,8 @@ import {
 } from "../../api/doctorApi";
 
 import {
-  uploadImage
-} from "../../lib/uploadImage";
+  uploadAndReplace
+} from "../../lib/storage";
 
 import {
   showAlert,
@@ -17,18 +18,6 @@ import {
 
 
 export function attachDoctorProfileEvents(router) {
-
-  /* ========================= */
-  /* Back */
-  /* ========================= */
-
-  document
-    .querySelector("#backToDashboard")
-    ?.addEventListener(
-      "click",
-      router.renderAdminDashboard
-    );
-
 
   /* ========================= */
   /* Doctor Image */
@@ -40,6 +29,8 @@ export function attachDoctorProfileEvents(router) {
   const preview =
     document.querySelector("#doctorImagePreview");
 
+  let currentPreviewUrl = "";
+
 
   imageInput?.addEventListener("change", () => {
 
@@ -48,7 +39,21 @@ export function attachDoctorProfileEvents(router) {
     if (!file) return;
 
     if (preview) {
-      preview.src = URL.createObjectURL(file);
+
+      if (
+        currentPreviewUrl &&
+        currentPreviewUrl.startsWith("blob:")
+      ) {
+
+        URL.revokeObjectURL(currentPreviewUrl);
+
+      }
+
+      currentPreviewUrl =
+        URL.createObjectURL(file);
+
+      preview.src = currentPreviewUrl;
+
     }
 
   });
@@ -128,30 +133,10 @@ export function attachDoctorProfileEvents(router) {
       /* Image */
       /* ========================= */
 
-      let image =
-        preview?.src || "";
-
       const file =
         imageInput?.files?.[0];
 
-
-      if (file) {
-
-        image = await uploadImage(
-          file,
-          "doctor"
-        );
-
-      }
-
-
-      /* ========================= */
-      /* Single Supabase Update */
-      /* ========================= */
-
-      await updateDoctorProfile({
-
-        image,
+      const payload = {
 
         name,
 
@@ -172,7 +157,36 @@ export function attachDoctorProfileEvents(router) {
         areas_of_expertise:
           areasOfExpertise
 
-      });
+      };
+
+
+      if (file) {
+
+        const currentProfile =
+          await getDoctorProfile();
+
+        await uploadAndReplace(
+          file,
+          "doctor",
+          currentProfile?.image || "",
+          async (newUrl) => {
+
+            payload.image = newUrl;
+
+            await updateDoctorProfile(payload);
+
+          }
+        );
+
+      } else {
+
+        /* ========================= */
+        /* Single Supabase Update */
+        /* ========================= */
+
+        await updateDoctorProfile(payload);
+
+      }
 
 
       /* ========================= */
