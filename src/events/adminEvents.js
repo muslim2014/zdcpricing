@@ -14,6 +14,7 @@ import { attachSettingsEvents } from "./admin/settingsEvents";
 import { attachCategoriesEvents } from "./admin/categoriesEvents";
 import { attachServicesEvents } from "./admin/servicesEvents";
 import { attachBookingFieldsEvents } from "./admin/bookingFieldsEvents";
+import { attachEquipmentEvents } from "./admin/equipmentEvents";
 
 export function attachAdminEvents(router) {
 
@@ -58,4 +59,7 @@ export function attachAdminEvents(router) {
   attachSocialLinksEvents(router);
 
   attachTypographyEvents(router);
+
+  attachEquipmentEvents(router);
+
 }

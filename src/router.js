@@ -28,7 +28,16 @@ import { ServicesManager } from "./pages/Admin/ServicesManager";
 import { CategoryServices } from "./pages/Admin/CategoryServices";
 import { ServiceEditor } from "./pages/Admin/ServiceEditor";
 import { BookingFieldsManager } from "./pages/Admin/BookingFieldsManager";
+import { EquipmentManager } from "./pages/Admin/EquipmentManager";
+import { EquipmentSectionEditor } from "./pages/Admin/EquipmentSectionEditor";
+import { EquipmentCardEditor } from "./pages/Admin/EquipmentCardEditor";
+import { Equipment } from "./pages/Equipment";
+import { EquipmentDetails } from "./pages/EquipmentDetails";
 import { getCategories } from "./api/categoriesApi";
+import {
+  getEquipmentSection,
+  getEquipmentItem
+} from "./api/equipmentApi";
 
 import { attachPublicEvents } from "./events/publicEvents";
 import { attachAdminEvents } from "./events/adminEvents";
@@ -42,6 +51,8 @@ let currentServiceId = null;
 let currentCertificateId = null;
 let currentGalleryId = null;
 let currentBookingId = null;
+let currentEquipmentSectionId = null;
+let currentEquipmentCardId = null;
 
 let restoring = false;
 
@@ -67,6 +78,14 @@ export function getCurrentGalleryId() {
 
 export function getCurrentBookingId() {
   return currentBookingId;
+}
+
+export function getCurrentEquipmentSectionId() {
+  return currentEquipmentSectionId;
+}
+
+export function getCurrentEquipmentCardId() {
+  return currentEquipmentCardId;
 }
 
 /* ===========================
@@ -280,6 +299,51 @@ export async function renderServiceDetails(categoryId, serviceId) {
 
 }
 
+export async function renderEquipment() {
+
+  pushPath("/equipment");
+
+  app.innerHTML = await Equipment();
+
+  attachEvents();
+
+}
+
+export async function renderEquipmentDetails(sectionId, cardId) {
+
+  currentEquipmentSectionId = Number(sectionId);
+  currentEquipmentCardId = Number(cardId);
+
+  pushPath(
+    `/equipment/${sectionId}/card/${cardId}`
+  );
+
+  const [section, item] = await Promise.all([
+    getEquipmentSection(sectionId),
+    getEquipmentItem(cardId)
+  ]);
+
+  if (
+    !section ||
+    !section.visible ||
+    !item ||
+    item.visible === false ||
+    Number(item.section_id) !== Number(sectionId)
+  ) {
+
+    app.innerHTML =
+      "<h2 style='color:var(--text);text-align:center'>الجهاز غير موجود</h2>";
+
+    return;
+
+  }
+
+  app.innerHTML = await EquipmentDetails(section, item);
+
+  attachEvents();
+
+}
+
 /* ===========================
    Admin
 ========================== */
@@ -437,6 +501,56 @@ export async function renderBookingFieldsManager() {
   pushPath("/admin/booking-fields");
 
   app.innerHTML = await BookingFieldsManager();
+
+  attachEvents();
+
+}
+
+export async function renderEquipmentManager() {
+
+  if (!(await ensureAdmin())) return;
+
+  pushPath("/admin/equipment");
+
+  app.innerHTML = await EquipmentManager();
+
+  attachEvents();
+
+}
+
+export async function renderEquipmentSectionEditor(id = null) {
+
+  if (!(await ensureAdmin())) return;
+
+  pushPath(
+    id
+      ? `/admin/equipment/${id}`
+      : "/admin/equipment/new"
+  );
+
+  app.innerHTML = await EquipmentSectionEditor(id);
+
+  attachEvents();
+
+}
+
+export async function renderEquipmentCardEditor(sectionId, cardId = null) {
+
+  if (!(await ensureAdmin())) return;
+
+  currentEquipmentSectionId = Number(sectionId);
+  currentEquipmentCardId = cardId;
+
+  pushPath(
+    cardId
+      ? `/admin/equipment/${currentEquipmentSectionId}/cards/${cardId}`
+      : `/admin/equipment/${currentEquipmentSectionId}/cards/new`
+  );
+
+  app.innerHTML = await EquipmentCardEditor(
+    currentEquipmentSectionId,
+    cardId
+  );
 
   attachEvents();
 
@@ -628,6 +742,34 @@ async function resolveCurrentRoute() {
 
   }
 
+  if (parts[0] === "equipment") {
+
+    if (
+      parts.length === 4 &&
+      parts[2] === "card" &&
+      Number.isFinite(Number(parts[1])) &&
+      Number.isFinite(Number(parts[3]))
+    ) {
+
+      await renderEquipmentDetails(
+        Number(parts[1]),
+        Number(parts[3])
+      );
+
+      return;
+
+    }
+
+    if (parts.length === 1) {
+
+      await renderEquipment();
+
+      return;
+
+    }
+
+  }
+
   if (parts[0] === "services") {
 
     if (
@@ -713,6 +855,47 @@ async function resolveCurrentRoute() {
     if (parts[1] === "booking-fields") {
 
       await renderBookingFieldsManager();
+
+      return;
+
+    }
+
+    if (parts[1] === "equipment") {
+
+      if (
+        parts.length === 5 &&
+        parts[3] === "cards" &&
+        Number.isFinite(Number(parts[2])) &&
+        isSafeOrNew(parts[4])
+      ) {
+
+        await renderEquipmentCardEditor(
+          Number(parts[2]),
+          parts[4] === "new"
+            ? null
+            : Number(parts[4])
+        );
+
+        return;
+
+      }
+
+      if (
+        parts.length === 3 &&
+        isSafeOrNew(parts[2])
+      ) {
+
+        await renderEquipmentSectionEditor(
+          parts[2] === "new"
+            ? null
+            : Number(parts[2])
+        );
+
+        return;
+
+      }
+
+      await renderEquipmentManager();
 
       return;
 
@@ -944,6 +1127,8 @@ function attachEvents() {
     renderSearch,
     renderServices,
     renderServiceDetails,
+    renderEquipment,
+    renderEquipmentDetails,
 
     navigateBack,
 
@@ -967,12 +1152,17 @@ function attachEvents() {
     renderCategoryServices,
     renderServiceEditor,
     renderBookingFieldsManager,
+    renderEquipmentManager,
+    renderEquipmentSectionEditor,
+    renderEquipmentCardEditor,
 
     getCurrentCategoryId,
     getCurrentServiceId,
     getCurrentCertificateId,
     getCurrentGalleryId,
     getCurrentBookingId,
+    getCurrentEquipmentSectionId,
+    getCurrentEquipmentCardId,
 
   };
 

@@ -116,6 +116,12 @@ export function attachPublicEvents(router) {
 
             break;
 
+          case "equipment":
+
+            router.renderEquipment();
+
+            break;
+
         }
 
       });
@@ -148,6 +154,10 @@ export function attachPublicEvents(router) {
     .querySelectorAll(".service-card")
     .forEach(card => {
 
+      /* كروت التجهيزات تشترك في كلاس service-card للتصميم فقط؛
+         لا تمر عبر handler الخدمات حتى لا يُبنى route خدمات خاطئ */
+      if (card.classList.contains("equipment-card")) return;
+
       card.addEventListener("click", () => {
 
         router.renderServiceDetails(
@@ -156,6 +166,39 @@ export function attachPublicEvents(router) {
         );
 
       });
+
+    });
+
+  /* =========================
+     التجهيزات (كروت عامة)
+  ========================= */
+
+  document
+    .querySelectorAll(".equipment-card")
+    .forEach(card => {
+
+      card.addEventListener("click", () => {
+
+        router.renderEquipmentDetails(
+          Number(card.dataset.section),
+          Number(card.dataset.id)
+        );
+
+      });
+
+    });
+
+  /* =========================
+     رجوع لقائمة التجهيزات
+  ========================= */
+
+  document
+    .querySelector("#backToEquipment")
+    ?.addEventListener("click", () => {
+
+      router.navigateBack(
+        router.renderEquipment
+      );
 
     });
 
@@ -812,6 +855,16 @@ export function attachPublicEvents(router) {
     closeBtnSelector: "#serviceImageCloseBtn",
     prevBtnSelector: "#serviceImageNoPrevBtn",
     nextBtnSelector: "#serviceImageNoNextBtn"
+  });
+
+  initLightbox({
+    cardsSelector: ".equipment-detail-image",
+    imgSelector: ".equipment-detail-image img",
+    overlaySelector: "#equipmentImageOverlay",
+    fullImageSelector: "#equipmentFullImage",
+    closeBtnSelector: "#equipmentImageCloseBtn",
+    prevBtnSelector: "#equipmentNoPrevBtn",
+    nextBtnSelector: "#equipmentNoNextBtn"
   });
 
   /* =========================

@@ -631,6 +631,59 @@ img.logo{
     text-align:center;
 }
 
+/* ==========================
+   Equipment (Public)
+========================== */
+
+.equipment-section{
+    margin-bottom:36px;
+}
+
+.equipment-section-divider{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:10px;
+}
+
+.equipment-divider-line{
+    flex:1;
+    min-width:0;
+    height:14px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:4px;
+}
+
+.equipment-divider-line::before,
+.equipment-divider-line::after{
+    content:"";
+    display:block;
+    height:1px;
+    background:var(--border);
+}
+
+.equipment-divider-title{
+    flex:0 1 auto;
+    min-width:0;
+    color:var(--text);
+    font-size:19px;
+    font-weight:700;
+    margin:0;
+    padding:0 6px;
+    text-align:center;
+    line-height:1.4;
+}
+
+.equipment-divider-sub{
+    color:var(--text-soft);
+    font-size:13px;
+    line-height:1.7;
+    margin:0 0 16px;
+    text-align:center;
+}
+
 .whatsapp-btn{
 
     display:flex;
@@ -1995,4 +2048,218 @@ select.glass-input option{
 .confirm-actions .confirm-ok:hover{
     background:rgba(220,0,0,.75);
     border-color:rgba(255,80,80,.8);
+}
+
+/* ==========================
+   Equipment Admin
+   (واجهة إدارة التجهيزات: خطوط وكروت)
+   — أنماط مقيّدة بصفحة الإدارة فقط
+========================== */
+
+.equipment-admin-actions{
+    margin-bottom:16px;
+}
+
+.equipment-admin-actions .glass-button{
+    width:100%;
+    padding:16px 20px;
+    font-size:16px;
+}
+
+.equipment-line{
+    padding:0;
+    overflow:hidden;
+    border-top:2px solid var(--accent);
+    background:var(--glass-strong);
+}
+
+.equipment-line-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+    padding:16px 18px;
+    border-bottom:1px solid var(--border);
+    background:var(--accent-soft);
+}
+
+.equipment-line-info{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:1 1 auto;
+    min-width:0;
+}
+
+.equipment-line-icon{
+    width:44px;
+    height:44px;
+    flex-shrink:0;
+    border-radius:12px;
+    background:var(--glass-strong);
+    border:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+}
+
+.equipment-line-meta{
+    min-width:0;
+}
+
+.equipment-line-meta strong{
+    color:var(--text);
+    font-size:16px;
+    font-weight:700;
+    overflow-wrap:break-word;
+    white-space:normal;
+    word-break:normal;
+}
+
+.equipment-line-sub{
+    color:var(--text-soft);
+    font-size:13px;
+    opacity:.8;
+}
+
+.equipment-line-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    flex-shrink:0;
+}
+
+.equipment-line-cards{
+    padding:12px 14px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.equipment-card-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 12px;
+    border-radius:14px;
+    background:var(--glass);
+    border:1px solid var(--border);
+    flex-wrap:wrap;
+}
+
+.equipment-card-thumb{
+    width:44px;
+    height:44px;
+    flex-shrink:0;
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--glass-strong);
+    border:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+}
+
+.equipment-card-thumb img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.equipment-card-info{
+    flex:1 1 auto;
+    min-width:0;
+}
+
+.equipment-card-info strong{
+    color:var(--text);
+    font-size:15px;
+    font-weight:700;
+    overflow-wrap:break-word;
+    white-space:normal;
+    word-break:normal;
+}
+
+.equipment-card-sub{
+    color:var(--text-soft);
+    font-size:12px;
+    opacity:.8;
+}
+
+.equipment-visible-badge{
+    flex-shrink:0;
+    padding:3px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--text);
+    background:rgba(0,140,70,.45);
+    backdrop-filter:blur(var(--blur-sm));
+    -webkit-backdrop-filter:blur(var(--blur-sm));
+}
+
+.equipment-visible-badge.hidden{
+    background:rgba(180,0,0,.45);
+}
+
+.equipment-card-actions{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    flex-shrink:0;
+}
+
+.equipment-card-actions .glass-button{
+    padding:8px 10px;
+    font-size:14px;
+    border-radius:10px;
+}
+
+.equipment-line-title-row,
+.equipment-card-title-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-width:0;
+}
+
+.equipment-line-title-row strong,
+.equipment-card-title-row strong{
+    min-width:0;
+}
+
+.equipment-type-badge{
+    flex-shrink:0;
+    padding:3px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+    line-height:1.4;
+    white-space:nowrap;
+}
+
+.equipment-type-badge-line{
+    color:rgba(255,70,70,1);
+    background:var(--accent-soft);
+    border:1px solid var(--border);
+}
+
+.equipment-type-badge-card{
+    color:var(--text-soft);
+    background:var(--glass-strong);
+    border:1px solid var(--border);
+}
+
+.equipment-empty{
+    color:var(--text-soft);
+    font-size:13px;
+    opacity:.7;
+    text-align:center;
+    padding:8px;
 }
