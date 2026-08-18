@@ -217,6 +217,10 @@ async function renderReplace(path, pageFn, needsAdmin = true) {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await pageFn();
+
+  if (isStaleRender(startedAt)) return;
+
   renderSeq++;
 
   const target = normalizePath(path);
@@ -237,13 +241,10 @@ async function renderReplace(path, pageFn, needsAdmin = true) {
 
   }
 
-  /* إفراغ المحتوى الحالي قبل انتظار الصفحة الجديدة حتى لا يبقى
-     محتوى الصفحة السابقة ظاهرًا أثناء التحميل (منع الـFlash) */
-  const renderToken = renderSeq;
-
+  /* إفراغ المحتوى الحالي قبل عرض الصفحة الجديدة لمنع الـFlash */
   app.innerHTML = "";
 
-  if (!setPage(renderToken, await pageFn())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -267,11 +268,15 @@ export async function renderHomeReplace() {
 
 export async function renderHome() {
 
+  const startedAt = renderSeq;
+
+  const html = await Home();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await Home())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -279,11 +284,15 @@ export async function renderHome() {
 
 export async function renderAbout() {
 
+  const startedAt = renderSeq;
+
+  const html = await About();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/about");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await About())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -291,11 +300,15 @@ export async function renderAbout() {
 
 export async function renderGallery() {
 
+  const startedAt = renderSeq;
+
+  const html = await Gallery();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/gallery");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await Gallery())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -303,11 +316,15 @@ export async function renderGallery() {
 
 export async function renderBooking() {
 
+  const startedAt = renderSeq;
+
+  const html = await Booking();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/booking");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await Booking())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -315,11 +332,15 @@ export async function renderBooking() {
 
 export async function renderPricing() {
 
+  const startedAt = renderSeq;
+
+  const html = await Pricing();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/pricing");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await Pricing())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -327,11 +348,15 @@ export async function renderPricing() {
 
 export async function renderSearch() {
 
+  const startedAt = renderSeq;
+
+  const html = await Search();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/search");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await Search())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -341,11 +366,11 @@ export async function renderServices(categoryId) {
 
   currentCategoryId = Number(categoryId);
 
-  pushPath(`/services/${categoryId}`);
-
-  const renderToken = renderSeq;
+  const startedAt = renderSeq;
 
   const categories = await getCategories();
+
+  if (isStaleRender(startedAt)) return;
 
   const category = categories.find(
     c => Number(c.id) === Number(categoryId)
@@ -353,14 +378,22 @@ export async function renderServices(categoryId) {
 
   if (!category) {
 
-    setPage(renderToken,
+    pushPath(`/services/${categoryId}`);
+
+    setPage(renderSeq,
       "<h2 style='color:var(--text);text-align:center'>القسم غير موجود</h2>");
 
     return;
 
   }
 
-  if (!setPage(renderToken, await Services(category))) return;
+  const html = await Services(category);
+
+  if (isStaleRender(startedAt)) return;
+
+  pushPath(`/services/${categoryId}`);
+
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -371,24 +404,34 @@ export async function renderServiceDetails(categoryId, serviceId) {
   currentCategoryId = Number(categoryId);
   currentServiceId = Number(serviceId);
 
-  pushPath(
-    `/services/${categoryId}/service/${serviceId}`
-  );
-
-  const renderToken = renderSeq;
+  const startedAt = renderSeq;
 
   const service = await getService(serviceId);
 
+  if (isStaleRender(startedAt)) return;
+
   if (!service) {
 
-    setPage(renderToken,
+    pushPath(
+      `/services/${categoryId}/service/${serviceId}`
+    );
+
+    setPage(renderSeq,
       "<h2 style='color:var(--text);text-align:center'>الخدمة غير موجودة</h2>");
 
     return;
 
   }
 
-  if (!setPage(renderToken, await ServiceDetails(service))) return;
+  const html = await ServiceDetails(service);
+
+  if (isStaleRender(startedAt)) return;
+
+  pushPath(
+    `/services/${categoryId}/service/${serviceId}`
+  );
+
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -396,11 +439,15 @@ export async function renderServiceDetails(categoryId, serviceId) {
 
 export async function renderEquipment() {
 
+  const startedAt = renderSeq;
+
+  const html = await Equipment();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/equipment");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await Equipment())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -411,16 +458,14 @@ export async function renderEquipmentDetails(sectionId, cardId) {
   currentEquipmentSectionId = Number(sectionId);
   currentEquipmentCardId = Number(cardId);
 
-  pushPath(
-    `/equipment/${sectionId}/card/${cardId}`
-  );
-
-  const renderToken = renderSeq;
+  const startedAt = renderSeq;
 
   const [section, item] = await Promise.all([
     getEquipmentSection(sectionId),
     getEquipmentItem(cardId)
   ]);
+
+  if (isStaleRender(startedAt)) return;
 
   if (
     !section ||
@@ -430,14 +475,26 @@ export async function renderEquipmentDetails(sectionId, cardId) {
     Number(item.section_id) !== Number(sectionId)
   ) {
 
-    setPage(renderToken,
+    pushPath(
+      `/equipment/${sectionId}/card/${cardId}`
+    );
+
+    setPage(renderSeq,
       "<h2 style='color:var(--text);text-align:center'>الجهاز غير موجود</h2>");
 
     return;
 
   }
 
-  if (!setPage(renderToken, await EquipmentDetails(section, item))) return;
+  const html = await EquipmentDetails(section, item);
+
+  if (isStaleRender(startedAt)) return;
+
+  pushPath(
+    `/equipment/${sectionId}/card/${cardId}`
+  );
+
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -449,11 +506,15 @@ export async function renderEquipmentDetails(sectionId, cardId) {
 
 export async function renderAdminLogin() {
 
+  const startedAt = renderSeq;
+
+  const html = await AdminLogin();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/login");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await AdminLogin())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -489,11 +550,13 @@ export async function renderSocialLinksManager() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await SocialLinksManager();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/social");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await SocialLinksManager())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -507,11 +570,13 @@ export async function renderAdminDashboard() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await AdminDashboard();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/dashboard");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await AdminDashboard())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -525,11 +590,13 @@ export async function renderTypographyManager() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await TypographyManager();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/typography");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await TypographyManager())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -543,11 +610,13 @@ export async function renderGeneralSettings() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await GeneralSettings();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/settings");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await GeneralSettings())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -561,11 +630,13 @@ export async function renderCategoriesManager() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await CategoriesManager();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/categories");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await CategoriesManager())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -579,11 +650,13 @@ export async function renderServicesManager() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await ServicesManager();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/services");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await ServicesManager())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -599,11 +672,13 @@ export async function renderCategoryServices(categoryId) {
 
   currentCategoryId = Number(categoryId);
 
+  const html = await CategoryServices(categoryId);
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath(`/admin/categories/${categoryId}`);
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await CategoryServices(categoryId))) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -620,16 +695,18 @@ export async function renderServiceEditor(categoryId, serviceId) {
   currentCategoryId = Number(categoryId);
   currentServiceId = Number(serviceId);
 
+  const html = await ServiceEditor(
+    categoryId,
+    serviceId
+  );
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath(
     `/admin/services/${categoryId}/${serviceId}`
   );
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await ServiceEditor(
-    categoryId,
-    serviceId
-  ))) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -643,11 +720,13 @@ export async function renderAdminAccount() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await AdminAccount();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/account");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await AdminAccount())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -661,11 +740,13 @@ export async function renderBookingFieldsManager() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await BookingFieldsManager();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/booking-fields");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await BookingFieldsManager())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -679,11 +760,13 @@ export async function renderEquipmentManager() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await EquipmentManager();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/equipment");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await EquipmentManager())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -697,15 +780,17 @@ export async function renderEquipmentSectionEditor(id = null) {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await EquipmentSectionEditor(id);
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath(
     id
       ? `/admin/equipment/${id}`
       : "/admin/equipment/new"
   );
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await EquipmentSectionEditor(id))) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -722,18 +807,20 @@ export async function renderEquipmentCardEditor(sectionId, cardId = null) {
   currentEquipmentSectionId = Number(sectionId);
   currentEquipmentCardId = cardId;
 
+  const html = await EquipmentCardEditor(
+    currentEquipmentSectionId,
+    cardId
+  );
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath(
     cardId
       ? `/admin/equipment/${currentEquipmentSectionId}/cards/${cardId}`
       : `/admin/equipment/${currentEquipmentSectionId}/cards/new`
   );
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await EquipmentCardEditor(
-    currentEquipmentSectionId,
-    cardId
-  ))) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -747,11 +834,13 @@ export async function renderHomeSections() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await HomeSections();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/home-sections");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await HomeSections())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -765,15 +854,17 @@ export async function renderSectionEditor(id = null) {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await SectionEditor(id);
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath(
     id
       ? `/admin/home-sections/${id}`
       : "/admin/home-sections/new"
   );
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await SectionEditor(id))) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -787,11 +878,13 @@ export async function renderDoctorProfile() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await DoctorProfile();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/doctor");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await DoctorProfile())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -805,11 +898,13 @@ export async function renderDoctorCertificates() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await DoctorCertificates();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/doctor/certificates");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await DoctorCertificates())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -825,15 +920,17 @@ export async function renderCertificateEditor(id = null) {
 
   currentCertificateId = id;
 
+  const html = await CertificateEditor(id);
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath(
     id
       ? `/admin/doctor/certificates/${id}`
       : "/admin/doctor/certificates/new"
   );
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await CertificateEditor(id))) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -847,11 +944,13 @@ export async function renderGalleryManager() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await GalleryManager();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/gallery");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await GalleryManager())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -867,15 +966,17 @@ export async function renderGalleryEditor(id = null) {
 
   currentGalleryId = id;
 
+  const html = await GalleryEditor(id);
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath(
     id
       ? `/admin/gallery/${id}`
       : "/admin/gallery/new"
   );
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await GalleryEditor(id))) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -889,11 +990,13 @@ export async function renderBookingsManager() {
 
   if (isStaleRender(startedAt)) return;
 
+  const html = await BookingsManager();
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath("/admin/bookings");
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await BookingsManager())) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
@@ -909,11 +1012,13 @@ export async function renderBookingEditor(id) {
 
   currentBookingId = id;
 
+  const html = await BookingEditor(id);
+
+  if (isStaleRender(startedAt)) return;
+
   pushPath(`/admin/bookings/${id}`);
 
-  const renderToken = renderSeq;
-
-  if (!setPage(renderToken, await BookingEditor(id))) return;
+  setPage(renderSeq, html);
 
   attachEvents();
 
