@@ -14,7 +14,7 @@ export function attachBookingsEvents(router) {
     .querySelector("#backToBookings")
     ?.addEventListener(
       "click",
-      router.renderBookingsManager
+      () => router.navigateBack(router.renderBookingsManager)
     );
 
   /* =========================
@@ -102,7 +102,7 @@ export function attachBookingsEvents(router) {
 
         showAlert("تم حفظ الحالة");
 
-        router.renderBookingsManager();
+        router.navigateBack(router.renderBookingsManager);
 
       }
 

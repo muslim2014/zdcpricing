@@ -22,14 +22,14 @@ export function attachAdminEvents(router) {
     .querySelector("#backToDashboard")
     ?.addEventListener(
       "click",
-      router.renderAdminDashboard
+      () => router.navigateBack(router.renderAdminDashboard)
     );
 
   document
     .querySelector("#adminBackBtn")
     ?.addEventListener(
       "click",
-      router.renderAdminLogin
+      () => router.navigateBack(router.renderAdminLoginReplace)
     );
 
   attachLoginEvents(router);

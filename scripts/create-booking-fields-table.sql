@@ -16,6 +16,8 @@ create table if not exists public.booking_fields (
 
   options jsonb not null default '[]'::jsonb,
 
+  data_source text not null default 'manual',
+
   created_at timestamptz not null default now(),
 
   updated_at timestamptz not null default now()
@@ -138,24 +140,24 @@ create policy "booking_fields_delete_auth"
 
 insert into public.booking_fields
 
-  (field_key, title, type, visible, required, sort_order, options)
+  (field_key, title, type, visible, required, sort_order, options, data_source)
 
 values
 
-  ('name', 'الاسم', 'text', true, true, 1, '[]'::jsonb),
+  ('name', 'الاسم', 'text', true, true, 1, '[]'::jsonb, 'manual'),
 
-  ('phone', 'رقم الموبايل', 'tel', true, true, 2, '[]'::jsonb),
+  ('phone', 'رقم الموبايل', 'tel', true, true, 2, '[]'::jsonb, 'manual'),
 
-  ('age', 'السن', 'number', true, true, 3, '[]'::jsonb),
+  ('age', 'السن', 'number', true, true, 3, '[]'::jsonb, 'manual'),
 
-  ('medical_history', 'التاريخ المرضي', 'multiselect', true, false, 4, '["لا يوجد","مرض السكري","ارتفاع ضغط الدم","أمراض القلب","سيولة الدم","حساسية من الأدوية","التهاب كبدي","حمل","أخرى"]'::jsonb),
+  ('medical_history', 'التاريخ المرضي', 'multiselect', true, false, 4, '["لا يوجد","مرض السكري","ارتفاع ضغط الدم","أمراض القلب","سيولة الدم","حساسية من الأدوية","التهاب كبدي","حمل","أخرى"]'::jsonb, 'manual'),
 
-  ('notes', 'ملاحظات', 'textarea', true, false, 5, '[]'::jsonb),
+  ('notes', 'ملاحظات', 'textarea', true, false, 5, '[]'::jsonb, 'manual'),
 
-  ('service', 'الخدمة', 'select', true, true, 6, '[]'::jsonb),
+  ('service', 'الخدمة', 'select', true, true, 6, '[]'::jsonb, 'services'),
 
-  ('date', 'التاريخ', 'date', true, true, 7, '[]'::jsonb),
+  ('date', 'التاريخ', 'date', true, true, 7, '[]'::jsonb, 'manual'),
 
-  ('time', 'الوقت', 'time', true, true, 8, '[]'::jsonb)
+  ('time', 'الوقت', 'time', true, true, 8, '[]'::jsonb, 'manual')
 
 on conflict (field_key) do nothing;

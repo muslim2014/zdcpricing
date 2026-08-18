@@ -36,6 +36,22 @@ export async function getSection(id) {
 
 /* ========================= */
 
+export async function createSection(section) {
+
+  const { data, error } = await supabase
+    .from("sections")
+    .insert([section])
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
+
+}
+
+/* ========================= */
+
 export async function updateSection(id, updates) {
 
   const { error } = await supabase

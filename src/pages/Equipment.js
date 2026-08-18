@@ -15,7 +15,7 @@ export async function Equipment() {
 
         <button
           class="back-btn"
-          id="backToHome"
+          id="backToPublicHome"
           type="button"
         >
           ←

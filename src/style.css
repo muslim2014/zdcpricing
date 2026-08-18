@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
-
 :root{
   /* Teal (Original) */
   --app-font:'Cairo',sans-serif;
@@ -14,6 +12,9 @@
   --border-hover:rgba(255,255,255,.35);
   --accent:#2EA3B3;
   --accent-soft:rgba(46,163,179,.15);
+  --blur-sm:10px;
+  --blur-md:12px;
+  --blur-lg:16px;
   --overlay:rgba(0,0,0,.94);
 }
 
@@ -30,6 +31,9 @@
   --border-hover:rgba(62,205,214,.5);
   --accent:#3ECDD6;
   --accent-soft:rgba(62,205,214,.13);
+  --blur-sm:10px;
+  --blur-md:12px;
+  --blur-lg:16px;
   --overlay:rgba(0,0,0,.96);
 }
 
@@ -189,7 +193,8 @@ img.logo{
     background:var(--glass);
     border:1px solid var(--border);
     border-radius:22px;
-    backdrop-filter:blur(16px);
+    backdrop-filter:blur(var(--blur-lg));
+    -webkit-backdrop-filter:blur(var(--blur-lg));
 }
 
 .card:hover{
@@ -276,6 +281,12 @@ img.logo{
     margin-bottom:20px;
 }
 
+/* صفحة تجهيزات العيادة: عنوان أصغر يتناسق مع عناوين باقي الصفحات
+   (مخصصة فقط لهذه الصفحة دون بقية الصفحات) */
+.equipment-page .top-bar h2{
+    font-size:20px;
+}
+
 .back-btn{
     position:fixed;
     top:18px;
@@ -286,7 +297,7 @@ img.logo{
     width:46px;
     height:46px;
 
-    border:none;
+    border:1px solid var(--border);
     border-radius:14px;
 
     cursor:pointer;
@@ -295,6 +306,8 @@ img.logo{
     font-size:24px;
 
     background:var(--accent-soft);
+    backdrop-filter:blur(var(--blur-md));
+    -webkit-backdrop-filter:blur(var(--blur-md));
 
     display:flex;
     align-items:center;
@@ -334,7 +347,8 @@ img.logo{
     background:var(--glass);
     border:1px solid var(--border);
     border-radius:22px;
-    backdrop-filter:blur(16px);
+    backdrop-filter:blur(var(--blur-lg));
+    -webkit-backdrop-filter:blur(var(--blur-lg));
 }
 
 .category-card:hover{
@@ -429,7 +443,8 @@ img.logo{
     background:var(--glass);
     border:1px solid var(--border);
     border-radius:22px;
-    backdrop-filter:blur(16px);
+    backdrop-filter:blur(var(--blur-lg));
+    -webkit-backdrop-filter:blur(var(--blur-lg));
 }
 
 .service-card:hover{
@@ -456,8 +471,8 @@ img.logo{
     color:var(--text);
     background:rgba(180,0,0,.25);
     border:1px solid rgba(255,80,80,.35);
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(var(--blur-md));
+    -webkit-backdrop-filter:blur(var(--blur-md));
     cursor:pointer;
     transition:.25s;
 }
@@ -602,7 +617,7 @@ img.logo{
 }
 
 .detail-card-title{
-    color:var(--accent);
+    color:var(--text);
     font-size:17px;
     font-weight:700;
     margin-bottom:10px;
@@ -773,8 +788,8 @@ img.logo{
 
     border:1px solid var(--border);
 
-    backdrop-filter:blur(16px);
-    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(var(--blur-lg));
+    -webkit-backdrop-filter:blur(var(--blur-lg));
 
     transition:.25s;
 
@@ -828,8 +843,8 @@ img.logo{
   color: var(--text);
 
   background: var(--accent-soft);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
 
   border: 1px solid var(--border);
 
@@ -860,8 +875,8 @@ img.logo{
   color: var(--text);
 
   background: var(--accent-soft);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
 
   border: 1px solid var(--border);
 
@@ -893,8 +908,8 @@ margin-bottom:14px;
 border-radius:14px;
 background:var(--glass);
 border:1px solid var(--border);
-backdrop-filter:blur(10px);
--webkit-backdrop-filter:blur(10px);
+backdrop-filter:blur(var(--blur-sm));
+-webkit-backdrop-filter:blur(var(--blur-sm));
 }
 
 /* ==========================
@@ -1091,8 +1106,8 @@ font-size:13px;
     border-radius:22px;
     background:var(--glass);
     border:1px solid var(--border);
-    backdrop-filter:blur(16px);
-    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(var(--blur-lg));
+    -webkit-backdrop-filter:blur(var(--blur-lg));
     transition:.25s;
 }
 
@@ -1162,7 +1177,8 @@ font-size:13px;
 
     font-weight:700;
 
-    backdrop-filter:blur(12px);
+    backdrop-filter:blur(var(--blur-md));
+    -webkit-backdrop-filter:blur(var(--blur-md));
 
     background:rgba(0,0,0,.35);
 
@@ -1405,7 +1421,8 @@ font-size:13px;
     font-size:22px;
     color:#fff;
     background:rgba(255,255,255,.12);
-    backdrop-filter:blur(12px);
+    backdrop-filter:blur(var(--blur-md));
+    -webkit-backdrop-filter:blur(var(--blur-md));
     border:1px solid rgba(255,255,255,.15);
     display:flex;
     align-items:center;
@@ -1431,7 +1448,8 @@ font-size:13px;
     font-size:24px;
     color:#fff;
     background:rgba(255,255,255,.1);
-    backdrop-filter:blur(12px);
+    backdrop-filter:blur(var(--blur-md));
+    -webkit-backdrop-filter:blur(var(--blur-md));
     border:1px solid rgba(255,255,255,.12);
     display:flex;
     align-items:center;
@@ -1495,8 +1513,8 @@ font-size:13px;
 
     background:var(--glass);
     border:1px solid var(--border);
-    backdrop-filter:blur(16px);
-    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(var(--blur-lg));
+    -webkit-backdrop-filter:blur(var(--blur-lg));
 }
 
 .glass-card .form-group{
@@ -1521,8 +1539,8 @@ font-size:13px;
 
     background:var(--glass);
     border:1px solid var(--border);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
+    backdrop-filter:blur(var(--blur-sm));
+    -webkit-backdrop-filter:blur(var(--blur-sm));
     transition:.25s;
 }
 
@@ -1575,8 +1593,8 @@ select.glass-input option{
 
     background:var(--glass);
     border:1px solid var(--border);
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(var(--blur-md));
+    -webkit-backdrop-filter:blur(var(--blur-md));
     transition:.25s;
 }
 
@@ -1632,8 +1650,8 @@ select.glass-input option{
     color:var(--text);
     background:var(--glass);
     border:1px solid var(--border);
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(var(--blur-md));
+    -webkit-backdrop-filter:blur(var(--blur-md));
     transition:.25s;
 }
 
@@ -1822,7 +1840,7 @@ select.glass-input option{
 }
 
 .doctor-group{
-    border-top:1px solid rgba(255,255,255,.14);
+    border-top:1px solid var(--border);
     padding-top:8px;
 }
 
@@ -1861,9 +1879,9 @@ select.glass-input option{
 
     border:1px solid var(--border);
 
-    backdrop-filter:blur(16px);
+    backdrop-filter:blur(var(--blur-lg));
 
-    -webkit-backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(var(--blur-lg));
 
 }
 
@@ -1933,9 +1951,9 @@ select.glass-input option{
 
     background:rgba(180,0,0,.7);
 
-    backdrop-filter:blur(8px);
+    backdrop-filter:blur(var(--blur-sm));
 
-    -webkit-backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(var(--blur-sm));
 
 }
 

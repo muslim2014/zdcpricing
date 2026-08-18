@@ -10,6 +10,18 @@ import { showAlert } from "../../utils/dialogs";
 export function attachHomeSectionsEvents(router) {
 
   /* ========================= */
+  /* إضافة كارت جديد */
+  /* ========================= */
+
+  document
+    .querySelector(".add-section")
+    ?.addEventListener("click", () => {
+
+      router.renderSectionEditor(null);
+
+    });
+
+  /* ========================= */
   /* إظهار / إخفاء */
   /* ========================= */
 

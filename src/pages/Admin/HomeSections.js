@@ -20,6 +20,12 @@ export async function HomeSections() {
 
       <div class="glass-card">
 
+        ${GlassButton("➕ إضافة كارت", {
+          className: "add-section"
+        })}
+
+        <div style="height:16px"></div>
+
         ${sections.map(section => `
 
           <div class="admin-list-item">

@@ -27,6 +27,8 @@ export function AdminDashboard() {
 
         ${GlassButton("📋 إدارة حجز المواعيد", { id: "bookingFieldsBtn" })}
 
+        ${GlassButton("🦷 تجهيزات العيادة", { id: "equipmentBtn" })}
+
         ${GlassButton("📅 إدارة الحجوزات", { id: "bookingsBtn" })}
 
         ${GlassButton("🌐 روابط التواصل", { id: "socialBtn" })}

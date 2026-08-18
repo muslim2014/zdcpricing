@@ -16,7 +16,7 @@ export function attachGalleryEditorEvents(router) {
     .querySelector("#backToGallery")
     ?.addEventListener(
       "click",
-      router.renderGalleryManager
+      () => router.navigateBack(router.renderGalleryManager)
     );
 
   const imageInput =
@@ -77,7 +77,7 @@ export function attachGalleryEditorEvents(router) {
 
         showAlert("تم حفظ الصورة");
 
-        await router.renderGalleryManager();
+        router.navigateBack(router.renderGalleryManager);
 
       } catch (error) {
 

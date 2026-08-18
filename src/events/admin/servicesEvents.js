@@ -53,7 +53,7 @@ export function attachServicesEvents(router) {
     .querySelector("#backToServicesManager")
     ?.addEventListener(
       "click",
-      router.renderServicesManager
+      () => router.navigateBack(router.renderServicesManager)
     );
 
   document
@@ -209,9 +209,13 @@ export function attachServicesEvents(router) {
     .querySelector("#backToCategoryServices")
     ?.addEventListener("click", () => {
 
-      router.renderCategoryServices(
-        router.getCurrentCategoryId()
-      );
+      router.navigateBack(() => {
+
+        router.renderCategoryServices(
+          router.getCurrentCategoryId()
+        );
+
+      });
 
     });
 
@@ -311,9 +315,13 @@ export function attachServicesEvents(router) {
 
       pendingReplacedImages = [];
 
-      await router.renderCategoryServices(
-        router.getCurrentCategoryId()
-      );
+      router.navigateBack(() => {
+
+        router.renderCategoryServices(
+          router.getCurrentCategoryId()
+        );
+
+      });
 
     });
 
@@ -333,9 +341,13 @@ export function attachServicesEvents(router) {
 
       );
 
-      await router.renderCategoryServices(
-        router.getCurrentCategoryId()
-      );
+      router.navigateBack(() => {
+
+        router.renderCategoryServices(
+          router.getCurrentCategoryId()
+        );
+
+      });
 
     });
 

@@ -1,4 +1,6 @@
 import {
+  getSections,
+  createSection,
   saveSection
 } from "../../api/sectionsApi";
 
@@ -10,7 +12,7 @@ export function attachSectionEditorEvents(router) {
     .querySelector("#backToHomeSections")
     ?.addEventListener(
       "click",
-      router.renderHomeSections
+      () => router.navigateBack(router.renderHomeSections)
     );
 
   document
@@ -19,11 +21,27 @@ export function attachSectionEditorEvents(router) {
 
       try {
 
-        const id = Number(
-          document.querySelector("#saveSectionBtn").dataset.id
-        );
+        const idRaw =
+          document.querySelector("#saveSectionBtn").dataset.id;
 
-        await saveSection(id, {
+        const id = idRaw ? Number(idRaw) : null;
+
+        const sectionKey = document
+          .querySelector("#sectionKey")
+          .value
+          .trim();
+
+        if (!sectionKey) {
+
+          showAlert("المفتاح (section_key) مطلوب");
+
+          return;
+
+        }
+
+        const payload = {
+
+          section_key: sectionKey,
 
           title: document
             .querySelector("#sectionTitle")
@@ -48,19 +66,49 @@ export function attachSectionEditorEvents(router) {
           button_link: document
             .querySelector("#sectionButtonLink")
             .value
-            .trim()
+            .trim(),
 
-        });
+          visible: document
+            .querySelector("#sectionVisible")
+            .checked
 
-        showAlert("تم حفظ التعديلات");
+        };
 
-        await router.renderHomeSections();
+        if (id) {
+
+          await saveSection(id, payload);
+
+        } else {
+
+          const sections = await getSections("home");
+
+          const nextSortOrder = sections.reduce(
+            (max, section) =>
+              Math.max(max, section.sort_order || 0),
+            0
+          ) + 1;
+
+          await createSection({
+            page: "home",
+            ...payload,
+            featured: false,
+            sort_order: nextSortOrder
+          });
+
+        }
+
+        showAlert(id ? "تم حفظ التعديلات" : "تمت إضافة الكارت");
+
+        router.navigateBack(router.renderHomeSections);
 
       } catch (error) {
 
         console.error(error);
 
-        showAlert("حدث خطأ أثناء الحفظ");
+        showAlert(
+          error?.message ||
+          "حدث خطأ أثناء الحفظ"
+        );
 
       }
 

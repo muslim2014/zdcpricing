@@ -178,33 +178,97 @@ export function attachBookingEvents(router) {
 
       try {
 
+        /* تحديد الحقول الظاهرة فقط حتى لا يتأثر الإرسال
+           عند إخفاء أي حقل من Admin */
+        let bookingFields = [];
+
+        try {
+
+          bookingFields =
+            (await getBookingFields()) || [];
+
+        } catch (error) {
+
+          console.error(
+            "[booking] فشل قراءة حقول الحجز:",
+            error
+          );
+
+        }
+
+        const visibleKeys = new Set(
+          bookingFields
+            .filter(field => field.visible === true)
+            .map(field => field.field_key)
+        );
+
+        /* قراءة قيمة الحقل بأمان: أي حقل مخفي أو غير موجود
+           يُرجَع له "" بدل Any Crash على null */
+        function readInputValue(fieldKey) {
+
+          const el =
+            document.getElementById(
+              toFieldId(fieldKey)
+            );
+
+          return el ? el.value.trim() : "";
+
+        }
+
+        const hasName =
+          visibleKeys.has("name");
+
+        const hasPhone =
+          visibleKeys.has("phone");
+
         const full_name =
-          document
-            .querySelector("#bookingName")
-            .value
-            .trim();
+          hasName
+            ? readInputValue("name")
+            : "";
 
         const phone =
-          document
-            .querySelector("#bookingPhone")
-            .value
-            .trim();
+          hasPhone
+            ? readInputValue("phone")
+            : "";
 
-        if (!full_name || !phone) {
+        if (hasName && hasPhone) {
 
-          showAlert("يرجى إدخال الاسم ورقم الهاتف");
+          if (!full_name || !phone) {
+
+            showAlert("يرجى إدخال الاسم ورقم الهاتف");
+
+            return;
+
+          }
+
+        } else if (hasName && !full_name) {
+
+          showAlert("يرجى إدخال الاسم");
+
+          return;
+
+        } else if (hasPhone && !phone) {
+
+          showAlert("يرجى إدخال رقم الهاتف");
 
           return;
 
         }
 
         const serviceSelect =
-          document.querySelector("#bookingService");
+          visibleKeys.has("service")
+            ? document.querySelector("#bookingService")
+            : null;
 
         const option =
+          serviceSelect &&
           serviceSelect.options[
             serviceSelect.selectedIndex
-          ];
+          ]
+            ? serviceSelect.options[
+                serviceSelect.selectedIndex
+              ]
+            : null;
 
         const booking = {
 
@@ -213,25 +277,27 @@ export function attachBookingEvents(router) {
           phone,
 
           service_id:
-            serviceSelect.value
+            serviceSelect && serviceSelect.value
               ? Number(serviceSelect.value)
               : null,
 
           service_name:
-            option.dataset.name || "",
+            option?.dataset?.name || "",
 
           preferred_date:
-            document.querySelector("#bookingDate")
-              .value || null,
+            visibleKeys.has("date")
+              ? (readInputValue("date") || null)
+              : null,
 
           preferred_time:
-            document.querySelector("#bookingTime")
-              .value || null,
+            visibleKeys.has("time")
+              ? (readInputValue("time") || null)
+              : null,
 
           notes:
-            document.querySelector("#bookingNotes")
-              .value
-              .trim(),
+            visibleKeys.has("notes")
+              ? readInputValue("notes")
+              : "",
 
           status: "new"
 

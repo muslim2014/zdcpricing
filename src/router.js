@@ -183,6 +183,57 @@ export function navigateBack(fallback) {
 }
 
 /* ===========================
+   عرض صفحة باستبدال إدخال الـ history الحالي
+   (بدل إضافة إدخال جديد) — لمنع تراكم صفحات
+   Admin/Login في الـ history أثناء الدخول/الخروج
+   دون تغيير pushPath/onPopState.
+========================== */
+
+async function renderReplace(path, pageFn, needsAdmin = true) {
+
+  if (needsAdmin && !(await ensureAdmin())) return;
+
+  const target = normalizePath(path);
+
+  if (currentPath() !== target) {
+
+    window.history.replaceState(null, "", target);
+
+  }
+
+  if (appStack.length) {
+
+    appStack[appStack.length - 1] = target;
+
+  } else {
+
+    appStack.push(target);
+
+  }
+
+  /* إفراغ المحتوى الحالي قبل انتظار الصفحة الجديدة حتى لا يبقى
+     محتوى الصفحة السابقة ظاهرًا أثناء التحميل (منع الـFlash) */
+  app.innerHTML = "";
+
+  app.innerHTML = await pageFn();
+
+  attachEvents();
+
+}
+
+export async function renderAdminDashboardReplace() {
+  return renderReplace("/admin/dashboard", AdminDashboard);
+}
+
+export async function renderAdminLoginReplace() {
+  return renderReplace("/admin/login", AdminLogin, false);
+}
+
+export async function renderHomeReplace() {
+  return renderReplace("/", Home, false);
+}
+
+/* ===========================
    Public
 ========================== */
 
@@ -568,11 +619,15 @@ export async function renderHomeSections() {
 
 }
 
-export async function renderSectionEditor(id) {
+export async function renderSectionEditor(id = null) {
 
   if (!(await ensureAdmin())) return;
 
-  pushPath(`/admin/home-sections/${id}`);
+  pushPath(
+    id
+      ? `/admin/home-sections/${id}`
+      : "/admin/home-sections/new"
+  );
 
   app.innerHTML = await SectionEditor(id);
 
@@ -905,10 +960,14 @@ async function resolveCurrentRoute() {
 
       if (
         parts.length === 3 &&
-        Number.isFinite(Number(parts[2]))
+        isSafeOrNew(parts[2])
       ) {
 
-        await renderSectionEditor(Number(parts[2]));
+        await renderSectionEditor(
+          parts[2] === "new"
+            ? null
+            : Number(parts[2])
+        );
 
         return;
 
@@ -1134,6 +1193,9 @@ function attachEvents() {
 
     renderAdminLogin,
     renderAdminDashboard,
+    renderAdminDashboardReplace,
+    renderAdminLoginReplace,
+    renderHomeReplace,
     renderGeneralSettings,
     renderHomeSections,
     renderSectionEditor,
@@ -1167,14 +1229,25 @@ function attachEvents() {
   };
 
   attachPublicEvents(router);
-  attachAdminEvents(router);
+
+  /* أحداث الإدارة تُربط على صفحات الإدارة فقط، حتى لا تتسرب معالجات
+     Admin إلى صفحات عامة (مثل زر الرجوع الخاص بمحررات Equipment) */
+  if (currentPath().startsWith("/admin")) {
+
+    attachAdminEvents(router);
+
+  }
 
   ensureHomeNav(router);
 
 }
 
-/* يضيف زر الرئيسية (🏠) أسفل زر الرجوع في الصفحات العامة الداخلية
-   دون إظهاره في الصفحة الرئيسية أو صفحات الإدارة */
+/* يضيف زر الرئيسية (🏠) في كل صفحات الموقع بنفس الشكل والزجاجية والأيقونة:
+   - Public → الصفحة الرئيسية العامة (/) بشكل مباشر
+   - Admin → لوحة التحكم (/admin/dashboard) بشكل مباشر
+   مكانه أسفل زر الرجوع مباشرة، ويُضاف مرة واحدة لكل صفحة.
+   لا يظهر في الصفحة الرئيسية نفسها ولا في صفحة تسجيل الدخول.
+   Home هو Shortcut مباشر (ليس Back) ولا يستخدم navigateBack. */
 function ensureHomeNav(router) {
 
   if (document.querySelector("#homeBtn")) return;
@@ -1183,7 +1256,19 @@ function ensureHomeNav(router) {
 
   if (path === "/") return;
 
-  if (path.startsWith("/admin")) return;
+  if (path === "/admin/login") return;
+
+  const isAdmin = path.startsWith("/admin");
+
+  const homeTarget =
+    isAdmin
+      ? router.renderAdminDashboardReplace
+      : router.renderHomeReplace;
+
+  const homeTitle =
+    isAdmin
+      ? "العودة للوحة التحكم"
+      : "العودة للرئيسية";
 
   const backBtn = document.querySelector(".back-btn");
 
@@ -1191,14 +1276,14 @@ function ensureHomeNav(router) {
 
   backBtn.insertAdjacentHTML(
     "afterend",
-    HomeButton()
+    HomeButton({ title: homeTitle })
   );
 
   document
     .querySelector("#homeBtn")
     ?.addEventListener(
       "click",
-      router.renderHome
+      homeTarget
     );
 
 }

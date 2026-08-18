@@ -15,7 +15,8 @@ export const DEFAULT_BOOKING_FIELDS = [
     visible: true,
     required: true,
     sort_order: 1,
-    options: []
+    options: [],
+    data_source: "manual"
   },
 
   {
@@ -25,7 +26,8 @@ export const DEFAULT_BOOKING_FIELDS = [
     visible: true,
     required: true,
     sort_order: 2,
-    options: []
+    options: [],
+    data_source: "manual"
   },
 
   {
@@ -35,7 +37,8 @@ export const DEFAULT_BOOKING_FIELDS = [
     visible: true,
     required: false,
     sort_order: 3,
-    options: []
+    options: [],
+    data_source: "manual"
   },
 
   {
@@ -55,7 +58,8 @@ export const DEFAULT_BOOKING_FIELDS = [
       "التهاب كبدي",
       "حمل",
       "أخرى"
-    ]
+    ],
+    data_source: "manual"
   },
 
   {
@@ -65,7 +69,8 @@ export const DEFAULT_BOOKING_FIELDS = [
     visible: true,
     required: false,
     sort_order: 5,
-    options: []
+    options: [],
+    data_source: "manual"
   },
 
   {
@@ -75,7 +80,8 @@ export const DEFAULT_BOOKING_FIELDS = [
     visible: true,
     required: true,
     sort_order: 6,
-    options: []
+    options: [],
+    data_source: "services"
   },
 
   {
@@ -85,7 +91,8 @@ export const DEFAULT_BOOKING_FIELDS = [
     visible: true,
     required: true,
     sort_order: 7,
-    options: []
+    options: [],
+    data_source: "manual"
   },
 
   {
@@ -95,7 +102,8 @@ export const DEFAULT_BOOKING_FIELDS = [
     visible: true,
     required: true,
     sort_order: 8,
-    options: []
+    options: [],
+    data_source: "manual"
   }
 
 ];

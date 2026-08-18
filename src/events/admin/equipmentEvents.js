@@ -34,6 +34,8 @@ export function attachEquipmentEvents(router) {
 
   let pendingReplacedImages = [];
 
+  let latestUploadedImage = null;
+
   /* =========================
      زر الـDashboard
   ========================= */
@@ -520,6 +522,8 @@ export function attachEquipmentEvents(router) {
 
         e.target.dataset.current = imageUrl;
 
+        latestUploadedImage = imageUrl;
+
         if (oldUrl) {
 
           pendingReplacedImages.push(oldUrl);
@@ -638,6 +642,8 @@ export function attachEquipmentEvents(router) {
 
         pendingReplacedImages = [];
 
+        latestUploadedImage = null;
+
         showAlert(
           cardId ? "تم حفظ التعديلات" : "تمت إضافة الكارت"
         );
@@ -645,6 +651,32 @@ export function attachEquipmentEvents(router) {
         await router.renderEquipmentManager();
 
       } catch (error) {
+
+        /* منع الصور اليتيمة:
+           لو نجح رفع صورة جديدة ثم فشل تحديث الـDB، تُحذف الصور الجديدة
+           غير المحفوظة من Storage، مع الإبقاء على الصورة الأصلية
+           التي ما زالت قاعدة البيانات تشير إليها. */
+        const orphanCandidates = [
+          latestUploadedImage,
+          ...pendingReplacedImages.slice(1)
+        ].filter(Boolean);
+
+        for (const url of orphanCandidates) {
+
+          try {
+
+            await deleteImageByUrl(url);
+
+          } catch (cleanupError) {
+
+            console.error(
+              "فشل حذف الصورة غير المحفوظة:",
+              cleanupError
+            );
+
+          }
+
+        }
 
         console.error(error);
 

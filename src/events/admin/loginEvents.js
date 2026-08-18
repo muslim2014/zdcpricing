@@ -17,7 +17,7 @@ export function attachLoginEvents(router) {
 
       if (await login(email, password)) {
 
-        router.renderAdminDashboard();
+        router.renderAdminDashboardReplace();
 
       } else {
 
@@ -33,7 +33,7 @@ export function attachLoginEvents(router) {
 
       await logout();
 
-      router.renderAdminLogin();
+      router.renderAdminLoginReplace();
 
     });
 
@@ -41,7 +41,7 @@ export function attachLoginEvents(router) {
     .querySelector("#backToSiteBtn")
     ?.addEventListener("click", () => {
 
-      router.renderHome();
+      router.renderHomeReplace();
 
     });
 

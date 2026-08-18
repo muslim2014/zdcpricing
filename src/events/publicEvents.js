@@ -193,7 +193,7 @@ export function attachPublicEvents(router) {
   ========================= */
 
   document
-    .querySelector("#backToEquipment")
+    .querySelector("#backToPublicEquipment")
     ?.addEventListener("click", () => {
 
       router.navigateBack(
@@ -255,6 +255,16 @@ export function attachPublicEvents(router) {
       router.navigateBack(
         router.renderHome
       );
+
+    });
+
+  /* زر الرجوع في صفحة التجهيزات: انتقال مباشر إلى الرئيسية (/)
+   دون الاعتماد على الـhistory (منع أي Flash أو مرور على Admin) */
+  document
+    .querySelector("#backToPublicHome")
+    ?.addEventListener("click", () => {
+
+      router.renderHomeReplace();
 
     });
 
@@ -554,7 +564,7 @@ export function attachPublicEvents(router) {
       if (!allServicesCache) {
 
         allServicesCache =
-          await getServices();
+          await getServices(null, true);
 
       }
 

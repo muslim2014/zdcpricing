@@ -17,7 +17,7 @@ export function attachCertificateEditorEvents(router) {
     .querySelector("#backToCertificates")
     ?.addEventListener(
       "click",
-      router.renderDoctorProfile
+      () => router.navigateBack(router.renderDoctorProfile)
     );
 
   const imageInput =
@@ -138,7 +138,7 @@ export function attachCertificateEditorEvents(router) {
 
         showAlert("تم حفظ الشهادة");
 
-        await router.renderDoctorProfile();
+        router.navigateBack(router.renderDoctorProfile);
 
       }
 

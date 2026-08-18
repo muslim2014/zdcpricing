@@ -342,7 +342,9 @@ export async function addBookingField() {
 
     sort_order: fields.length + 1,
 
-    options: []
+    options: [],
+
+    data_source: "manual"
 
   });
 

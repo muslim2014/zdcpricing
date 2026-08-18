@@ -5,11 +5,23 @@ import {
 import { TopBar } from "../../components/TopBar";
 import { GlassButton } from "../../components/GlassButton";
 
-export async function SectionEditor(id) {
+export async function SectionEditor(id = null) {
 
-  const section = await getSection(id);
+  const isNew = !id;
 
-  if (!section) {
+  const section = isNew
+    ? {
+        section_key: "",
+        title: "",
+        description: "",
+        icon: "",
+        button_text: "",
+        button_link: "",
+        visible: true
+      }
+    : await getSection(id);
+
+  if (!isNew && !section) {
 
     return `
       <div class="container">
@@ -22,9 +34,41 @@ export async function SectionEditor(id) {
   return `
     <div class="container">
 
-      ${TopBar("تعديل القسم", "backToHomeSections")}
+      ${TopBar(
+        isNew ? "إضافة كارت" : "تعديل الكارت",
+        "backToHomeSections"
+      )}
 
       <div class="glass-card">
+
+        <div class="form-group">
+
+          <label>المفتاح (section_key) — يُستخدم لربط الكارت بصفحته</label>
+
+          <input
+            id="sectionKey"
+            class="glass-input"
+            value="${section.section_key || ""}"
+            ${isNew ? "" : "disabled"}
+          >
+
+          ${
+            isNew
+              ? ""
+              : `
+                <div
+                  style="
+                    opacity:.65;
+                    font-size:12px;
+                    margin-top:6px;
+                  "
+                >
+                  المفتاح ثابت ولا يمكن تغييره بعد الإنشاء.
+                </div>
+              `
+          }
+
+        </div>
 
         <div class="form-group">
 
@@ -52,7 +96,7 @@ export async function SectionEditor(id) {
 
         <div class="form-group">
 
-          <label>الأيقونة</label>
+          <label>الأيقونة (Emoji)</label>
 
           <input
             id="sectionIcon"
@@ -86,10 +130,34 @@ export async function SectionEditor(id) {
 
         </div>
 
-        ${GlassButton("💾 حفظ التعديلات", {
-          id: "saveSectionBtn",
-          data: { id: section.id }
-        })}
+        <div
+          style="
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin-bottom:25px;
+          "
+        >
+
+          <input
+            id="sectionVisible"
+            type="checkbox"
+
+            ${section.visible ? "checked" : ""}
+
+          >
+
+          <label>إظهار الكارت</label>
+
+        </div>
+
+        ${GlassButton(
+          isNew ? "➕ إضافة الكارت" : "💾 حفظ التعديلات",
+          {
+            id: "saveSectionBtn",
+            data: { id: section.id || "" }
+          }
+        )}
 
       </div>
 
