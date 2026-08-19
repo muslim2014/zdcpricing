@@ -38,15 +38,6 @@ export async function Home() {
 
 <div class="container">
 
-  <button
-    id="adminBtn"
-    class="admin-btn"
-    title="لوحة الإدارة"
-    style="top:18px;left:18px;right:auto"
-  >
-    <i class="fa-solid fa-gear"></i>
-  </button>
-
   ${ThemeToggle()}
 
   <button

@@ -1150,6 +1150,16 @@ async function resolveCurrentRoute() {
   /* صفحات الإدارة */
   if (parts[0] === "admin") {
 
+    /* /admin → مدخل الإدارة: إن لم يكن مسجل الدخول يذهب للـLogin،
+       وإن كان مسجلًا ينتقل مباشرة إلى الـDashboard (replace للـURL) */
+    if (parts.length === 1) {
+
+      await renderAdminDashboardReplace();
+
+      return;
+
+    }
+
     if (parts[1] === "login") {
 
       await renderAdminLogin();
