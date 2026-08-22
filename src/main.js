@@ -4,6 +4,8 @@ import { initRouter } from "./router";
 
 import { testCategories } from "./api/categoriesApi";
 
+import { inject } from "@vercel/analytics";
+
 function applyTheme() {
 
   const theme =
@@ -15,6 +17,8 @@ function applyTheme() {
 }
 
 applyTheme();
+
+inject();
 
 async function init() {
 
